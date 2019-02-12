@@ -1,0 +1,14 @@
+
+// Fonts
+@import url('https://fonts.googleapis.com/css?family=Nunito');
+
+// Variables
+@import 'variables';
+@import './components/home';
+@import './components/cubes';
+@import './miscellaneous/buttons';
+
+body {
+  margin: 0;
+  background-color: rgb(243, 243, 243);
+}

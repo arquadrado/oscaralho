@@ -1,0 +1,14 @@
+@import '../_variables';
+
+.q-icon-button {
+    position: relative;
+    height: 28px;
+    width: 28px;
+    padding: 7px;
+    border-radius: 21px;
+    background-color: orange;
+    color: azure;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

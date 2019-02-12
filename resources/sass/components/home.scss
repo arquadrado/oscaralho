@@ -1,0 +1,54 @@
+@import '../_variables';
+
+#home {
+    background-color: blue;
+    padding: 5px;
+    overflow: auto;
+    &.category-open {
+        overflow: hidden;
+    } 
+    .category {
+        position: relative;
+        height: 150px;
+        border: 2px solid rgb(22, 43, 36);
+        width: 100%;
+        transition: all 150ms ease-out;
+        .name {
+            position: absolute;
+            padding: 10px;
+            text-transform: uppercase;
+            top: 57px;
+        }
+        &.selected {
+            font-size: 14px;
+            .name {
+                transition: all 150ms ease-in;
+                top: 0;
+            }
+        }
+        &.open {
+            height: calc(100vh - 15px);
+        }
+        
+        .input-expense {
+            background-color: pink;
+            height: calc(100% - 10px);
+            width: calc(100% - 10px);
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            padding: 5px;
+            input {
+                font-size: 35px;
+                width: 270px;
+                border: none;
+                border-bottom: 2px solid yellow;
+                height: 50px;
+                background-color: transparent;
+                &:focus {
+                    outline: none;
+                }
+            }
+        }
+    }
+}

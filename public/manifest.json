@@ -1,0 +1,9 @@
+{
+    "name": "Orcaralho",
+    "short_name": "Orcaralho",
+    "icons": [],
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#000000",
+    "theme_color": "#ffdd7d"
+  }
