@@ -68,6 +68,7 @@
 }
 
 #cubes {
+  position: relative;
   width: 100%;
   height: 100vh;
   background-color: palegreen;
@@ -79,6 +80,35 @@
   outline: 2px crimson solid;
   background-color: palevioletred;
   float: left;
+  -webkit-transition: background-color 100ms ease-out;
+  transition: background-color 100ms ease-out;
+}
+
+#cubes .cube.selected {
+  -webkit-transition: background-color 100ms ease-in;
+  transition: background-color 100ms ease-in;
+  background-color: palegoldenrod;
+}
+
+#cubes .cube .card {
+  background-color: transparent;
+  width: 100%;
+  height: 100%;
+}
+
+#cubes .card-to-expand {
+  position: absolute;
+  background-color: palegoldenrod;
+  visibility: hidden;
+  -webkit-transition: all 100ms ease-out;
+  transition: all 100ms ease-out;
+}
+
+#cubes .card-to-expand.expand {
+  -webkit-transition: all 100ms ease-in;
+  transition: all 100ms ease-in;
+  visibility: visible;
+  opacity: 0.9;
 }
 
 .q-icon-button {

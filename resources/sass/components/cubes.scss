@@ -1,6 +1,7 @@
 @import '../_variables';
 
 #cubes {
+    position: relative;
     width: 100%;
     height: 100vh;
     background-color: palegreen;
@@ -12,5 +13,30 @@
         outline: 2px crimson solid;
         background-color: palevioletred;
         float: left;
+        transition: background-color 100ms ease-out;
+        &.selected {
+            transition: background-color 100ms ease-in;
+            background-color: palegoldenrod;
+        }
+        
+        .card {
+            background-color: transparent;
+            width: 100%;
+            height: 100%;
+        }
+    }
+    
+    .card-to-expand {
+        position: absolute;
+        background-color: palegoldenrod;
+        visibility: hidden;
+        
+        transition: all 100ms ease-out;
+        &.expand {
+            transition: all 100ms ease-in;
+            visibility: visible;
+            opacity: 0.9;
+        }
+
     }
 }
