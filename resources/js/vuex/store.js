@@ -14,86 +14,47 @@ const state = {
 	mobilePlatform: window.mobilePlatform(),
 	user: user,
 	categories: [
-		{ name: 'Food' },
-		{ name: 'Restaurants' },
-		{ name: 'Communications' },
-		{ name: 'Leisure' },
-		{ name: 'Health' },
-		{ name: 'Entertainment' },
-		{ name: 'Tools' },
-		{ name: 'Sport' },
-		{ name: 'Commodities' },
-		{ name: 'Food' },
-		{ name: 'Restaurants' },
-		{ name: 'Communications' },
-		{ name: 'Leisure' },
-		{ name: 'Health' },
-		{ name: 'Entertainment' },
-		{ name: 'Tools' },
-		{ name: 'Sport' },
-		{ name: 'Commodities' },
-		{ name: 'Food' },
-		{ name: 'Restaurants' },
-		{ name: 'Communications' },
-		{ name: 'Leisure' },
-		{ name: 'Health' },
-		{ name: 'Entertainment' },
-		{ name: 'Tools' },
-		{ name: 'Sport' },
-		{ name: 'Commodities' },
-		{ name: 'Food' },
-		{ name: 'Restaurants' },
-		{ name: 'Communications' },
-		{ name: 'Leisure' },
-		{ name: 'Health' },
-		{ name: 'Entertainment' },
-		{ name: 'Tools' },
-		{ name: 'Sport' },
-		{ name: 'Commodities' },
-		{ name: 'Food' },
-		{ name: 'Restaurants' },
-		{ name: 'Communications' },
-		{ name: 'Leisure' },
-		{ name: 'Health' },
-		{ name: 'Entertainment' },
-		{ name: 'Tools' },
-		{ name: 'Sport' },
-		{ name: 'Commodities' },
-		{ name: 'Food' },
-		{ name: 'Restaurants' },
-		{ name: 'Communications' },
-		{ name: 'Leisure' },
-		{ name: 'Health' },
-		{ name: 'Entertainment' },
-		{ name: 'Tools' },
-		{ name: 'Sport' },
-		{ name: 'Commodities' },
-		{ name: 'Food' },
-		{ name: 'Restaurants' },
-		{ name: 'Communications' },
-		{ name: 'Leisure' },
-		{ name: 'Health' },
-		{ name: 'Entertainment' },
-		{ name: 'Tools' },
-		{ name: 'Sport' },
-		{ name: 'Commodities' },
-	]
+		{ id: '1', name: 'Food' },
+		{ id: '2', name: 'Restaurants' },
+		{ id: '3', name: 'Communications' },
+		{ id: '4', name: 'Leisure' },
+		{ id: '5', name: 'Health' },
+		{ id: '6', name: 'Entertainment' },
+		{ id: '7', name: 'Tools' },
+		{ id: '8', name: 'Sport' },
+		// { id: '9', name: 'Commodities' },
+	],
+	selectedCategory: undefined,
+	showDisplayPanel: false
 };
 const getters = {
 	isMobilePlatform: state => state.mobilePlatform,
 	getUser: state => state.user,
-	getCategories: state => state.categories
+	getCategories: state => state.categories,
+	getSelectedCategoryId: state => state.selectedCategory,
+	getSelectedCategory: state => state.categories.find(c => c.id === state.selectedCategory),
+	shouldDisplayPanel: state => state.showDisplayPanel
 };
 const actions = {
 	addCategory: ({ commit }, category) => {
-		console.log(category)
 		commit('ADD_CATEGORY', category);
+	},
+	selectCategory: ({ commit, state }, categoryId) => {
+		commit('SELECT_CATEGORY', state.selectedCategory === categoryId ? undefined : categoryId);
+	},
+	setShowDisplayPanel: ({ commit }, value) => {
+		commit('SET_SHOW_DISPLAY_PANEL', value);
 	}
 };
 const mutations = {
 	'ADD_CATEGORY': (state, category) => {
 		state.categories.push(category);
-		console.log(state.categories.length)
+	},
+	'SELECT_CATEGORY': (state, categoryId) => {
+		state.selectedCategory = categoryId;
+	},
+	'SET_SHOW_DISPLAY_PANEL': (state, value) => {
+		state.showDisplayPanel = value;
 	}
 };
 

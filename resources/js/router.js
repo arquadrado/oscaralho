@@ -3,19 +3,19 @@ import Router from 'vue-router';
 Vue.use(Router);
 
 import HomeComponent from './components/HomeComponent';
-import CubesComponent from './components/CubesComponent';
+import GridComponent from './components/GridComponent';
 
 export default new Router({
 	routes: [
 		{
 			path: '',
 			name: 'home',
-			component: CubesComponent
+			component: GridComponent
 		},
 		{
 			path: '/cubes',
 			name: 'cubes',
-			component: CubesComponent
+			component: GridComponent
 		}
 	]
 });

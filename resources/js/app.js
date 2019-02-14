@@ -15,7 +15,7 @@ import router from './router.js';
 import { mapGetters, mapActions } from 'vuex';
 
 import HomeComponent from './components/HomeComponent';
-import CubesComponent from './components/CubesComponent';
+import GridComponent from './components/GridComponent';
 
 
 /**
@@ -29,7 +29,7 @@ const app = new Vue({
     router,
     components: {
         'home': HomeComponent,
-        'cubes': CubesComponent
+        'grid': GridComponent
     },
     computed: {
     	...mapGetters({

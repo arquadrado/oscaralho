@@ -25982,53 +25982,7 @@ module.exports = function normalizeComponent (
 
 
 /***/ }),
-/* 15 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-var normalizeComponent = __webpack_require__(14)
-/* script */
-var __vue_script__ = __webpack_require__(48)
-/* template */
-var __vue_template__ = __webpack_require__(49)
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = null
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __vue_script__,
-  __vue_template__,
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-Component.options.__file = "resources/js/components/CubesComponent.vue"
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-3be7712c", Component.options)
-  } else {
-    hotAPI.reload("data-v-3be7712c", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
+/* 15 */,
 /* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -26047,8 +26001,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_vuex__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_HomeComponent__ = __webpack_require__(13);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_HomeComponent___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__components_HomeComponent__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_CubesComponent__ = __webpack_require__(15);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_CubesComponent___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__components_CubesComponent__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_GridComponent__ = __webpack_require__(55);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_GridComponent___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__components_GridComponent__);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 /**
@@ -26080,7 +26034,7 @@ var app = new Vue({
   router: __WEBPACK_IMPORTED_MODULE_1__router_js__["a" /* default */],
   components: {
     'home': __WEBPACK_IMPORTED_MODULE_3__components_HomeComponent___default.a,
-    'cubes': __WEBPACK_IMPORTED_MODULE_4__components_CubesComponent___default.a
+    'grid': __WEBPACK_IMPORTED_MODULE_4__components_GridComponent___default.a
   },
   computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_2_vuex__["c" /* mapGetters */])({})),
   store: __WEBPACK_IMPORTED_MODULE_0__vuex_store_js__["a" /* default */]
@@ -48416,7 +48370,9 @@ window.mobilePlatform = function () {
 var state = {
 	mobilePlatform: window.mobilePlatform(),
 	user: user,
-	categories: [{ name: 'Food' }, { name: 'Restaurants' }, { name: 'Communications' }, { name: 'Leisure' }, { name: 'Health' }, { name: 'Entertainment' }, { name: 'Tools' }, { name: 'Sport' }, { name: 'Commodities' }, { name: 'Food' }, { name: 'Restaurants' }, { name: 'Communications' }, { name: 'Leisure' }, { name: 'Health' }, { name: 'Entertainment' }, { name: 'Tools' }, { name: 'Sport' }, { name: 'Commodities' }, { name: 'Food' }, { name: 'Restaurants' }, { name: 'Communications' }, { name: 'Leisure' }, { name: 'Health' }, { name: 'Entertainment' }, { name: 'Tools' }, { name: 'Sport' }, { name: 'Commodities' }, { name: 'Food' }, { name: 'Restaurants' }, { name: 'Communications' }, { name: 'Leisure' }, { name: 'Health' }, { name: 'Entertainment' }, { name: 'Tools' }, { name: 'Sport' }, { name: 'Commodities' }, { name: 'Food' }, { name: 'Restaurants' }, { name: 'Communications' }, { name: 'Leisure' }, { name: 'Health' }, { name: 'Entertainment' }, { name: 'Tools' }, { name: 'Sport' }, { name: 'Commodities' }, { name: 'Food' }, { name: 'Restaurants' }, { name: 'Communications' }, { name: 'Leisure' }, { name: 'Health' }, { name: 'Entertainment' }, { name: 'Tools' }, { name: 'Sport' }, { name: 'Commodities' }, { name: 'Food' }, { name: 'Restaurants' }, { name: 'Communications' }, { name: 'Leisure' }, { name: 'Health' }, { name: 'Entertainment' }, { name: 'Tools' }, { name: 'Sport' }, { name: 'Commodities' }]
+	categories: [{ id: '1', name: 'Food' }, { id: '2', name: 'Restaurants' }, { id: '3', name: 'Communications' }, { id: '4', name: 'Leisure' }, { id: '5', name: 'Health' }, { id: '6', name: 'Entertainment' }, { id: '7', name: 'Tools' }, { id: '8', name: 'Sport' }],
+	selectedCategory: undefined,
+	showDisplayPanel: false
 };
 var getters = {
 	isMobilePlatform: function isMobilePlatform(state) {
@@ -48427,20 +48383,46 @@ var getters = {
 	},
 	getCategories: function getCategories(state) {
 		return state.categories;
+	},
+	getSelectedCategoryId: function getSelectedCategoryId(state) {
+		return state.selectedCategory;
+	},
+	getSelectedCategory: function getSelectedCategory(state) {
+		return state.categories.find(function (c) {
+			return c.id === state.selectedCategory;
+		});
+	},
+	shouldDisplayPanel: function shouldDisplayPanel(state) {
+		return state.showDisplayPanel;
 	}
 };
 var actions = {
 	addCategory: function addCategory(_ref, category) {
 		var commit = _ref.commit;
 
-		console.log(category);
 		commit('ADD_CATEGORY', category);
+	},
+	selectCategory: function selectCategory(_ref2, categoryId) {
+		var commit = _ref2.commit,
+		    state = _ref2.state;
+
+		commit('SELECT_CATEGORY', state.selectedCategory === categoryId ? undefined : categoryId);
+	},
+	setShowDisplayPanel: function setShowDisplayPanel(_ref3, value) {
+		var commit = _ref3.commit;
+
+		commit('SET_SHOW_DISPLAY_PANEL', value);
 	}
 };
 var mutations = {
 	'ADD_CATEGORY': function ADD_CATEGORY(state, category) {
 		state.categories.push(category);
-		console.log(state.categories.length);
+	},
+	'SELECT_CATEGORY': function SELECT_CATEGORY(state, categoryId) {
+		state.selectedCategory = categoryId;
+	},
+	'SET_SHOW_DISPLAY_PANEL': function SET_SHOW_DISPLAY_PANEL(state, value) {
+		state.showDisplayPanel = value;
 	}
 };
 
@@ -48462,8 +48444,8 @@ var mutations = {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_router__ = __webpack_require__(45);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_HomeComponent__ = __webpack_require__(13);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_HomeComponent___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__components_HomeComponent__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_CubesComponent__ = __webpack_require__(15);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_CubesComponent___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__components_CubesComponent__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_GridComponent__ = __webpack_require__(55);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_GridComponent___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__components_GridComponent__);
 
 
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_1_vue_router__["a" /* default */]);
@@ -48475,11 +48457,11 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_1_vue_
 	routes: [{
 		path: '',
 		name: 'home',
-		component: __WEBPACK_IMPORTED_MODULE_3__components_CubesComponent___default.a
+		component: __WEBPACK_IMPORTED_MODULE_3__components_GridComponent___default.a
 	}, {
 		path: '/cubes',
 		name: 'cubes',
-		component: __WEBPACK_IMPORTED_MODULE_3__components_CubesComponent___default.a
+		component: __WEBPACK_IMPORTED_MODULE_3__components_GridComponent___default.a
 	}]
 }));
 
@@ -51337,12 +51319,73 @@ if (false) {
 }
 
 /***/ }),
-/* 48 */
+/* 48 */,
+/* 49 */,
+/* 50 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 51 */,
+/* 52 */,
+/* 53 */,
+/* 54 */,
+/* 55 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(14)
+/* script */
+var __vue_script__ = __webpack_require__(56)
+/* template */
+var __vue_template__ = __webpack_require__(57)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/GridComponent.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-fa23cf08", Component.options)
+  } else {
+    hotAPI.reload("data-v-fa23cf08", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 56 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__CategoryDetail_vue__ = __webpack_require__(58);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__CategoryDetail_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__CategoryDetail_vue__);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 //
@@ -51365,17 +51408,33 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+  components: {
+    'category-detail': __WEBPACK_IMPORTED_MODULE_1__CategoryDetail_vue___default.a
+  },
   data: function data() {
     return {
-      windowWidth: undefined,
-      windowHeight: undefined,
+      containerWidth: undefined,
+      containerHeight: undefined,
       gridSize: undefined,
-      selectedCard: undefined,
-      selectCardPosition: [0, 0],
-      shouldExpand: false,
+      selectedCategoryPosition: [0, 0],
       justUpdated: undefined
     };
   },
@@ -51384,41 +51443,39 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
   },
 
   computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])({
-    categories: 'getCategories'
+    categories: 'getCategories',
+    selectedCategory: 'getSelectedCategoryId',
+    shouldDisplayPanel: 'shouldDisplayPanel'
   }), {
     tileWidth: function tileWidth() {
       if (this.gridSize) {
-        return this.windowWidth / this.gridSize[0];
+        return this.containerWidth / this.gridSize[0];
       }
     },
     tileHeight: function tileHeight() {
       if (this.gridSize) {
-        return this.windowHeight / this.gridSize[1];
+        return this.containerHeight / this.gridSize[1];
       }
     },
     overCardPosition: function overCardPosition() {
-      return [this.shouldExpand ? 0 : this.selectCardPosition[0], this.shouldExpand ? 0 : this.selectCardPosition[1]];
+      return [this.shouldDisplayPanel ? 0 : this.selectedCategoryPosition[0], this.shouldDisplayPanel ? 0 : this.selectedCategoryPosition[1]];
     },
     overCardDimension: function overCardDimension() {
-      return [this.shouldExpand ? '100%' : this.tileWidth + 'px', this.shouldExpand ? '100%' : this.tileHeight + 'px'];
+      return [this.shouldDisplayPanel ? '100%' : this.tileWidth + 'px', this.shouldDisplayPanel ? '100%' : this.tileHeight + 'px'];
     }
   }),
   methods: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({
-    addCategory: 'addCategory'
+    selectCategory: 'selectCategory',
+    setShowDisplayPanel: 'setShowDisplayPanel'
   }), {
-    selectCard: function selectCard(card) {
-      if (this.selectedCard === card) {
-        this.selectedCard = undefined;
+    clickCategory: function clickCategory(categoryId) {
+      if (this.selectedCategory === categoryId) {
         this.justUpdated = undefined;
-      } else {
-        this.selectedCard = card;
       }
-    },
-    closeOverCard: function closeOverCard() {
-      this.shouldExpand = false;
+      this.selectCategory(categoryId);
     },
     buildGrid: function buildGrid() {
-      var i = this.categories.length;
+      var i = this.categories.length + 1;
       this.gridSize = undefined;
       while (!this.gridSize) {
         this.gridSize = this.getGridDimensions(this.findFactors(i));
@@ -51435,24 +51492,10 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         }
       }
 
-      var filteredCombinations = combinations.reduce(function (reduced, combination, index, array) {
-        var combinationExist = reduced.some(function (c) {
-          return c[0] === combination[0] && c[1] === combination[1] || c[0] === combination[1] && c[1] === combination[0];
-        });
-
-        if (!combinationExist) {
-          reduced.push(combination);
-        }
-
-        return reduced;
-      }, []);
-
-      filteredCombinations.splice(0, 1);
-
-      return filteredCombinations;
+      return combinations.slice(1, combinations.length - 1);
     },
     getGridDimensions: function getGridDimensions(combinations) {
-      var widthHeightRatio = this.windowWidth / this.windowHeight;
+      var widthHeightRatio = this.containerWidth / this.containerHeight;
 
       var selectedCombination = void 0;
       var closestRatio = void 0;
@@ -51470,39 +51513,23 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         }
       });
 
-      combinations.forEach(function (combination) {
-        combination.reverse();
-        var combinationRatio = combination[0] / combination[1];
-        if (!selectedCombination) {
-          selectedCombination = combination;
-          closestRatio = combinationRatio;
-        } else {
-          if (Math.abs(widthHeightRatio - combinationRatio) < Math.abs(widthHeightRatio - closestRatio)) {
-            closestRatio = combinationRatio;
-            selectedCombination = combination;
-          }
-        }
-      });
-
       return selectedCombination;
     }
   }),
   directives: {
-    cubes: {
+    grid: {
       inserted: function inserted(el, binding, vnode) {
-        console.log('inserted', el);
-        vnode.context.windowWidth = el.offsetWidth;
-        vnode.context.windowHeight = el.offsetHeight;
+        vnode.context.containerWidth = el.offsetWidth;
+        vnode.context.containerHeight = el.offsetHeight;
       }
     },
     card: {
       update: function update(el, binding, vnode) {
-        if (vnode.context.selectedCard === binding.value && vnode.context.justUpdated !== binding.value) {
-          console.log(el.offsetTop, el.offsetLeft);
-          vnode.context.selectCardPosition = [el.offsetTop, el.offsetLeft];
+        if (vnode.context.selectedCategory === binding.value && vnode.context.justUpdated !== binding.value) {
+          vnode.context.selectedCategoryPosition = [el.offsetTop, el.offsetLeft];
           vnode.context.justUpdated = binding.value;
           setTimeout(function () {
-            vnode.context.shouldExpand = true;
+            vnode.context.setShowDisplayPanel(true);
           }, 100);
         }
       }
@@ -51511,67 +51538,89 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 });
 
 /***/ }),
-/* 49 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    {
-      directives: [{ name: "cubes", rawName: "v-cubes" }],
-      attrs: { id: "cubes" }
-    },
-    [
-      _vm._l(_vm.categories, function(category) {
-        return _c(
+  return _c("div", { staticClass: "container" }, [
+    _c(
+      "div",
+      {
+        directives: [{ name: "grid", rawName: "v-grid" }],
+        attrs: { id: "grid" }
+      },
+      [
+        _vm._l(_vm.categories, function(category) {
+          return _c(
+            "div",
+            {
+              key: category.id,
+              staticClass: "grid-cell",
+              class: { selected: _vm.selectedCategory === category.id },
+              style: {
+                width: _vm.tileWidth + "px",
+                height: _vm.tileHeight + "px"
+              },
+              on: {
+                click: function($event) {
+                  _vm.clickCategory(category.id)
+                }
+              }
+            },
+            [
+              _c("div", {
+                directives: [
+                  {
+                    name: "card",
+                    rawName: "v-card",
+                    value: category.id,
+                    expression: "category.id"
+                  }
+                ],
+                staticClass: "category"
+              })
+            ]
+          )
+        }),
+        _vm._v(" "),
+        _c(
           "div",
           {
-            key: category.id,
-            staticClass: "cube",
-            class: { selected: _vm.selectedCard === category },
+            staticClass: "grid-cell menu-trigger",
             style: {
               width: _vm.tileWidth + "px",
               height: _vm.tileHeight + "px"
-            },
-            on: {
-              click: function($event) {
-                _vm.selectCard(category)
-              }
+            }
+          },
+          [_c("div", { staticClass: "category" })]
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          {
+            staticClass: "category-to-expand",
+            class: { expand: _vm.shouldDisplayPanel },
+            style: {
+              width: _vm.overCardDimension[0],
+              height: _vm.overCardDimension[1],
+              top: _vm.overCardPosition[0] + "px",
+              left: _vm.overCardPosition[1] + "px"
             }
           },
           [
-            _c("div", {
-              directives: [
-                {
-                  name: "card",
-                  rawName: "v-card",
-                  value: category,
-                  expression: "category"
-                }
-              ],
-              staticClass: "card"
-            })
-          ]
+            _vm.shouldDisplayPanel
+              ? _c("category-detail", { tag: "component" })
+              : _vm._e()
+          ],
+          1
         )
-      }),
-      _vm._v(" "),
-      _c("div", {
-        staticClass: "card-to-expand",
-        class: { expand: _vm.shouldExpand },
-        style: {
-          width: _vm.overCardDimension[0],
-          height: _vm.overCardDimension[1],
-          top: _vm.overCardPosition[0] + "px",
-          left: _vm.overCardPosition[1] + "px"
-        },
-        on: { click: _vm.closeOverCard }
-      })
-    ],
-    2
-  )
+      ],
+      2
+    )
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -51579,15 +51628,118 @@ module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-3be7712c", module.exports)
+    require("vue-hot-reload-api")      .rerender("data-v-fa23cf08", module.exports)
   }
 }
 
 /***/ }),
-/* 50 */
-/***/ (function(module, exports) {
+/* 58 */
+/***/ (function(module, exports, __webpack_require__) {
 
-// removed by extract-text-webpack-plugin
+var disposed = false
+var normalizeComponent = __webpack_require__(14)
+/* script */
+var __vue_script__ = __webpack_require__(59)
+/* template */
+var __vue_template__ = __webpack_require__(60)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/CategoryDetail.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-934232cc", Component.options)
+  } else {
+    hotAPI.reload("data-v-934232cc", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 59 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(2);
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+//
+//
+//
+//
+//
+//
+//
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])({
+        selectedCategory: 'getSelectedCategory'
+    })),
+    methods: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({
+        setShowDisplayPanel: 'setShowDisplayPanel'
+    }))
+});
+
+/***/ }),
+/* 60 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "category-detail" }, [
+    _c("h1", [_vm._v(_vm._s(_vm.selectedCategory.name))]),
+    _vm._v(" "),
+    _c(
+      "span",
+      {
+        on: {
+          click: function($event) {
+            _vm.setShowDisplayPanel(false)
+          }
+        }
+      },
+      [_vm._v("close")]
+    )
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-934232cc", module.exports)
+  }
+}
 
 /***/ })
 /******/ ]);

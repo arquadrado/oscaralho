@@ -2,7 +2,7 @@
 
 @section('content')
         <!-- <home></home> -->
-        <cubes></cubes>
+        <grid></grid>
 @endsection
 
 @section('handover')
