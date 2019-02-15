@@ -1,0 +1,42 @@
+@import '../_variables';
+
+.category-detail {
+  background-color: indigo;
+  width: calc(100% - 28px);
+  height: calc(100% - 28px);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-content: space-between;
+  justify-content: space-between;
+  .content {
+    max-height: 100%;
+    overflow: auto;
+    width: 100%;
+    text-align: center;
+    margin: 14px 0;
+
+    .balance {
+      font-weight: 900;
+      font-size: 35px;
+    }
+
+    .add-button {
+      margin: 14px auto;
+      height: 50px;
+      width: 50px;
+      border-radius: 25px;
+      background-color: #ffffff;
+      display: table;
+      i {
+        display: table-cell;
+        vertical-align: middle;
+        text-align: center;
+      }
+    }
+  }
+
+  .close-button {
+  }
+}

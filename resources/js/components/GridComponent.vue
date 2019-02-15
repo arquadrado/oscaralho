@@ -2,9 +2,9 @@
   <div class="container">
     <div id="grid" v-grid>
         <div class="grid-cell"
-          v-for="category in categories" 
-          :key="category.id" 
-          :style="{'width': tileWidth + 'px', 'height': tileHeight + 'px'}" 
+          v-for="category in categories"
+          :key="category.id"
+          :style="{'width': tileWidth + 'px', 'height': tileHeight + 'px'}"
           :class="{'selected': selectedCategory === category.id}"
           @click="clickCategory(category.id)"
         >
@@ -14,7 +14,7 @@
         <div class="grid-cell menu-trigger" :style="{'width': tileWidth + 'px', 'height': tileHeight + 'px'}" >
           <div class="category"></div>
         </div>
-        
+
         <div class="category-to-expand"
           :class="{'expand': shouldDisplayPanel}"
           :style="{'width': overCardDimension[0], 'height': overCardDimension[1], 'top': overCardPosition[0] + 'px', 'left': overCardPosition[1] + 'px'}"
@@ -116,7 +116,7 @@ export default {
 
       let selectedCombination;
       let closestRatio;
-      
+
       combinations.forEach((combination) => {
         let combinationRatio = combination[0]/combination[1];
         if (!selectedCombination) {
