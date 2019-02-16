@@ -146,7 +146,6 @@
 }
 
 .category-detail {
-  background-color: indigo;
   width: calc(100% - 28px);
   height: calc(100% - 28px);
   padding: 14px;
@@ -167,20 +166,28 @@
           justify-content: space-between;
 }
 
-.category-detail .content {
-  max-height: 100%;
-  overflow: auto;
-  width: 100%;
-  text-align: center;
-  margin: 14px 0;
-}
-
-.category-detail .content .balance {
+.category-detail .balance {
   font-weight: 900;
   font-size: 35px;
+  margin: 17px 0 0 0;
 }
 
-.category-detail .content .add-button {
+.category-detail .add-form .add-value {
+  margin: 14px 0;
+  border: none;
+  border-bottom: 2px solid #ffffff;
+  height: 35px;
+  background-color: transparent;
+  text-align: center;
+  font-size: 28px;
+  width: 300px;
+}
+
+.category-detail .add-form .add-value:focus {
+  outline: 0;
+}
+
+.category-detail .add-button {
   margin: 14px auto;
   height: 50px;
   width: 50px;
@@ -189,10 +196,22 @@
   display: table;
 }
 
-.category-detail .content .add-button i {
+.category-detail .add-button i {
   display: table-cell;
   vertical-align: middle;
   text-align: center;
+}
+
+.category-detail .content {
+  max-height: 100%;
+  overflow: auto;
+  width: 100%;
+  text-align: center;
+  margin: 14px 0;
+}
+
+.category-detail .content .expenses {
+  min-height: 213px;
 }
 
 .q-icon-button {

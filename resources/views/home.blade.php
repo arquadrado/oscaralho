@@ -10,6 +10,7 @@
 	window.handover = {
         user: {!! $user !!},
         token: '{{ csrf_token() }}',
+        categories: {!! $categories !!},
 	};
 </script>
 @endsection

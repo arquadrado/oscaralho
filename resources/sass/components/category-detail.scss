@@ -1,7 +1,6 @@
 @import '../_variables';
 
 .category-detail {
-  background-color: indigo;
   width: calc(100% - 28px);
   height: calc(100% - 28px);
   padding: 14px;
@@ -10,6 +9,41 @@
   align-items: center;
   align-content: space-between;
   justify-content: space-between;
+  .balance {
+    font-weight: 900;
+    font-size: 35px;
+    margin: 17px 0 0 0;
+  }
+
+  .add-form {
+    .add-value {
+      margin: 14px 0;
+      border: none;
+      border-bottom: 2px solid #ffffff;
+      height: 35px;
+      background-color: transparent;
+      text-align: center;
+      font-size: 28px;
+      width: 300px;
+      
+      &:focus {
+        outline: 0;
+      }
+    }
+  }
+  .add-button {
+    margin: 14px auto;
+    height: 50px;
+    width: 50px;
+    border-radius: 25px;
+    background-color: #ffffff;
+    display: table;
+    i {
+      display: table-cell;
+      vertical-align: middle;
+      text-align: center;
+    }
+  }
   .content {
     max-height: 100%;
     overflow: auto;
@@ -17,23 +51,8 @@
     text-align: center;
     margin: 14px 0;
 
-    .balance {
-      font-weight: 900;
-      font-size: 35px;
-    }
-
-    .add-button {
-      margin: 14px auto;
-      height: 50px;
-      width: 50px;
-      border-radius: 25px;
-      background-color: #ffffff;
-      display: table;
-      i {
-        display: table-cell;
-        vertical-align: middle;
-        text-align: center;
-      }
+    .expenses {
+      min-height: 213px;
     }
   }
 

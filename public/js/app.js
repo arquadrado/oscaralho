@@ -48399,11 +48399,14 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vuex__ = __webpack_require__(2);
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 
 
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_1_vuex__["a" /* default */]);
 
 var user = handover && handover.user ? handover.user : [];
+var categories = handover && handover.categories ? handover.categories : [];
 
 window.mobilePlatform = function () {
 	var check = false;
@@ -48415,10 +48418,13 @@ window.mobilePlatform = function () {
 
 var state = {
 	mobilePlatform: window.mobilePlatform(),
+	inTransition: false,
 	user: user,
-	categories: [{ id: '1', name: 'Food' }, { id: '2', name: 'Restaurants' }, { id: '3', name: 'Communications' }, { id: '4', name: 'Leisure' }, { id: '5', name: 'Health' }, { id: '6', name: 'Entertainment' }, { id: '7', name: 'Tools' }, { id: '8', name: 'Sport' }],
+	categories: categories,
 	selectedCategory: undefined,
-	showDisplayPanel: false
+	showDisplayPanel: false,
+	selectedYear: new Date(Date.now()).getFullYear(),
+	selectedMonth: new Date(Date.now()).getMonth()
 };
 var getters = {
 	isMobilePlatform: function isMobilePlatform(state) {
@@ -48458,6 +48464,23 @@ var actions = {
 		var commit = _ref3.commit;
 
 		commit('SET_SHOW_DISPLAY_PANEL', value);
+	},
+	addExpense: function addExpense(_ref4, expenseData) {
+		var commit = _ref4.commit;
+
+		axios.post('/add-expense', expenseData).then(function (response) {
+			if (response && response.data) {
+				commit('ADD_EXPENSE', response.data);
+			}
+		}).catch(function (error) {
+			console.log(error);
+			commit('REMOVE_EXPENSE', expenseData);
+		});
+	},
+	removeExpense: function removeExpense(_ref5, expense) {
+		var commit = _ref5.commit;
+
+		commit('REMOVE_EXPENSE', expense);
 	}
 };
 var mutations = {
@@ -48469,6 +48492,30 @@ var mutations = {
 	},
 	'SET_SHOW_DISPLAY_PANEL': function SET_SHOW_DISPLAY_PANEL(state, value) {
 		state.showDisplayPanel = value;
+	},
+	'ADD_EXPENSE': function ADD_EXPENSE(state, data) {
+		var category = state.categories.find(function (c) {
+			return c.id === data.expense.category_id;
+		});
+		console.log(category, data);
+		if (category) {
+			category.expenses = [].concat(_toConsumableArray(category.expenses ? category.expenses : []), [data.expense]);
+		}
+	},
+	'REMOVE_EXPENSE': function REMOVE_EXPENSE(state, expense) {
+		var category = state.categories.find(function (c) {
+			return c.id === expense.category_id;
+		});
+
+		if (category && category.expenses) {
+			var _expense = category.expenses.find(function (e) {
+				return e.id === _expense.id;
+			});
+
+			if (_expense) {
+				category.expenses.splice(category.expenses.indexOf(_expense), 1);
+			}
+		}
 	}
 };
 
@@ -51599,16 +51646,51 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])({
-        selectedCategory: 'getSelectedCategory'
-    })),
-    methods: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({
-        setShowDisplayPanel: 'setShowDisplayPanel'
-    }))
+  mounted: function mounted() {
+    var _this = this;
+
+    setTimeout(function () {
+      _this.showContent = true;
+    }, 100);
+  },
+  data: function data() {
+    return {
+      showContent: false,
+      expenseInput: undefined
+    };
+  },
+
+  computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])({
+    selectedCategory: 'getSelectedCategory'
+  })),
+  methods: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({
+    setShowDisplayPanel: 'setShowDisplayPanel',
+    saveExpense: 'addExpense'
+  }), {
+    addExpense: function addExpense() {
+      if (this.expenseInput > 0) {
+        this.saveExpense({
+          value: this.expenseInput,
+          categoryId: this.selectedCategory.id
+        });
+        this.expenseInput = undefined;
+      }
+    }
+  })
 });
 
 /***/ }),
@@ -51619,40 +51701,94 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "category-detail" }, [
-    _c("h1", [_vm._v(_vm._s(_vm.selectedCategory.name))]),
-    _vm._v(" "),
-    _vm._m(0),
-    _vm._v(" "),
-    _c(
-      "span",
-      {
-        staticClass: "close-button",
-        on: {
-          click: function($event) {
-            _vm.setShowDisplayPanel(false)
-          }
+  return _c(
+    "div",
+    {
+      directives: [
+        {
+          name: "show",
+          rawName: "v-show",
+          value: _vm.showContent,
+          expression: "showContent"
         }
-      },
-      [_vm._v("close")]
-    )
-  ])
+      ],
+      staticClass: "category-detail"
+    },
+    [
+      _c("h2", [_vm._v(_vm._s(_vm.selectedCategory.name))]),
+      _vm._v(" "),
+      _vm._m(0),
+      _vm._v(" "),
+      _c("span", { staticClass: "unit" }, [_vm._v("euros")]),
+      _vm._v(" "),
+      _c("div", { staticClass: "add-form" }, [
+        _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.expenseInput,
+              expression: "expenseInput"
+            }
+          ],
+          staticClass: "add-value",
+          attrs: { type: "number" },
+          domProps: { value: _vm.expenseInput },
+          on: {
+            input: function($event) {
+              if ($event.target.composing) {
+                return
+              }
+              _vm.expenseInput = $event.target.value
+            }
+          }
+        })
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "add-button", on: { click: _vm.addExpense } }, [
+        _c("i", { staticClass: "fa fa-plus" })
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "content" }, [
+        _c(
+          "div",
+          { staticClass: "expenses" },
+          _vm._l(_vm.selectedCategory.expenses, function(expense) {
+            return _c("div", { key: expense.id, staticClass: "expense" }, [
+              _c("div", { staticClass: "expense-value" }, [
+                _vm._v(_vm._s(expense.value))
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "expense-notes" }),
+              _vm._v(" "),
+              _c("div", { staticClass: "expense-actions" })
+            ])
+          })
+        )
+      ]),
+      _vm._v(" "),
+      _c(
+        "span",
+        {
+          staticClass: "close-button",
+          on: {
+            click: function($event) {
+              _vm.setShowDisplayPanel(false)
+            }
+          }
+        },
+        [_vm._v("close")]
+      )
+    ]
+  )
 }
 var staticRenderFns = [
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "content" }, [
-      _c("div", { staticClass: "balance" }, [
-        _c("span", [_vm._v("100/87.78")])
-      ]),
-      _vm._v(" "),
-      _c("span", { staticClass: "unit" }, [_vm._v("euros")]),
-      _vm._v(" "),
-      _c("div", { staticClass: "add-button" }, [
-        _c("i", { staticClass: "fa fa-plus" })
-      ])
+    return _c("div", { staticClass: "balance" }, [
+      _c("span", [_vm._v("100/87.78")])
     ])
   }
 ]

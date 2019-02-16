@@ -3,6 +3,7 @@ import Vuex from 'vuex';
 Vue.use(Vuex);
 
 const user = handover && handover.user ? handover.user : []; 
+const categories = handover && handover.categories ? handover.categories : []; 
 
 window.mobilePlatform = () => {
   var check = false;
@@ -12,20 +13,13 @@ window.mobilePlatform = () => {
 
 const state = {
 	mobilePlatform: window.mobilePlatform(),
+	inTransition: false,
 	user: user,
-	categories: [
-		{ id: '1', name: 'Food' },
-		{ id: '2', name: 'Restaurants' },
-		{ id: '3', name: 'Communications' },
-		{ id: '4', name: 'Leisure' },
-		{ id: '5', name: 'Health' },
-		{ id: '6', name: 'Entertainment' },
-		{ id: '7', name: 'Tools' },
-		{ id: '8', name: 'Sport' },
-		// { id: '9', name: 'Commodities' },
-	],
+	categories: categories,
 	selectedCategory: undefined,
-	showDisplayPanel: false
+	showDisplayPanel: false,
+	selectedYear: new Date(Date.now()).getFullYear(),
+	selectedMonth: new Date(Date.now()).getMonth(),
 };
 const getters = {
 	isMobilePlatform: state => state.mobilePlatform,
@@ -33,7 +27,7 @@ const getters = {
 	getCategories: state => state.categories,
 	getSelectedCategoryId: state => state.selectedCategory,
 	getSelectedCategory: state => state.categories.find(c => c.id === state.selectedCategory),
-	shouldDisplayPanel: state => state.showDisplayPanel
+	shouldDisplayPanel: state => state.showDisplayPanel,
 };
 const actions = {
 	addCategory: ({ commit }, category) => {
@@ -44,7 +38,22 @@ const actions = {
 	},
 	setShowDisplayPanel: ({ commit }, value) => {
 		commit('SET_SHOW_DISPLAY_PANEL', value);
-	}
+	},
+	addExpense: ({ commit }, expenseData) => {
+		axios.post('/add-expense', expenseData)
+			.then(function (response) {
+			    if (response && response.data) {
+					commit('ADD_EXPENSE', response.data);
+			    }
+			})
+			.catch(function (error) {
+			    console.log(error);
+				commit('REMOVE_EXPENSE', expenseData);
+			});
+	},
+	removeExpense: ({ commit }, expense) => {
+		commit('REMOVE_EXPENSE', expense);
+	},
 };
 const mutations = {
 	'ADD_CATEGORY': (state, category) => {
@@ -55,6 +64,27 @@ const mutations = {
 	},
 	'SET_SHOW_DISPLAY_PANEL': (state, value) => {
 		state.showDisplayPanel = value;
+	},
+	'ADD_EXPENSE': (state, data) => {
+		const category = state.categories.find(c => c.id === data.expense.category_id);
+		console.log(category, data);
+		if (category) {
+			category.expenses = [
+				...(category.expenses ? category.expenses : []),
+				data.expense
+			]
+		}
+	},
+	'REMOVE_EXPENSE': (state, expense) => {
+		const category = state.categories.find(c => c.id === expense.category_id);
+
+		if (category && category.expenses) {
+			const expense = category.expenses.find(e => e.id === expense.id);
+
+			if (expense) {
+				category.expenses.splice(category.expenses.indexOf(expense), 1)
+			}
+		}
 	}
 };
 
