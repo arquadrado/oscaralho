@@ -48446,6 +48446,12 @@ var getters = {
 	},
 	shouldDisplayPanel: function shouldDisplayPanel(state) {
 		return state.showDisplayPanel;
+	},
+	getSelectedYear: function getSelectedYear(state) {
+		return state.selectedYear;
+	},
+	getSelectedMonth: function getSelectedMonth(state) {
+		return state.selectedMonth;
 	}
 };
 var actions = {
@@ -51656,6 +51662,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
 
 
 
@@ -51670,13 +51677,37 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
   data: function data() {
     return {
       showContent: false,
-      expenseInput: undefined
+      expenseInput: undefined,
+      newBound: this.selectedCategoryBound,
+      boundBeingEdited: false
     };
   },
 
   computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])({
-    selectedCategory: 'getSelectedCategory'
-  })),
+    selectedCategory: 'getSelectedCategory',
+    selectedYear: 'getSelectedYear',
+    selectedMonth: 'getSelectedMonth'
+  }), {
+    formattedPeriod: function formattedPeriod() {
+      var month = this.selectedMonth.length === 1 ? '0' + this.selectedMonth : this.selectedMonth;
+      return this.selectedYear + '-' + month;
+    },
+    selectedCategoryBound: function selectedCategoryBound() {
+      var _this2 = this;
+
+      var bound = this.selectedCategory.bounds.find(function (bound) {
+        return bound.period === _this2.selectedYear + '-0' + (_this2.selectedMonth + 1);
+      });
+
+      return bound ? bound.bound_in_cents / 100 : 0;
+    },
+    expensesSum: function expensesSum() {
+      return this.selectedCategory.expenses.reduce(function (sum, expense) {
+        sum += Number(expense.value);
+        return sum;
+      }, 0);
+    }
+  }),
   methods: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({
     setShowDisplayPanel: 'setShowDisplayPanel',
     saveExpense: 'addExpense'
@@ -51689,8 +51720,24 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         });
         this.expenseInput = undefined;
       }
+    },
+    editBound: function editBound() {
+      this.boundBeingEdited = true;
+    },
+    saveNewBound: function saveNewBound() {
+      this.boundBeingEdited = false;
+      console.log(this.newBound);
     }
-  })
+  }),
+  directives: {
+    'focus': {
+      inserted: function inserted(el, binding, vnode) {
+        el.value = vnode.context.selectedCategoryBound;
+        el.focus();
+        console.log(el.value);
+      }
+    }
+  }
 });
 
 /***/ }),
@@ -51717,7 +51764,48 @@ var render = function() {
     [
       _c("h2", [_vm._v(_vm._s(_vm.selectedCategory.name))]),
       _vm._v(" "),
-      _vm._m(0),
+      _c("div", { staticClass: "balance" }, [
+        !_vm.boundBeingEdited
+          ? _c("span", [
+              _vm._v(
+                _vm._s(_vm.selectedCategoryBound) +
+                  "/" +
+                  _vm._s(_vm.expensesSum)
+              ),
+              _c("button", { on: { click: _vm.editBound } }, [_vm._v("edit")])
+            ])
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.boundBeingEdited
+          ? _c("span", [
+              _c("input", {
+                directives: [
+                  { name: "focus", rawName: "v-focus" },
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.newBound,
+                    expression: "newBound"
+                  }
+                ],
+                attrs: { type: "number" },
+                domProps: { value: _vm.newBound },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.newBound = $event.target.value
+                  }
+                }
+              }),
+              _vm._v("/" + _vm._s(_vm.expensesSum)),
+              _c("button", { on: { click: _vm.saveNewBound } }, [
+                _vm._v("save")
+              ])
+            ])
+          : _vm._e()
+      ]),
       _vm._v(" "),
       _c("span", { staticClass: "unit" }, [_vm._v("euros")]),
       _vm._v(" "),
@@ -51782,16 +51870,7 @@ var render = function() {
     ]
   )
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "balance" }, [
-      _c("span", [_vm._v("100/87.78")])
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {

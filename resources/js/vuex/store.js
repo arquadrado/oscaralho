@@ -28,6 +28,8 @@ const getters = {
 	getSelectedCategoryId: state => state.selectedCategory,
 	getSelectedCategory: state => state.categories.find(c => c.id === state.selectedCategory),
 	shouldDisplayPanel: state => state.showDisplayPanel,
+	getSelectedYear: state => state.selectedYear,
+	getSelectedMonth: state => state.selectedMonth,
 };
 const actions = {
 	addCategory: ({ commit }, category) => {
