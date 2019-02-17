@@ -13,6 +13,21 @@
     font-weight: 900;
     font-size: 35px;
     margin: 17px 0 0 0;
+    
+    input {
+      text-align: right;
+      font-size: 35px; 
+      font-weight: bold;
+      background-color: transparent;
+      border: none;
+      max-width: 100px;
+      &:focus {
+        outline: none;
+      }
+      &:disabled {
+        color: #000000;
+      }
+    }
   }
 
   .add-form {

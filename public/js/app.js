@@ -48399,6 +48399,8 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vuex__ = __webpack_require__(2);
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 
@@ -48487,6 +48489,31 @@ var actions = {
 		var commit = _ref5.commit;
 
 		commit('REMOVE_EXPENSE', expense);
+	},
+	updateCategoryBound: function updateCategoryBound(_ref6, data) {
+		var commit = _ref6.commit;
+
+		var category = state.categories.find(function (c) {
+			return c.id === data.categoryId;
+		});
+
+		if (category) {
+			var bound = category.bounds.find(function (b) {
+				return b.period === data.period;
+			});
+			console.log(category, bound, data, 'hooo');
+
+			if (bound) {
+				var boundPreviousValue = bound.bound_in_cents;
+				commit('UPDATE_BOUND', _extends({}, data, { boundId: bound.id }));
+				axios.post('/update-bound', _extends({}, data, { boundId: bound.id })).then(function (response) {
+					if (response && response.data) {}
+				}).catch(function (error) {
+					console.log(error);
+					commit('UPDATE_BOUND', _extends({}, data, { value: boundPreviousValue }));
+				});
+			}
+		}
 	}
 };
 var mutations = {
@@ -48520,6 +48547,20 @@ var mutations = {
 
 			if (_expense) {
 				category.expenses.splice(category.expenses.indexOf(_expense), 1);
+			}
+		}
+	},
+	'UPDATE_BOUND': function UPDATE_BOUND(state, data) {
+		var category = state.categories.find(function (c) {
+			return c.id === data.categoryId;
+		});
+
+		if (category) {
+			var bound = category.bounds.find(function (b) {
+				return b.period === data.period;
+			});
+			if (bound) {
+				bound.bound_in_cents = data.value;
 			}
 		}
 	}
@@ -51663,6 +51704,11 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
+//
+//
+//
+//
 
 
 
@@ -51670,6 +51716,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
   mounted: function mounted() {
     var _this = this;
 
+    this.newBound = this.selectedCategoryBound;
     setTimeout(function () {
       _this.showContent = true;
     }, 100);
@@ -51689,7 +51736,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     selectedMonth: 'getSelectedMonth'
   }), {
     formattedPeriod: function formattedPeriod() {
-      var month = this.selectedMonth.length === 1 ? '0' + this.selectedMonth : this.selectedMonth;
+      var month = this.selectedMonth.toString().length === 1 ? '0' + (this.selectedMonth + 1) : this.selectedMonth + 1;
       return this.selectedYear + '-' + month;
     },
     selectedCategoryBound: function selectedCategoryBound() {
@@ -51710,7 +51757,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
   }),
   methods: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({
     setShowDisplayPanel: 'setShowDisplayPanel',
-    saveExpense: 'addExpense'
+    saveExpense: 'addExpense',
+    updateCategoryBound: 'updateCategoryBound'
   }), {
     addExpense: function addExpense() {
       if (this.expenseInput > 0) {
@@ -51726,15 +51774,19 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     },
     saveNewBound: function saveNewBound() {
       this.boundBeingEdited = false;
+      this.updateCategoryBound({
+        categoryId: this.selectedCategory.id,
+        period: this.formattedPeriod,
+        value: this.newBound * 100
+      });
       console.log(this.newBound);
     }
   }),
   directives: {
     'focus': {
-      inserted: function inserted(el, binding, vnode) {
-        el.value = vnode.context.selectedCategoryBound;
+      update: function update(el, binding, vnode) {
+        el.style.width = el.value.length * 20 + 'px';
         el.focus();
-        console.log(el.value);
       }
     }
   }
@@ -51765,49 +51817,43 @@ var render = function() {
       _c("h2", [_vm._v(_vm._s(_vm.selectedCategory.name))]),
       _vm._v(" "),
       _c("div", { staticClass: "balance" }, [
-        !_vm.boundBeingEdited
-          ? _c("span", [
-              _vm._v(
-                _vm._s(_vm.selectedCategoryBound) +
-                  "/" +
-                  _vm._s(_vm.expensesSum)
-              ),
-              _c("button", { on: { click: _vm.editBound } }, [_vm._v("edit")])
-            ])
-          : _vm._e(),
-        _vm._v(" "),
-        _vm.boundBeingEdited
-          ? _c("span", [
-              _c("input", {
-                directives: [
-                  { name: "focus", rawName: "v-focus" },
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.newBound,
-                    expression: "newBound"
-                  }
-                ],
-                attrs: { type: "number" },
-                domProps: { value: _vm.newBound },
-                on: {
-                  input: function($event) {
-                    if ($event.target.composing) {
-                      return
-                    }
-                    _vm.newBound = $event.target.value
-                  }
+        _c("span", [
+          _c("input", {
+            directives: [
+              { name: "focus", rawName: "v-focus" },
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.newBound,
+                expression: "newBound"
+              }
+            ],
+            attrs: { disabled: !_vm.boundBeingEdited, type: "number" },
+            domProps: { value: _vm.newBound },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
                 }
-              }),
-              _vm._v("/" + _vm._s(_vm.expensesSum)),
-              _c("button", { on: { click: _vm.saveNewBound } }, [
-                _vm._v("save")
-              ])
-            ])
-          : _vm._e()
+                _vm.newBound = $event.target.value
+              }
+            }
+          }),
+          _vm._v("/" + _vm._s(_vm.expensesSum))
+        ])
       ]),
       _vm._v(" "),
       _c("span", { staticClass: "unit" }, [_vm._v("euros")]),
+      _vm._v(" "),
+      _c("div", { staticClass: "balance-action" }, [
+        !_vm.boundBeingEdited
+          ? _c("button", { on: { click: _vm.editBound } }, [_vm._v("edit")])
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.boundBeingEdited
+          ? _c("button", { on: { click: _vm.saveNewBound } }, [_vm._v("save")])
+          : _vm._e()
+      ]),
       _vm._v(" "),
       _c("div", { staticClass: "add-form" }, [
         _c("input", {

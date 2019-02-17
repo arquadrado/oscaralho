@@ -56,6 +56,30 @@ const actions = {
 	removeExpense: ({ commit }, expense) => {
 		commit('REMOVE_EXPENSE', expense);
 	},
+	updateCategoryBound: ({ commit }, data) => {
+		const category = state.categories.find(c => c.id === data.categoryId);
+		
+		if (category) {
+			const bound = category.bounds.find(b => {
+				return b.period === data.period;
+			})
+			console.log(category, bound, data, 'hooo');
+
+			if (bound) {
+				const boundPreviousValue = bound.bound_in_cents;
+				commit('UPDATE_BOUND', {...data, boundId: bound.id});
+				axios.post('/update-bound', {...data, boundId: bound.id})
+					.then(function (response) {
+						if (response && response.data) {
+						}
+					})
+					.catch(function (error) {
+						console.log(error);
+						commit('UPDATE_BOUND', {...data, value: boundPreviousValue});
+					});
+			}
+		}
+	},
 };
 const mutations = {
 	'ADD_CATEGORY': (state, category) => {
@@ -85,6 +109,18 @@ const mutations = {
 
 			if (expense) {
 				category.expenses.splice(category.expenses.indexOf(expense), 1)
+			}
+		}
+	},
+	'UPDATE_BOUND': (state, data) => {
+		const category = state.categories.find(c => c.id === data.categoryId);
+
+		if (category) {
+			const bound = category.bounds.find(b => {
+				return b.period === data.period;
+			})
+			if (bound) {
+				bound.bound_in_cents = data.value;
 			}
 		}
 	}

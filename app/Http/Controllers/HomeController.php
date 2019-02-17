@@ -64,6 +64,22 @@ class HomeController extends Controller
         ]);
         
         return response()->json(['expense' => $expense], 200);
+    }
 
+    public function updateBound() {
+        
+        $category = Category::find(request()->get('categoryId'));
+
+        if (is_null($category)) {
+
+            return response()->json(['error' => 'no category'], 404);
+        }
+
+        $bound = $category->bounds()->find(request()->get('boundId'));
+        $bound->bound_in_cents = request()->get('value');
+        $bound->save();
+
+        return response()->json(['bound' => $bound], 200);
+        
     }
 }

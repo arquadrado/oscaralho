@@ -2,10 +2,15 @@
     <div class="category-detail" v-show="showContent">
       <h2>{{ selectedCategory.name }}</h2>
       <div class="balance">
-        <span v-if="!boundBeingEdited">{{ selectedCategoryBound }}/{{ expensesSum }}<button @click="editBound">edit</button></span>
-        <span v-if="boundBeingEdited"><input v-focus type="number" v-model="newBound">/{{ expensesSum }}<button @click="saveNewBound">save</button></span>
+        
+        <!-- <span v-if="!boundBeingEdited">{{ selectedCategoryBound }}/{{ expensesSum }}</span> -->
+        <span><input v-focus :disabled="!boundBeingEdited" type="number" v-model="newBound">/{{ expensesSum }}</span>
       </div>
       <span class="unit">euros</span>
+      <div class="balance-action">
+        <button v-if="!boundBeingEdited" @click="editBound">edit</button>
+        <button v-if="boundBeingEdited" @click="saveNewBound">save</button>
+      </div>
 
       <div class="add-form">
         <input type="number" class="add-value" v-model="expenseInput">
@@ -33,6 +38,7 @@
 
     export default {
         mounted() {
+          this.newBound = this.selectedCategoryBound;
           setTimeout(() => {
             this.showContent = true;
           }, 100)
@@ -52,7 +58,7 @@
               selectedMonth: 'getSelectedMonth',
             }),
             formattedPeriod() {
-              const month = this.selectedMonth.length === 1 ? `0${this.selectedMonth}` : this.selectedMonth;
+              const month = (this.selectedMonth).toString().length === 1 ? `0${this.selectedMonth + 1}` : this.selectedMonth + 1;
               return `${this.selectedYear}-${month}`;
             },
             selectedCategoryBound() {
@@ -73,6 +79,7 @@
             ...mapActions({
               setShowDisplayPanel: 'setShowDisplayPanel',
               saveExpense: 'addExpense',
+              updateCategoryBound: 'updateCategoryBound',
             }),
             addExpense() {
               if (this.expenseInput > 0) {
@@ -88,15 +95,19 @@
             },
             saveNewBound() {
               this.boundBeingEdited = false;
+              this.updateCategoryBound({
+                categoryId: this.selectedCategory.id,
+                period: this.formattedPeriod,
+                value: this.newBound * 100,
+              });
               console.log(this.newBound);
             },
         },
         directives: {
           'focus': {
-            inserted: (el, binding, vnode) => {
-              el.value = vnode.context.selectedCategoryBound;
+            update: (el, binding, vnode) => {
+              el.style.width = el.value.length * 20 + 'px';
               el.focus();
-              console.log(el.value);
             }
           }
         }
