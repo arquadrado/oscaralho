@@ -11,10 +11,6 @@
           <div class="category" v-card="category.id"></div>
         </div>
 
-        <div class="grid-cell menu-trigger" :style="{'width': tileWidth + 'px', 'height': tileHeight + 'px'}" >
-          <div class="category"></div>
-        </div>
-
         <div class="category-to-expand"
           :class="{'expand': shouldDisplayPanel}"
           :style="{'width': overCardDimension[0], 'height': overCardDimension[1], 'top': overCardPosition[0] + 'px', 'left': overCardPosition[1] + 'px'}"
@@ -23,12 +19,11 @@
           <component :is="'category-detail'" v-if="shouldDisplayPanel"></component>
         </div>
     </div>
-    <!-- <div id="menu">
-      <div class="menu-item"></div>
-      <div class="menu-item"></div>
-      <div class="menu-item"></div>
-      <div class="menu-item"></div>
-    </div> -->
+    <div id="menu" :class="{'open': menuIsOpen}">
+      <div class="menu-trigger" @click="toggleMenu">
+        <span>2019-02</span>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -45,7 +40,8 @@ export default {
       containerHeight: undefined,
       gridSize: undefined,
       selectedCategoryPosition: [0, 0],
-      justUpdated: undefined
+      justUpdated: undefined,
+      menuIsOpen: false,
     };
   },
   mounted() {
@@ -92,7 +88,7 @@ export default {
       this.selectCategory(categoryId);
     },
     buildGrid() {
-      let i = this.categories.length + 1;
+      let i = this.categories.length;
       this.gridSize = undefined;
       while(!this.gridSize) {
         this.gridSize = this.getGridDimensions(this.findFactors(i));
@@ -131,6 +127,9 @@ export default {
       });
 
       return selectedCombination;
+    },
+    toggleMenu() {
+      this.menuIsOpen = !this.menuIsOpen;
     }
   },
   directives: {

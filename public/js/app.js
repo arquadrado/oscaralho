@@ -51498,11 +51498,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
-//
-//
-//
-//
-//
 
 
 
@@ -51516,7 +51511,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       containerHeight: undefined,
       gridSize: undefined,
       selectedCategoryPosition: [0, 0],
-      justUpdated: undefined
+      justUpdated: undefined,
+      menuIsOpen: false
     };
   },
   mounted: function mounted() {
@@ -51556,7 +51552,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       this.selectCategory(categoryId);
     },
     buildGrid: function buildGrid() {
-      var i = this.categories.length + 1;
+      var i = this.categories.length;
       this.gridSize = undefined;
       while (!this.gridSize) {
         this.gridSize = this.getGridDimensions(this.findFactors(i));
@@ -51595,6 +51591,9 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       });
 
       return selectedCombination;
+    },
+    toggleMenu: function toggleMenu() {
+      this.menuIsOpen = !this.menuIsOpen;
     }
   }),
   directives: {
@@ -51788,6 +51787,11 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         el.style.width = el.value.length * 20 + 'px';
         el.focus();
       }
+    },
+    'focus-expense': {
+      update: function update(el, binding, vnode) {
+        el.focus();
+      }
     }
   }
 });
@@ -51858,6 +51862,7 @@ var render = function() {
       _c("div", { staticClass: "add-form" }, [
         _c("input", {
           directives: [
+            { name: "focus-expense", rawName: "v-focus-expense" },
             {
               name: "model",
               rawName: "v-model",
@@ -51978,18 +51983,6 @@ var render = function() {
         _c(
           "div",
           {
-            staticClass: "grid-cell menu-trigger",
-            style: {
-              width: _vm.tileWidth + "px",
-              height: _vm.tileHeight + "px"
-            }
-          },
-          [_c("div", { staticClass: "category" })]
-        ),
-        _vm._v(" "),
-        _c(
-          "div",
-          {
             staticClass: "category-to-expand",
             class: { expand: _vm.shouldDisplayPanel },
             style: {
@@ -52008,7 +52001,15 @@ var render = function() {
         )
       ],
       2
-    )
+    ),
+    _vm._v(" "),
+    _c("div", { class: { open: _vm.menuIsOpen }, attrs: { id: "menu" } }, [
+      _c(
+        "div",
+        { staticClass: "menu-trigger", on: { click: _vm.toggleMenu } },
+        [_c("span", [_vm._v("2019-02")])]
+      )
+    ])
   ])
 }
 var staticRenderFns = []

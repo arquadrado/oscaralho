@@ -2,7 +2,7 @@
     <div class="category-detail" v-show="showContent">
       <h2>{{ selectedCategory.name }}</h2>
       <div class="balance">
-        
+
         <!-- <span v-if="!boundBeingEdited">{{ selectedCategoryBound }}/{{ expensesSum }}</span> -->
         <span><input v-focus :disabled="!boundBeingEdited" type="number" v-model="newBound">/{{ expensesSum }}</span>
       </div>
@@ -13,7 +13,7 @@
       </div>
 
       <div class="add-form">
-        <input type="number" class="add-value" v-model="expenseInput">
+        <input v-focus-expense type="number" class="add-value" v-model="expenseInput">
       </div>
 
       <div class="add-button" @click="addExpense">
@@ -66,7 +66,7 @@
                 return bound.period === `${this.selectedYear}-0${this.selectedMonth + 1}`;
               });
 
-              return bound ? bound.bound_in_cents / 100 : 0; 
+              return bound ? bound.bound_in_cents / 100 : 0;
             },
             expensesSum() {
               return this.selectedCategory.expenses.reduce((sum, expense) => {
@@ -107,6 +107,11 @@
           'focus': {
             update: (el, binding, vnode) => {
               el.style.width = el.value.length * 20 + 'px';
+              el.focus();
+            }
+          },
+          'focus-expense': {
+            update: (el, binding, vnode) => {
               el.focus();
             }
           }
