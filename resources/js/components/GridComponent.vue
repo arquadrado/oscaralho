@@ -4,7 +4,7 @@
         <div class="grid-cell"
           v-for="category in categories"
           :key="category.id"
-          :style="{'width': tileWidth + 'px', 'height': tileHeight + 'px'}"
+          :style="{'background-color': getCategoryStatusColor(category), 'width': tileWidth + 'px', 'height': tileHeight + 'px'}"
           :class="{'selected': selectedCategory === category.id}"
           @click="clickCategory(category.id)"
         >
@@ -13,7 +13,7 @@
 
         <div class="category-to-expand"
           :class="{'expand': shouldDisplayPanel}"
-          :style="{'width': overCardDimension[0], 'height': overCardDimension[1], 'top': overCardPosition[0] + 'px', 'left': overCardPosition[1] + 'px'}"
+          :style="{'background-color': getCategoryStatusColor(selectedCategoryObject),'width': overCardDimension[0], 'height': overCardDimension[1], 'top': overCardPosition[0] + 'px', 'left': overCardPosition[1] + 'px'}"
         >
           <!-- <category-detail v-if="shouldDisplayPanel"></category-detail> -->
           <component :is="'category-detail'" v-if="shouldDisplayPanel"></component>
@@ -51,7 +51,10 @@ export default {
     ...mapGetters({
       categories: 'getCategories',
       selectedCategory: 'getSelectedCategoryId',
-      shouldDisplayPanel: 'shouldDisplayPanel'
+      selectedCategoryObject: 'getSelectedCategory',
+      shouldDisplayPanel: 'shouldDisplayPanel',
+      selectedYear: 'getSelectedYear',
+      selectedMonth: 'getSelectedMonth',
     }),
     tileWidth() {
       if (this.gridSize) {
@@ -74,7 +77,8 @@ export default {
         this.shouldDisplayPanel ? '100%' : this.tileWidth + 'px',
         this.shouldDisplayPanel ? '100%' : this.tileHeight + 'px',
       ];
-    }
+    },
+    
   },
   methods: {
     ...mapActions({
@@ -127,6 +131,64 @@ export default {
       });
 
       return selectedCombination;
+    },
+    getCategoryStatusColor(category) {
+      const bound = this.getCategoryCurrentBound(category);
+      const sum = this.getCategoryExpensesSum(category)
+      
+      const ratio = bound / sum;
+      
+
+      if (isNaN(ratio)) {
+        return 'rgba(100, 100, 100, 1)';
+      }
+
+      let computedValue;
+
+      if (ratio === 0) {
+        computedValue = 0;
+      }
+
+      const baseValue = 150;
+      computedValue = baseValue * ratio;
+
+      if (computedValue > baseValue * 2) {
+        computedValue = baseValue * 2;
+      } 
+
+      let r = 255;
+      // let g = 255 - (baseValue / 2);
+      let g = 200 - baseValue;
+      let b = 100;
+      
+      if (computedValue > baseValue) {
+          g += baseValue;
+          r -= computedValue - baseValue;
+
+        return `rgba(${r},${g},${b},1)`;
+      }
+
+      g += computedValue;
+      return `rgba(${r},${g},${b},1)`;
+    },
+    getCategoryExpensesSum(category) {
+      if (!category || !category.expenses) {
+        return 0;
+      }
+      return category.expenses.reduce((sum, expense) => {
+                sum += Number(expense.value);
+                return sum;
+              }, 0)
+    },
+    getCategoryCurrentBound(category) {
+      if (!category || !category.bounds) {
+        return 0;
+      }
+      const bound = category.bounds.find((bound) => {
+        return bound.period === `${this.selectedYear}-0${this.selectedMonth + 1}`;
+      });
+
+      return bound ? bound.bound_in_cents / 100 : 0;
     },
     toggleMenu() {
       this.menuIsOpen = !this.menuIsOpen;

@@ -51522,7 +51522,10 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
   computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])({
     categories: 'getCategories',
     selectedCategory: 'getSelectedCategoryId',
-    shouldDisplayPanel: 'shouldDisplayPanel'
+    selectedCategoryObject: 'getSelectedCategory',
+    shouldDisplayPanel: 'shouldDisplayPanel',
+    selectedYear: 'getSelectedYear',
+    selectedMonth: 'getSelectedMonth'
   }), {
     tileWidth: function tileWidth() {
       if (this.gridSize) {
@@ -51591,6 +51594,65 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       });
 
       return selectedCombination;
+    },
+    getCategoryStatusColor: function getCategoryStatusColor(category) {
+      var bound = this.getCategoryCurrentBound(category);
+      var sum = this.getCategoryExpensesSum(category);
+
+      var ratio = bound / sum;
+
+      if (isNaN(ratio)) {
+        return 'rgba(100, 100, 100, 1)';
+      }
+
+      var computedValue = void 0;
+
+      if (ratio === 0) {
+        computedValue = 0;
+      }
+
+      var baseValue = 150;
+      computedValue = baseValue * ratio;
+
+      if (computedValue > baseValue * 2) {
+        computedValue = baseValue * 2;
+      }
+
+      var r = 255;
+      // let g = 255 - (baseValue / 2);
+      var g = 200 - baseValue;
+      var b = 100;
+
+      if (computedValue > baseValue) {
+        g += baseValue;
+        r -= computedValue - baseValue;
+
+        return 'rgba(' + r + ',' + g + ',' + b + ',1)';
+      }
+
+      g += computedValue;
+      return 'rgba(' + r + ',' + g + ',' + b + ',1)';
+    },
+    getCategoryExpensesSum: function getCategoryExpensesSum(category) {
+      if (!category || !category.expenses) {
+        return 0;
+      }
+      return category.expenses.reduce(function (sum, expense) {
+        sum += Number(expense.value);
+        return sum;
+      }, 0);
+    },
+    getCategoryCurrentBound: function getCategoryCurrentBound(category) {
+      var _this = this;
+
+      if (!category || !category.bounds) {
+        return 0;
+      }
+      var bound = category.bounds.find(function (bound) {
+        return bound.period === _this.selectedYear + '-0' + (_this.selectedMonth + 1);
+      });
+
+      return bound ? bound.bound_in_cents / 100 : 0;
     },
     toggleMenu: function toggleMenu() {
       this.menuIsOpen = !this.menuIsOpen;
@@ -51787,11 +51849,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         el.style.width = el.value.length * 20 + 'px';
         el.focus();
       }
-    },
-    'focus-expense': {
-      update: function update(el, binding, vnode) {
-        el.focus();
-      }
     }
   }
 });
@@ -51862,7 +51919,6 @@ var render = function() {
       _c("div", { staticClass: "add-form" }, [
         _c("input", {
           directives: [
-            { name: "focus-expense", rawName: "v-focus-expense" },
             {
               name: "model",
               rawName: "v-model",
@@ -51955,6 +52011,7 @@ var render = function() {
               staticClass: "grid-cell",
               class: { selected: _vm.selectedCategory === category.id },
               style: {
+                "background-color": _vm.getCategoryStatusColor(category),
                 width: _vm.tileWidth + "px",
                 height: _vm.tileHeight + "px"
               },
@@ -51986,6 +52043,9 @@ var render = function() {
             staticClass: "category-to-expand",
             class: { expand: _vm.shouldDisplayPanel },
             style: {
+              "background-color": _vm.getCategoryStatusColor(
+                _vm.selectedCategoryObject
+              ),
               width: _vm.overCardDimension[0],
               height: _vm.overCardDimension[1],
               top: _vm.overCardPosition[0] + "px",

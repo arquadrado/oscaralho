@@ -13,7 +13,7 @@
       </div>
 
       <div class="add-form">
-        <input v-focus-expense type="number" class="add-value" v-model="expenseInput">
+        <input type="number" class="add-value" v-model="expenseInput">
       </div>
 
       <div class="add-button" @click="addExpense">
@@ -107,11 +107,6 @@
           'focus': {
             update: (el, binding, vnode) => {
               el.style.width = el.value.length * 20 + 'px';
-              el.focus();
-            }
-          },
-          'focus-expense': {
-            update: (el, binding, vnode) => {
               el.focus();
             }
           }
