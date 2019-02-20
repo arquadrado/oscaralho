@@ -8,28 +8,31 @@
       </div>
       <span class="unit">euros</span>
       <div class="balance-action">
-        <button v-if="!boundBeingEdited" @click="editBound">edit</button>
-        <button v-if="boundBeingEdited" @click="saveNewBound">save</button>
+        <span class="button" v-if="!boundBeingEdited" @click="editBound"><i class="fa fa-pencil"></i></span>
+        <span class="button" v-if="boundBeingEdited" @click="saveNewBound"><i class="fa fa-save"></i></span>
+      </div>
+
+      <div class="content">
+        <div class="expenses">
+          <div class="expense" v-for="expense in selectedCategory.expenses" :key="expense.id">
+            <div class="expense-value">{{ expense.value }}</div>
+            <div class="expense-actions">
+              <i class="fa fa-pencil"></i>
+              <i class="fa fa-trash-o"></i>
+            </div>
+          </div>
+        </div>
+
       </div>
 
       <div class="add-form">
         <input type="number" class="add-value" v-model="expenseInput">
       </div>
 
-      <div class="add-button" @click="addExpense">
-        <i class="fa fa-plus"></i>
+      <div class="category-actions">
+        <span class="button" :disabled="!expenseInput" @click="addExpense"><i class="fa fa-plus"></i></span>
+        <span class="button close-button" @click="setShowDisplayPanel(false)"><i class="fa fa-close"></i></span>
       </div>
-      <div class="content">
-        <div class="expenses">
-          <div class="expense" v-for="expense in selectedCategory.expenses" :key="expense.id">
-            <div class="expense-value">{{ expense.value }}</div>
-            <div class="expense-notes"></div>
-            <div class="expense-actions"></div>
-          </div>
-        </div>
-
-      </div>
-      <span class="close-button" @click="setShowDisplayPanel(false)">close</span>
     </div>
 </template>
 

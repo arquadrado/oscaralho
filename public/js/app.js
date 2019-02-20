@@ -51770,6 +51770,9 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
+//
+//
 
 
 
@@ -51908,12 +51911,36 @@ var render = function() {
       _vm._v(" "),
       _c("div", { staticClass: "balance-action" }, [
         !_vm.boundBeingEdited
-          ? _c("button", { on: { click: _vm.editBound } }, [_vm._v("edit")])
+          ? _c(
+              "span",
+              { staticClass: "button", on: { click: _vm.editBound } },
+              [_c("i", { staticClass: "fa fa-pencil" })]
+            )
           : _vm._e(),
         _vm._v(" "),
         _vm.boundBeingEdited
-          ? _c("button", { on: { click: _vm.saveNewBound } }, [_vm._v("save")])
+          ? _c(
+              "span",
+              { staticClass: "button", on: { click: _vm.saveNewBound } },
+              [_c("i", { staticClass: "fa fa-save" })]
+            )
           : _vm._e()
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "content" }, [
+        _c(
+          "div",
+          { staticClass: "expenses" },
+          _vm._l(_vm.selectedCategory.expenses, function(expense) {
+            return _c("div", { key: expense.id, staticClass: "expense" }, [
+              _c("div", { staticClass: "expense-value" }, [
+                _vm._v(_vm._s(expense.value))
+              ]),
+              _vm._v(" "),
+              _vm._m(0, true)
+            ])
+          })
+        )
       ]),
       _vm._v(" "),
       _c("div", { staticClass: "add-form" }, [
@@ -51940,44 +51967,45 @@ var render = function() {
         })
       ]),
       _vm._v(" "),
-      _c("div", { staticClass: "add-button", on: { click: _vm.addExpense } }, [
-        _c("i", { staticClass: "fa fa-plus" })
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "content" }, [
+      _c("div", { staticClass: "category-actions" }, [
         _c(
-          "div",
-          { staticClass: "expenses" },
-          _vm._l(_vm.selectedCategory.expenses, function(expense) {
-            return _c("div", { key: expense.id, staticClass: "expense" }, [
-              _c("div", { staticClass: "expense-value" }, [
-                _vm._v(_vm._s(expense.value))
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "expense-notes" }),
-              _vm._v(" "),
-              _c("div", { staticClass: "expense-actions" })
-            ])
-          })
-        )
-      ]),
-      _vm._v(" "),
-      _c(
-        "span",
-        {
-          staticClass: "close-button",
-          on: {
-            click: function($event) {
-              _vm.setShowDisplayPanel(false)
+          "span",
+          {
+            staticClass: "button",
+            attrs: { disabled: !_vm.expenseInput },
+            on: { click: _vm.addExpense }
+          },
+          [_c("i", { staticClass: "fa fa-plus" })]
+        ),
+        _vm._v(" "),
+        _c(
+          "span",
+          {
+            staticClass: "button close-button",
+            on: {
+              click: function($event) {
+                _vm.setShowDisplayPanel(false)
+              }
             }
-          }
-        },
-        [_vm._v("close")]
-      )
+          },
+          [_c("i", { staticClass: "fa fa-close" })]
+        )
+      ])
     ]
   )
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "expense-actions" }, [
+      _c("i", { staticClass: "fa fa-pencil" }),
+      _vm._v(" "),
+      _c("i", { staticClass: "fa fa-trash-o" })
+    ])
+  }
+]
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
