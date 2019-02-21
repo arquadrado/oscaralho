@@ -43,7 +43,7 @@ const actions = {
 	},
 	addExpense: ({ commit }, expenseData) => {
 		axios.post('/add-expense', expenseData)
-			.then(function (response) {
+			.then((response) => {
 			    if (response && response.data) {
 					commit('ADD_EXPENSE', response.data);
 			    }
@@ -55,6 +55,12 @@ const actions = {
 	},
 	removeExpense: ({ commit }, expense) => {
 		commit('REMOVE_EXPENSE', expense);
+		
+		axios.delete('/expense', { data: expense })
+			.then()
+			.catch(() => {
+				commit('ADD_EXPENSE', {expense});
+			})
 	},
 	updateCategoryBound: ({ commit }, data) => {
 		const category = state.categories.find(c => c.id === data.categoryId);
@@ -63,7 +69,6 @@ const actions = {
 			const bound = category.bounds.find(b => {
 				return b.period === data.period;
 			})
-			console.log(category, bound, data, 'hooo');
 
 			if (bound) {
 				const boundPreviousValue = bound.bound_in_cents;
@@ -93,7 +98,6 @@ const mutations = {
 	},
 	'ADD_EXPENSE': (state, data) => {
 		const category = state.categories.find(c => c.id === data.expense.category_id);
-		console.log(category, data);
 		if (category) {
 			category.expenses = [
 				...(category.expenses ? category.expenses : []),
@@ -101,11 +105,10 @@ const mutations = {
 			]
 		}
 	},
-	'REMOVE_EXPENSE': (state, expense) => {
-		const category = state.categories.find(c => c.id === expense.category_id);
-
+	'REMOVE_EXPENSE': (state, exp) => {
+		const category = state.categories.find(c => c.id === exp.category_id);
 		if (category && category.expenses) {
-			const expense = category.expenses.find(e => e.id === expense.id);
+			const expense = category.expenses.find(e => e.id === exp.id);
 
 			if (expense) {
 				category.expenses.splice(category.expenses.indexOf(expense), 1)

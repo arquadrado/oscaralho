@@ -48489,6 +48489,10 @@ var actions = {
 		var commit = _ref5.commit;
 
 		commit('REMOVE_EXPENSE', expense);
+
+		axios.delete('/expense', { data: expense }).then().catch(function () {
+			commit('ADD_EXPENSE', { expense: expense });
+		});
 	},
 	updateCategoryBound: function updateCategoryBound(_ref6, data) {
 		var commit = _ref6.commit;
@@ -48501,7 +48505,6 @@ var actions = {
 			var bound = category.bounds.find(function (b) {
 				return b.period === data.period;
 			});
-			console.log(category, bound, data, 'hooo');
 
 			if (bound) {
 				var boundPreviousValue = bound.bound_in_cents;
@@ -48530,23 +48533,21 @@ var mutations = {
 		var category = state.categories.find(function (c) {
 			return c.id === data.expense.category_id;
 		});
-		console.log(category, data);
 		if (category) {
 			category.expenses = [].concat(_toConsumableArray(category.expenses ? category.expenses : []), [data.expense]);
 		}
 	},
-	'REMOVE_EXPENSE': function REMOVE_EXPENSE(state, expense) {
+	'REMOVE_EXPENSE': function REMOVE_EXPENSE(state, exp) {
 		var category = state.categories.find(function (c) {
-			return c.id === expense.category_id;
+			return c.id === exp.category_id;
 		});
-
 		if (category && category.expenses) {
-			var _expense = category.expenses.find(function (e) {
-				return e.id === _expense.id;
+			var expense = category.expenses.find(function (e) {
+				return e.id === exp.id;
 			});
 
-			if (_expense) {
-				category.expenses.splice(category.expenses.indexOf(_expense), 1);
+			if (expense) {
+				category.expenses.splice(category.expenses.indexOf(expense), 1);
 			}
 		}
 	},
@@ -51498,6 +51499,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
+//
 
 
 
@@ -51773,6 +51776,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
 
 
 
@@ -51822,7 +51826,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
   methods: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({
     setShowDisplayPanel: 'setShowDisplayPanel',
     saveExpense: 'addExpense',
-    updateCategoryBound: 'updateCategoryBound'
+    updateCategoryBound: 'updateCategoryBound',
+    removeExpense: 'removeExpense'
   }), {
     addExpense: function addExpense() {
       if (this.expenseInput > 0) {
@@ -51843,13 +51848,20 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         period: this.formattedPeriod,
         value: this.newBound * 100
       });
-      console.log(this.newBound);
     }
   }),
   directives: {
     'focus': {
+      inserted: function inserted(el, binding, vnode) {
+        el.style.width = el.value.length * 20 + 'px';
+      },
       update: function update(el, binding, vnode) {
         el.style.width = el.value.length * 20 + 'px';
+        el.focus();
+      }
+    },
+    'add-focus': {
+      inserted: function inserted(el, binding, vnode) {
         el.focus();
       }
     }
@@ -51864,148 +51876,139 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    {
-      directives: [
-        {
-          name: "show",
-          rawName: "v-show",
-          value: _vm.showContent,
-          expression: "showContent"
-        }
-      ],
-      staticClass: "category-detail"
-    },
-    [
-      _c("h2", [_vm._v(_vm._s(_vm.selectedCategory.name))]),
-      _vm._v(" "),
-      _c("div", { staticClass: "balance" }, [
-        _c("span", [
+  return _vm.showContent
+    ? _c("div", { staticClass: "category-detail" }, [
+        _c("span", [_c("i", { class: [_vm.selectedCategory.icon] })]),
+        _vm._v(" "),
+        _c("h2", [_vm._v(_vm._s(_vm.selectedCategory.name))]),
+        _vm._v(" "),
+        _c("div", { staticClass: "balance" }, [
+          _c("span", [
+            _c("input", {
+              directives: [
+                { name: "focus", rawName: "v-focus" },
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.newBound,
+                  expression: "newBound"
+                }
+              ],
+              attrs: { disabled: !_vm.boundBeingEdited, type: "number" },
+              domProps: { value: _vm.newBound },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.newBound = $event.target.value
+                }
+              }
+            }),
+            _vm._v("/" + _vm._s(_vm.expensesSum))
+          ])
+        ]),
+        _vm._v(" "),
+        _c("span", { staticClass: "unit" }, [_vm._v("euros")]),
+        _vm._v(" "),
+        _c("div", { staticClass: "balance-action" }, [
+          !_vm.boundBeingEdited
+            ? _c(
+                "span",
+                { staticClass: "button", on: { click: _vm.editBound } },
+                [_c("i", { staticClass: "fa fa-pencil" })]
+              )
+            : _vm._e(),
+          _vm._v(" "),
+          _vm.boundBeingEdited
+            ? _c(
+                "span",
+                { staticClass: "button", on: { click: _vm.saveNewBound } },
+                [_c("i", { staticClass: "fa fa-save" })]
+              )
+            : _vm._e()
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "content" }, [
+          _c(
+            "div",
+            { staticClass: "expenses" },
+            _vm._l(_vm.selectedCategory.expenses, function(expense) {
+              return _c("div", { key: expense.id, staticClass: "expense" }, [
+                _c("div", { staticClass: "expense-value" }, [
+                  _vm._v(_vm._s(expense.value))
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "expense-actions" }, [
+                  _c("i", { staticClass: "fa fa-pencil" }),
+                  _vm._v(" "),
+                  _c("i", {
+                    staticClass: "fa fa-trash-o",
+                    on: {
+                      click: function($event) {
+                        _vm.removeExpense(expense)
+                      }
+                    }
+                  })
+                ])
+              ])
+            })
+          )
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "add-form" }, [
           _c("input", {
             directives: [
-              { name: "focus", rawName: "v-focus" },
+              { name: "add-focus", rawName: "v-add-focus" },
               {
                 name: "model",
                 rawName: "v-model",
-                value: _vm.newBound,
-                expression: "newBound"
+                value: _vm.expenseInput,
+                expression: "expenseInput"
               }
             ],
-            attrs: { disabled: !_vm.boundBeingEdited, type: "number" },
-            domProps: { value: _vm.newBound },
+            staticClass: "add-value",
+            attrs: { type: "number" },
+            domProps: { value: _vm.expenseInput },
             on: {
               input: function($event) {
                 if ($event.target.composing) {
                   return
                 }
-                _vm.newBound = $event.target.value
+                _vm.expenseInput = $event.target.value
               }
             }
-          }),
-          _vm._v("/" + _vm._s(_vm.expensesSum))
-        ])
-      ]),
-      _vm._v(" "),
-      _c("span", { staticClass: "unit" }, [_vm._v("euros")]),
-      _vm._v(" "),
-      _c("div", { staticClass: "balance-action" }, [
-        !_vm.boundBeingEdited
-          ? _c(
-              "span",
-              { staticClass: "button", on: { click: _vm.editBound } },
-              [_c("i", { staticClass: "fa fa-pencil" })]
-            )
-          : _vm._e(),
-        _vm._v(" "),
-        _vm.boundBeingEdited
-          ? _c(
-              "span",
-              { staticClass: "button", on: { click: _vm.saveNewBound } },
-              [_c("i", { staticClass: "fa fa-save" })]
-            )
-          : _vm._e()
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "content" }, [
-        _c(
-          "div",
-          { staticClass: "expenses" },
-          _vm._l(_vm.selectedCategory.expenses, function(expense) {
-            return _c("div", { key: expense.id, staticClass: "expense" }, [
-              _c("div", { staticClass: "expense-value" }, [
-                _vm._v(_vm._s(expense.value))
-              ]),
-              _vm._v(" "),
-              _vm._m(0, true)
-            ])
           })
-        )
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "add-form" }, [
-        _c("input", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.expenseInput,
-              expression: "expenseInput"
-            }
-          ],
-          staticClass: "add-value",
-          attrs: { type: "number" },
-          domProps: { value: _vm.expenseInput },
-          on: {
-            input: function($event) {
-              if ($event.target.composing) {
-                return
-              }
-              _vm.expenseInput = $event.target.value
-            }
-          }
-        })
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "category-actions" }, [
-        _c(
-          "span",
-          {
-            staticClass: "button",
-            attrs: { disabled: !_vm.expenseInput },
-            on: { click: _vm.addExpense }
-          },
-          [_c("i", { staticClass: "fa fa-plus" })]
-        ),
+        ]),
         _vm._v(" "),
-        _c(
-          "span",
-          {
-            staticClass: "button close-button",
-            on: {
-              click: function($event) {
-                _vm.setShowDisplayPanel(false)
+        _c("div", { staticClass: "category-actions" }, [
+          _c(
+            "span",
+            {
+              staticClass: "button",
+              class: { disabled: !_vm.expenseInput },
+              on: { click: _vm.addExpense }
+            },
+            [_c("i", { staticClass: "fa fa-plus" })]
+          ),
+          _vm._v(" "),
+          _c(
+            "span",
+            {
+              staticClass: "button close-button",
+              on: {
+                click: function($event) {
+                  _vm.setShowDisplayPanel(false)
+                }
               }
-            }
-          },
-          [_c("i", { staticClass: "fa fa-close" })]
-        )
+            },
+            [_c("i", { staticClass: "fa fa-close" })]
+          )
+        ])
       ])
-    ]
-  )
+    : _vm._e()
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "expense-actions" }, [
-      _c("i", { staticClass: "fa fa-pencil" }),
-      _vm._v(" "),
-      _c("i", { staticClass: "fa fa-trash-o" })
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
@@ -52050,17 +52053,21 @@ var render = function() {
               }
             },
             [
-              _c("div", {
-                directives: [
-                  {
-                    name: "card",
-                    rawName: "v-card",
-                    value: category.id,
-                    expression: "category.id"
-                  }
-                ],
-                staticClass: "category"
-              })
+              _c(
+                "div",
+                {
+                  directives: [
+                    {
+                      name: "card",
+                      rawName: "v-card",
+                      value: category.id,
+                      expression: "category.id"
+                    }
+                  ],
+                  staticClass: "category"
+                },
+                [_c("i", { class: [category.icon] })]
+              )
             ]
           )
         }),

@@ -8,7 +8,9 @@
           :class="{'selected': selectedCategory === category.id}"
           @click="clickCategory(category.id)"
         >
-          <div class="category" v-card="category.id"></div>
+          <div class="category" v-card="category.id">
+            <i :class="[category.icon]"></i>
+          </div>
         </div>
 
         <div class="category-to-expand"

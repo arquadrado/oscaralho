@@ -17,51 +17,61 @@ class CategoriesTableSeeder extends Seeder
                 'user_id' => 1,
                 'name' => 'Food',
                 'expense' => 1,
+                'icon' => 'fa fa-apple'
             ],
             [
                 'user_id' => 1,
                 'name' => 'Restaurants',
                 'expense' => 1,
+                'icon' => 'fa fa-cutlery'
             ],
             [
                 'user_id' => 1,
                 'name' => 'Communications',
                 'expense' => 1,
+                'icon' => 'fa fa-connectdevelop'
             ],
             [
                 'user_id' => 1,
                 'name' => 'Leisure',
                 'expense' => 1,
+                'icon' => 'fa fa-leaf'
             ],
             [
                 'user_id' => 1,
                 'name' => 'Health',
                 'expense' => 1,
+                'icon' => 'fa fa-medkit'
             ],
             [
                 'user_id' => 1,
                 'name' => 'Entertainment',
                 'expense' => 1,
+                'icon' => 'fa fa-television'
             ],
             [
                 'user_id' => 1,
                 'name' => 'Tools',
                 'expense' => 1,
+                'icon' => 'fa fa-scissors'
             ],
             [
                 'user_id' => 1,
                 'name' => 'Sport',
                 'expense' => 1,
+                'icon' => 'fa fa-futbol-o'
             ],
             [
                 'user_id' => 1,
                 'name' => 'Commodities',
                 'expense' => 1,
+                'icon' => 'fa fa-meh-o'
             ],
             [
                 'user_id' => 1,
                 'name' => 'Other',
                 'expense' => 1,
+                'icon' => 'fa fa-square'
             ],
         ];
 

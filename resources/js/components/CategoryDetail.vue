@@ -1,5 +1,6 @@
 <template>
-    <div class="category-detail" v-show="showContent">
+    <div class="category-detail" v-if="showContent">
+      <span><i :class="[selectedCategory.icon]"></i></span>
       <h2>{{ selectedCategory.name }}</h2>
       <div class="balance">
 
@@ -18,7 +19,7 @@
             <div class="expense-value">{{ expense.value }}</div>
             <div class="expense-actions">
               <i class="fa fa-pencil"></i>
-              <i class="fa fa-trash-o"></i>
+              <i class="fa fa-trash-o" @click="removeExpense(expense)"></i>
             </div>
           </div>
         </div>
@@ -26,11 +27,11 @@
       </div>
 
       <div class="add-form">
-        <input type="number" class="add-value" v-model="expenseInput">
+        <input v-add-focus type="number" class="add-value" v-model="expenseInput">
       </div>
 
       <div class="category-actions">
-        <span class="button" :disabled="!expenseInput" @click="addExpense"><i class="fa fa-plus"></i></span>
+        <span class="button" :class="{'disabled': !expenseInput}" @click="addExpense"><i class="fa fa-plus"></i></span>
         <span class="button close-button" @click="setShowDisplayPanel(false)"><i class="fa fa-close"></i></span>
       </div>
     </div>
@@ -83,6 +84,7 @@
               setShowDisplayPanel: 'setShowDisplayPanel',
               saveExpense: 'addExpense',
               updateCategoryBound: 'updateCategoryBound',
+              removeExpense: 'removeExpense',
             }),
             addExpense() {
               if (this.expenseInput > 0) {
@@ -103,13 +105,20 @@
                 period: this.formattedPeriod,
                 value: this.newBound * 100,
               });
-              console.log(this.newBound);
             },
         },
         directives: {
           'focus': {
+            inserted: (el, binding, vnode) => {
+              el.style.width = el.value.length * 20 + 'px';
+            },
             update: (el, binding, vnode) => {
               el.style.width = el.value.length * 20 + 'px';
+              el.focus();
+            },
+          },
+          'add-focus': {
+            inserted: (el, binding, vnode) => {
               el.focus();
             }
           }

@@ -19,4 +19,5 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 Route::post('/add-expense', 'HomeController@addExpense')->name('add-expense');
+Route::delete('/expense', 'HomeController@deleteExpense')->name('delete-expense');
 Route::post('/update-bound', 'HomeController@updateBound')->name('update-bound');

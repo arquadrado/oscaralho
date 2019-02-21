@@ -66,6 +66,13 @@ class HomeController extends Controller
         return response()->json(['expense' => $expense], 200);
     }
 
+    public function deleteExpense() {
+        $expense = Expense::find(request()->get('id'));
+        $expense->delete();
+        
+        return response()->json(['message' => 'Expense was deleted'], 200);
+    }
+
     public function updateBound() {
         
         $category = Category::find(request()->get('categoryId'));
