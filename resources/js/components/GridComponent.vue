@@ -1,5 +1,4 @@
 <template>
-  <div class="container">
     <div id="grid" v-grid>
         <div class="grid-cell"
           v-for="category in categories"
@@ -17,16 +16,9 @@
           :class="{'expand': shouldDisplayPanel}"
           :style="{'background-color': getCategoryStatusColor(selectedCategoryObject),'width': overCardDimension[0], 'height': overCardDimension[1], 'top': overCardPosition[0] + 'px', 'left': overCardPosition[1] + 'px'}"
         >
-          <!-- <category-detail v-if="shouldDisplayPanel"></category-detail> -->
           <component :is="'category-detail'" v-if="shouldDisplayPanel"></component>
         </div>
     </div>
-    <div id="menu" :class="{'open': menuIsOpen}">
-      <div class="menu-trigger" @click="toggleMenu">
-        <span>2019-02</span>
-      </div>
-    </div>
-  </div>
 </template>
 
 <script>
@@ -42,8 +34,6 @@ export default {
       containerHeight: undefined,
       gridSize: undefined,
       selectedCategoryPosition: [0, 0],
-      justUpdated: undefined,
-      menuIsOpen: false,
     };
   },
   mounted() {
@@ -54,6 +44,7 @@ export default {
       categories: 'getCategories',
       selectedCategory: 'getSelectedCategoryId',
       selectedCategoryObject: 'getSelectedCategory',
+      justUpdated: 'isJustUpdated',
       shouldDisplayPanel: 'shouldDisplayPanel',
       selectedYear: 'getSelectedYear',
       selectedMonth: 'getSelectedMonth',
@@ -80,16 +71,17 @@ export default {
         this.shouldDisplayPanel ? '100%' : this.tileHeight + 'px',
       ];
     },
-    
+
   },
   methods: {
     ...mapActions({
       selectCategory: 'selectCategory',
-      setShowDisplayPanel: 'setShowDisplayPanel'
+      setShowDisplayPanel: 'setShowDisplayPanel',
+      setJustUpdated: 'setJustUpdated'
     }),
     clickCategory(categoryId) {
-      if (this.selectedCategory === categoryId) {
-        this.justUpdated = undefined;
+      if (this.justUpdated === categoryId) {
+        this.setJustUpdated();
       }
       this.selectCategory(categoryId);
     },
@@ -137,9 +129,9 @@ export default {
     getCategoryStatusColor(category) {
       const bound = this.getCategoryCurrentBound(category);
       const sum = this.getCategoryExpensesSum(category)
-      
+
       const ratio = bound / sum;
-      
+
 
       if (isNaN(ratio)) {
         return 'rgba(100, 100, 100, 1)';
@@ -156,13 +148,13 @@ export default {
 
       if (computedValue > baseValue * 2) {
         computedValue = baseValue * 2;
-      } 
+      }
 
       let r = 255;
       // let g = 255 - (baseValue / 2);
       let g = 200 - baseValue;
       let b = 100;
-      
+
       if (computedValue > baseValue) {
           g += baseValue;
           r -= computedValue - baseValue;
@@ -192,9 +184,6 @@ export default {
 
       return bound ? bound.bound_in_cents / 100 : 0;
     },
-    toggleMenu() {
-      this.menuIsOpen = !this.menuIsOpen;
-    }
   },
   directives: {
     grid: {
@@ -205,9 +194,10 @@ export default {
     },
     card: {
       update(el, binding, vnode) {
+
         if (vnode.context.selectedCategory === binding.value && vnode.context.justUpdated !== binding.value) {
           vnode.context.selectedCategoryPosition = [el.offsetTop, el.offsetLeft];
-          vnode.context.justUpdated = binding.value;
+          vnode.context.setJustUpdated(binding.value);
           setTimeout(() => {
             vnode.context.setShowDisplayPanel(true);
           }, 100);

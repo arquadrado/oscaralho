@@ -32,7 +32,7 @@
 
       <div class="category-actions">
         <span class="button" :class="{'disabled': !expenseInput}" @click="addExpense"><i class="fa fa-plus"></i></span>
-        <span class="button close-button" @click="setShowDisplayPanel(false)"><i class="fa fa-close"></i></span>
+        <span class="button close-button" @click="close"><i class="fa fa-close"></i></span>
       </div>
     </div>
 </template>
@@ -106,6 +106,9 @@
                 value: this.newBound * 100,
               });
             },
+            close() {
+              this.setShowDisplayPanel(false);
+            }
         },
         directives: {
           'focus': {

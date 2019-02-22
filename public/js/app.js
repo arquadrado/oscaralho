@@ -26045,10 +26045,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vuex_store_js__ = __webpack_require__(43);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__router_js__ = __webpack_require__(44);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_vuex__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_HomeComponent__ = __webpack_require__(14);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_HomeComponent___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__components_HomeComponent__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_GridComponent__ = __webpack_require__(15);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_GridComponent___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__components_GridComponent__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_main_container_component__ = __webpack_require__(58);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_main_container_component___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__components_main_container_component__);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 /**
@@ -26068,7 +26066,6 @@ window.Vue = __webpack_require__(4);
 
 
 
-
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -26079,8 +26076,7 @@ var app = new Vue({
   el: '#app',
   router: __WEBPACK_IMPORTED_MODULE_1__router_js__["a" /* default */],
   components: {
-    'home': __WEBPACK_IMPORTED_MODULE_3__components_HomeComponent___default.a,
-    'grid': __WEBPACK_IMPORTED_MODULE_4__components_GridComponent___default.a
+    'main-container': __WEBPACK_IMPORTED_MODULE_3__components_main_container_component___default.a
   },
   computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_2_vuex__["c" /* mapGetters */])({})),
   store: __WEBPACK_IMPORTED_MODULE_0__vuex_store_js__["a" /* default */]
@@ -48426,7 +48422,8 @@ var state = {
 	selectedCategory: undefined,
 	showDisplayPanel: false,
 	selectedYear: new Date(Date.now()).getFullYear(),
-	selectedMonth: new Date(Date.now()).getMonth()
+	selectedMonth: new Date(Date.now()).getMonth(),
+	justUpdated: undefined
 };
 var getters = {
 	isMobilePlatform: function isMobilePlatform(state) {
@@ -48454,6 +48451,9 @@ var getters = {
 	},
 	getSelectedMonth: function getSelectedMonth(state) {
 		return state.selectedMonth;
+	},
+	isJustUpdated: function isJustUpdated(state) {
+		return state.justUpdated;
 	}
 };
 var actions = {
@@ -48466,15 +48466,20 @@ var actions = {
 		var commit = _ref2.commit,
 		    state = _ref2.state;
 
-		commit('SELECT_CATEGORY', state.selectedCategory === categoryId ? undefined : categoryId);
+		commit('SELECT_CATEGORY', categoryId);
 	},
-	setShowDisplayPanel: function setShowDisplayPanel(_ref3, value) {
+	setJustUpdated: function setJustUpdated(_ref3, identifier) {
 		var commit = _ref3.commit;
+
+		commit('SET_JUST_UPDATED', identifier);
+	},
+	setShowDisplayPanel: function setShowDisplayPanel(_ref4, value) {
+		var commit = _ref4.commit;
 
 		commit('SET_SHOW_DISPLAY_PANEL', value);
 	},
-	addExpense: function addExpense(_ref4, expenseData) {
-		var commit = _ref4.commit;
+	addExpense: function addExpense(_ref5, expenseData) {
+		var commit = _ref5.commit;
 
 		axios.post('/add-expense', expenseData).then(function (response) {
 			if (response && response.data) {
@@ -48485,8 +48490,8 @@ var actions = {
 			commit('REMOVE_EXPENSE', expenseData);
 		});
 	},
-	removeExpense: function removeExpense(_ref5, expense) {
-		var commit = _ref5.commit;
+	removeExpense: function removeExpense(_ref6, expense) {
+		var commit = _ref6.commit;
 
 		commit('REMOVE_EXPENSE', expense);
 
@@ -48494,8 +48499,8 @@ var actions = {
 			commit('ADD_EXPENSE', { expense: expense });
 		});
 	},
-	updateCategoryBound: function updateCategoryBound(_ref6, data) {
-		var commit = _ref6.commit;
+	updateCategoryBound: function updateCategoryBound(_ref7, data) {
+		var commit = _ref7.commit;
 
 		var category = state.categories.find(function (c) {
 			return c.id === data.categoryId;
@@ -48525,6 +48530,9 @@ var mutations = {
 	},
 	'SELECT_CATEGORY': function SELECT_CATEGORY(state, categoryId) {
 		state.selectedCategory = categoryId;
+	},
+	'SET_JUST_UPDATED': function SET_JUST_UPDATED(state, identifier) {
+		state.justUpdated = identifier;
 	},
 	'SET_SHOW_DISPLAY_PANEL': function SET_SHOW_DISPLAY_PANEL(state, value) {
 		state.showDisplayPanel = value;
@@ -51493,14 +51501,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 
@@ -51513,9 +51513,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       containerWidth: undefined,
       containerHeight: undefined,
       gridSize: undefined,
-      selectedCategoryPosition: [0, 0],
-      justUpdated: undefined,
-      menuIsOpen: false
+      selectedCategoryPosition: [0, 0]
     };
   },
   mounted: function mounted() {
@@ -51526,6 +51524,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     categories: 'getCategories',
     selectedCategory: 'getSelectedCategoryId',
     selectedCategoryObject: 'getSelectedCategory',
+    justUpdated: 'isJustUpdated',
     shouldDisplayPanel: 'shouldDisplayPanel',
     selectedYear: 'getSelectedYear',
     selectedMonth: 'getSelectedMonth'
@@ -51549,11 +51548,12 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
   }),
   methods: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({
     selectCategory: 'selectCategory',
-    setShowDisplayPanel: 'setShowDisplayPanel'
+    setShowDisplayPanel: 'setShowDisplayPanel',
+    setJustUpdated: 'setJustUpdated'
   }), {
     clickCategory: function clickCategory(categoryId) {
-      if (this.selectedCategory === categoryId) {
-        this.justUpdated = undefined;
+      if (this.justUpdated === categoryId) {
+        this.setJustUpdated();
       }
       this.selectCategory(categoryId);
     },
@@ -51656,9 +51656,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       });
 
       return bound ? bound.bound_in_cents / 100 : 0;
-    },
-    toggleMenu: function toggleMenu() {
-      this.menuIsOpen = !this.menuIsOpen;
     }
   }),
   directives: {
@@ -51670,9 +51667,10 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     },
     card: {
       update: function update(el, binding, vnode) {
+
         if (vnode.context.selectedCategory === binding.value && vnode.context.justUpdated !== binding.value) {
           vnode.context.selectedCategoryPosition = [el.offsetTop, el.offsetLeft];
-          vnode.context.justUpdated = binding.value;
+          vnode.context.setJustUpdated(binding.value);
           setTimeout(function () {
             vnode.context.setShowDisplayPanel(true);
           }, 100);
@@ -51848,6 +51846,9 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         period: this.formattedPeriod,
         value: this.newBound * 100
       });
+    },
+    close: function close() {
+      this.setShowDisplayPanel(false);
     }
   }),
   directives: {
@@ -51994,14 +51995,7 @@ var render = function() {
           _vm._v(" "),
           _c(
             "span",
-            {
-              staticClass: "button close-button",
-              on: {
-                click: function($event) {
-                  _vm.setShowDisplayPanel(false)
-                }
-              }
-            },
+            { staticClass: "button close-button", on: { click: _vm.close } },
             [_c("i", { staticClass: "fa fa-close" })]
           )
         ])
@@ -52026,86 +52020,76 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "container" }, [
-    _c(
-      "div",
-      {
-        directives: [{ name: "grid", rawName: "v-grid" }],
-        attrs: { id: "grid" }
-      },
-      [
-        _vm._l(_vm.categories, function(category) {
-          return _c(
-            "div",
-            {
-              key: category.id,
-              staticClass: "grid-cell",
-              class: { selected: _vm.selectedCategory === category.id },
-              style: {
-                "background-color": _vm.getCategoryStatusColor(category),
-                width: _vm.tileWidth + "px",
-                height: _vm.tileHeight + "px"
-              },
-              on: {
-                click: function($event) {
-                  _vm.clickCategory(category.id)
-                }
-              }
-            },
-            [
-              _c(
-                "div",
-                {
-                  directives: [
-                    {
-                      name: "card",
-                      rawName: "v-card",
-                      value: category.id,
-                      expression: "category.id"
-                    }
-                  ],
-                  staticClass: "category"
-                },
-                [_c("i", { class: [category.icon] })]
-              )
-            ]
-          )
-        }),
-        _vm._v(" "),
-        _c(
+  return _c(
+    "div",
+    {
+      directives: [{ name: "grid", rawName: "v-grid" }],
+      attrs: { id: "grid" }
+    },
+    [
+      _vm._l(_vm.categories, function(category) {
+        return _c(
           "div",
           {
-            staticClass: "category-to-expand",
-            class: { expand: _vm.shouldDisplayPanel },
+            key: category.id,
+            staticClass: "grid-cell",
+            class: { selected: _vm.selectedCategory === category.id },
             style: {
-              "background-color": _vm.getCategoryStatusColor(
-                _vm.selectedCategoryObject
-              ),
-              width: _vm.overCardDimension[0],
-              height: _vm.overCardDimension[1],
-              top: _vm.overCardPosition[0] + "px",
-              left: _vm.overCardPosition[1] + "px"
+              "background-color": _vm.getCategoryStatusColor(category),
+              width: _vm.tileWidth + "px",
+              height: _vm.tileHeight + "px"
+            },
+            on: {
+              click: function($event) {
+                _vm.clickCategory(category.id)
+              }
             }
           },
           [
-            _vm.shouldDisplayPanel
-              ? _c("category-detail", { tag: "component" })
-              : _vm._e()
-          ],
-          1
+            _c(
+              "div",
+              {
+                directives: [
+                  {
+                    name: "card",
+                    rawName: "v-card",
+                    value: category.id,
+                    expression: "category.id"
+                  }
+                ],
+                staticClass: "category"
+              },
+              [_c("i", { class: [category.icon] })]
+            )
+          ]
         )
-      ],
-      2
-    ),
-    _vm._v(" "),
-    _c("div", { class: { open: _vm.menuIsOpen }, attrs: { id: "menu" } }, [
+      }),
+      _vm._v(" "),
       _c(
         "div",
-        { staticClass: "menu-trigger", on: { click: _vm.toggleMenu } },
-        [_c("span", [_vm._v("2019-02")])]
+        {
+          staticClass: "category-to-expand",
+          class: { expand: _vm.shouldDisplayPanel },
+          style: {
+            "background-color": _vm.getCategoryStatusColor(
+              _vm.selectedCategoryObject
+            ),
+            width: _vm.overCardDimension[0],
+            height: _vm.overCardDimension[1],
+            top: _vm.overCardPosition[0] + "px",
+            left: _vm.overCardPosition[1] + "px"
+          }
+        },
+        [
+          _vm.shouldDisplayPanel
+            ? _c("category-detail", { tag: "component" })
+            : _vm._e()
+        ],
+        1
       )
-    ])
-  ])
+    ],
+    2
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -52122,6 +52106,216 @@ if (false) {
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 54 */,
+/* 55 */,
+/* 56 */,
+/* 57 */,
+/* 58 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(5)
+/* script */
+var __vue_script__ = __webpack_require__(59)
+/* template */
+var __vue_template__ = __webpack_require__(60)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/main-container.component.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-28c5a9f2", Component.options)
+  } else {
+    hotAPI.reload("data-v-28c5a9f2", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 59 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__GridComponent_vue__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__GridComponent_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__GridComponent_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__menu_component_vue__ = __webpack_require__(61);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__menu_component_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__menu_component_vue__);
+//
+//
+//
+//
+//
+//
+//
+
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  components: {
+    'grid': __WEBPACK_IMPORTED_MODULE_0__GridComponent_vue___default.a,
+    'app-menu': __WEBPACK_IMPORTED_MODULE_1__menu_component_vue___default.a
+  },
+  data: function data() {
+    return {};
+  },
+
+  methods: {}
+});
+
+/***/ }),
+/* 60 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    { staticClass: "container" },
+    [_c("grid"), _vm._v(" "), _c("app-menu")],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-28c5a9f2", module.exports)
+  }
+}
+
+/***/ }),
+/* 61 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(5)
+/* script */
+var __vue_script__ = __webpack_require__(62)
+/* template */
+var __vue_template__ = __webpack_require__(63)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/menu.component.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-37840339", Component.options)
+  } else {
+    hotAPI.reload("data-v-37840339", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 62 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      menuIsOpen: false
+    };
+  },
+
+  methods: {
+    toggleMenu: function toggleMenu() {
+      this.menuIsOpen = !this.menuIsOpen;
+    }
+  }
+});
+
+/***/ }),
+/* 63 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { class: { open: _vm.menuIsOpen }, attrs: { id: "menu" } }, [
+    _c("div", { staticClass: "menu-trigger", on: { click: _vm.toggleMenu } }, [
+      _c("span", [_vm._v("2019-02")])
+    ])
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-37840339", module.exports)
+  }
+}
 
 /***/ })
 /******/ ]);

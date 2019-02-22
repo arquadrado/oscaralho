@@ -14,8 +14,7 @@ import router from './router.js';
 
 import { mapGetters, mapActions } from 'vuex';
 
-import HomeComponent from './components/HomeComponent';
-import GridComponent from './components/GridComponent';
+import MainContainer from './components/main-container.component';
 
 
 /**
@@ -28,8 +27,7 @@ const app = new Vue({
     el: '#app',
     router,
     components: {
-        'home': HomeComponent,
-        'grid': GridComponent
+        'main-container': MainContainer,
     },
     computed: {
     	...mapGetters({

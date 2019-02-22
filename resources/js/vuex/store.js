@@ -2,8 +2,8 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 Vue.use(Vuex);
 
-const user = handover && handover.user ? handover.user : []; 
-const categories = handover && handover.categories ? handover.categories : []; 
+const user = handover && handover.user ? handover.user : [];
+const categories = handover && handover.categories ? handover.categories : [];
 
 window.mobilePlatform = () => {
   var check = false;
@@ -19,7 +19,8 @@ const state = {
 	selectedCategory: undefined,
 	showDisplayPanel: false,
 	selectedYear: new Date(Date.now()).getFullYear(),
-	selectedMonth: new Date(Date.now()).getMonth(),
+  selectedMonth: new Date(Date.now()).getMonth(),
+  justUpdated: undefined,
 };
 const getters = {
 	isMobilePlatform: state => state.mobilePlatform,
@@ -29,15 +30,19 @@ const getters = {
 	getSelectedCategory: state => state.categories.find(c => c.id === state.selectedCategory),
 	shouldDisplayPanel: state => state.showDisplayPanel,
 	getSelectedYear: state => state.selectedYear,
-	getSelectedMonth: state => state.selectedMonth,
+  getSelectedMonth: state => state.selectedMonth,
+  isJustUpdated: state => state.justUpdated,
 };
 const actions = {
 	addCategory: ({ commit }, category) => {
 		commit('ADD_CATEGORY', category);
 	},
 	selectCategory: ({ commit, state }, categoryId) => {
-		commit('SELECT_CATEGORY', state.selectedCategory === categoryId ? undefined : categoryId);
-	},
+		commit('SELECT_CATEGORY', categoryId);
+  },
+  setJustUpdated: ({ commit }, identifier) => {
+    commit('SET_JUST_UPDATED', identifier);
+  },
 	setShowDisplayPanel: ({ commit }, value) => {
 		commit('SET_SHOW_DISPLAY_PANEL', value);
 	},
@@ -55,7 +60,7 @@ const actions = {
 	},
 	removeExpense: ({ commit }, expense) => {
 		commit('REMOVE_EXPENSE', expense);
-		
+
 		axios.delete('/expense', { data: expense })
 			.then()
 			.catch(() => {
@@ -64,7 +69,7 @@ const actions = {
 	},
 	updateCategoryBound: ({ commit }, data) => {
 		const category = state.categories.find(c => c.id === data.categoryId);
-		
+
 		if (category) {
 			const bound = category.bounds.find(b => {
 				return b.period === data.period;
@@ -92,7 +97,10 @@ const mutations = {
 	},
 	'SELECT_CATEGORY': (state, categoryId) => {
 		state.selectedCategory = categoryId;
-	},
+  },
+  'SET_JUST_UPDATED': (state, identifier) => {
+    state.justUpdated = identifier;
+  },
 	'SET_SHOW_DISPLAY_PANEL': (state, value) => {
 		state.showDisplayPanel = value;
 	},

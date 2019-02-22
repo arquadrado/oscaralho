@@ -4,10 +4,11 @@
 
 // Variables
 @import 'variables';
-@import './components/home';
+@import './miscellaneous/buttons';
+@import './components/main-container';
+@import './components/menu';
 @import './components/grid';
 @import './components/category-detail';
-@import './miscellaneous/buttons';
 
 body {
   margin: 0;
