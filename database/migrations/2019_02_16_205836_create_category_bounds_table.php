@@ -17,7 +17,8 @@ class CreateCategoryBoundsTable extends Migration
             $table->increments('id');
             $table->integer('category_id')->unsigned();
             $table->integer('bound_in_cents');
-            $table->string('period');
+            $table->string('year');
+            $table->string('month');
             $table->timestamps();
 
             $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');

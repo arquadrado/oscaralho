@@ -1,24 +1,30 @@
 <template>
   <div class="container">
-    <grid></grid>
+    <component :is="currentView"></component>
     <app-menu></app-menu>
   </div>
 </template>
 
 <script>
-import GridComponent from './GridComponent.vue';
+import { mapGetters, mapActions } from 'vuex';
+import GridMonthComponent from './grid-month.component.vue';
+import GridYearComponent from './grid-year.component.vue';
 import MenuComponent from './menu.component.vue';
 
 export default {
   components: {
-    'grid': GridComponent,
-    'app-menu': MenuComponent,
+    'grid-month': GridMonthComponent,
+    'grid-year': GridYearComponent,
+    'app-menu': MenuComponent
   },
   data() {
-    return {
-    }
+    return {};
   },
-  methods: {
-  }
-}
+  computed: {
+    ...mapGetters({
+      currentView: 'getCurrentView'
+    })
+  },
+  methods: {}
+};
 </script>

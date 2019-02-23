@@ -35,20 +35,38 @@ class HomeController extends Controller
         
         $token = csrf_token();
 
+        // $categories = Category::limit(3)->get();
         $categories = Category::all();
 
         foreach($categories as $category) {
             $bound = $category->bounds()
-                                ->where('period', Carbon::now()->format('Y-m'))
+                                ->where('year', Carbon::now()->format('Y'))
+                                ->where('month', Carbon::now()->format('m'))
                                 ->first();
             if (is_null($bound)) {
                 $bound = CategoryBound::create([
                     'category_id' => $category->id,
                     'bound_in_cents' => 0,
-                    'period' => Carbon::now()->format('Y-m'),
+                    'year' => Carbon::now()->format('Y'),
+                    'month' => Carbon::now()->format('m'),
                 ]);
             }
         }
+        
+        foreach($categories as $category) {
+          $bound = $category->bounds()
+                              ->where('year', '2019')
+                              ->where('month', '01')
+                              ->first();
+          if (is_null($bound)) {
+              $bound = CategoryBound::create([
+                  'category_id' => $category->id,
+                  'bound_in_cents' => 0,
+                  'year' => '2019',
+                  'month' => '01',
+              ]);
+          }
+      }
 
         return view('home', [
             'user' => $user,

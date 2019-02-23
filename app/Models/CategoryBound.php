@@ -15,7 +15,7 @@ class CategoryBound extends Model
      *
      * @var array
      */
-    protected $fillable = ['category_id', 'bound_in_cents', 'period'];
+    protected $fillable = ['category_id', 'bound_in_cents', 'year', 'month'];
 
     /**
      * The attributes that should be hidden for arrays.

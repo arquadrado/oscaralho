@@ -15,6 +15,12 @@ class CategoriesTableSeeder extends Seeder
         $categories = [
             [
                 'user_id' => 1,
+                'name' => 'Utilities',
+                'expense' => 1,
+                'icon' => 'fa fa-battery-quarter'
+            ],
+            [
+                'user_id' => 1,
                 'name' => 'Food',
                 'expense' => 1,
                 'icon' => 'fa fa-apple'

@@ -2,26 +2,22 @@
 
 #grid {
     position: relative;
-    width: 100%;
+    width: (100%);
     // height: 100vh;
-    height: calc(100vh - 40px);
+    height: calc(100vh - 54px);
 
     .grid-cell {
-        width: 50px;
-        height: 50px;
-        outline: 7px #ffffff solid;
-        background-color: crimson;
+        position: relative;
         float: left;
         transition: background-color 100ms ease-out;
-        &.selected {
-            transition: background-color 100ms ease-in;
-            background-color: palegoldenrod;
-        }
-
+        display: flex;
+        justify-content: center;
+        align-items: center;
         .category {
+            position: absolute;
             background-color: transparent;
-            width: 100%;
-            height: 100%;
+            width: calc(100% - 14px);
+            height: calc(100% - 14px);
             display: flex;
             justify-content: center;
             align-items: center;

@@ -61,13 +61,9 @@
               selectedYear: 'getSelectedYear',
               selectedMonth: 'getSelectedMonth',
             }),
-            formattedPeriod() {
-              const month = (this.selectedMonth).toString().length === 1 ? `0${this.selectedMonth + 1}` : this.selectedMonth + 1;
-              return `${this.selectedYear}-${month}`;
-            },
             selectedCategoryBound() {
               const bound = this.selectedCategory.bounds.find((bound) => {
-                return bound.period === `${this.selectedYear}-0${this.selectedMonth + 1}`;
+                return bound.year === this.selectedYear && bound.month === `0${this.selectedMonth + 1}`;
               });
 
               return bound ? bound.bound_in_cents / 100 : 0;
@@ -102,7 +98,8 @@
               this.boundBeingEdited = false;
               this.updateCategoryBound({
                 categoryId: this.selectedCategory.id,
-                period: this.formattedPeriod,
+                year: this.selectedYear,
+                month: `${this.selectedMonth}`,
                 value: this.newBound * 100,
               });
             },

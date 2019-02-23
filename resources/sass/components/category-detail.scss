@@ -12,6 +12,12 @@
   // align-content: space-between;
   // justify-content: space-between;
   color: #ffffff;
+
+  input[type=number]::-webkit-inner-spin-button,
+  input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
   
   .button {
     display: flex;
@@ -48,11 +54,7 @@
         color: #ffffff;
       }
     }
-    input[type=number]::-webkit-inner-spin-button,
-    input[type=number]::-webkit-outer-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-    }
+    
   }
 
   .balance-action {

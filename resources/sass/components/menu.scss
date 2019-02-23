@@ -5,11 +5,31 @@
   color: #4f4f4f;
   position: absolute;
   width: 100%;
-  height: 40px;
+  height: 54px;
   bottom: 0;
   left: 0;
   background-color: #ffffff;
   transition: all 100ms ease-out;
+  text-align: center;
+  overflow: auto;
+
+  display: flex;
+  align-items: center;
+  
+  .menu-options {
+    width: 100%;
+    padding: 14px;
+    .menu-option {
+      height: 60px;
+      border: 2px solid #4f4f4f;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 14px;
+      border-radius: 30px;
+    }
+  }
+
   .menu-trigger {
     position: absolute;
     bottom: 0;
@@ -17,7 +37,8 @@
     justify-content: center;
     align-items: center;
     width: 100%;
-    height: 40px;
+    height: 54px;
+    background-color: #ffffff;
   }
 
 &.open {
