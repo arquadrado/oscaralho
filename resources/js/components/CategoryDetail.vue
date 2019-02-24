@@ -38,90 +38,88 @@
 </template>
 
 <script>
-    import { mapGetters, mapActions } from "vuex";
+import { mapGetters, mapActions } from 'vuex';
 
-    export default {
-        mounted() {
-          this.newBound = this.selectedCategoryBound;
-          setTimeout(() => {
-            this.showContent = true;
-          }, 100)
-        },
-        data() {
-          return {
-            showContent: false,
-            expenseInput: undefined,
-            newBound: this.selectedCategoryBound,
-            boundBeingEdited: false,
-          }
-        },
-        computed: {
-            ...mapGetters({
-              selectedCategory: 'getSelectedCategory',
-              selectedYear: 'getSelectedYear',
-              selectedMonth: 'getSelectedMonth',
-            }),
-            selectedCategoryBound() {
-              const bound = this.selectedCategory.bounds.find((bound) => {
-                return bound.year === this.selectedYear && bound.month === `0${this.selectedMonth + 1}`;
-              });
+export default {
+  mounted() {
+    this.newBound = this.selectedCategoryBound;
+    setTimeout(() => {
+      this.showContent = true;
+    }, 100);
+  },
+  data() {
+    return {
+      showContent: false,
+      expenseInput: undefined,
+      newBound: this.selectedCategoryBound,
+      boundBeingEdited: false
+    };
+  },
+  computed: {
+    ...mapGetters({
+      selectedCategory: 'getSelectedCategory',
+      selectedYear: 'getSelectedYear',
+      selectedMonth: 'getSelectedMonth'
+    }),
+    selectedCategoryBound() {
+      const bound = this.selectedCategory;
 
-              return bound ? bound.bound_in_cents / 100 : 0;
-            },
-            expensesSum() {
-              return this.selectedCategory.expenses.reduce((sum, expense) => {
-                sum += Number(expense.value);
-                return sum;
-              }, 0)
-            },
-        },
-        methods: {
-            ...mapActions({
-              setShowDisplayPanel: 'setShowDisplayPanel',
-              saveExpense: 'addExpense',
-              updateCategoryBound: 'updateCategoryBound',
-              removeExpense: 'removeExpense',
-            }),
-            addExpense() {
-              if (this.expenseInput > 0) {
-                this.saveExpense({
-                  value: this.expenseInput,
-                  categoryId: this.selectedCategory.id
-                });
-                this.expenseInput = undefined;
-              }
-            },
-            editBound() {
-              this.boundBeingEdited = true;
-            },
-            saveNewBound() {
-              this.boundBeingEdited = false;
-              this.updateCategoryBound({
-                categoryId: this.selectedCategory.id,
-                year: this.selectedYear,
-                month: `${this.selectedMonth}`,
-                value: this.newBound * 100,
-              });
-            },
-            close() {
-              this.setShowDisplayPanel(false);
-            }
-        },
-        directives: {
-          'focus': {
-            inserted: (el, binding, vnode) => {
-              el.style.width = el.value.length * 20 + 'px';
-            },
-            update: (el, binding, vnode) => {
-              el.style.width = el.value.length * 20 + 'px';
-              el.focus();
-            },
-          },
-          'add-focus': {
-            inserted: (el, binding, vnode) => {
-              el.focus();
-            }
-          }
-        }
+      return bound ? bound.bound_in_cents / 100 : 0;
+    },
+    expensesSum() {
+      return this.selectedCategory.expenses.reduce((sum, expense) => {
+        sum += Number(expense.value);
+        return sum;
+      }, 0);
     }
+  },
+  methods: {
+    ...mapActions({
+      setShowDisplayPanel: 'setShowDisplayPanel',
+      saveExpense: 'addExpense',
+      updateCategoryBound: 'updateCategoryBound',
+      removeExpense: 'removeExpense'
+    }),
+    addExpense() {
+      if (this.expenseInput > 0) {
+        this.saveExpense({
+          value: this.expenseInput,
+          boundId: this.selectedCategory.id
+        });
+        this.expenseInput = undefined;
+      }
+    },
+    editBound() {
+      this.boundBeingEdited = true;
+    },
+    saveNewBound() {
+      this.boundBeingEdited = false;
+      this.updateCategoryBound({
+        categoryId: this.selectedCategory.id,
+        year: this.selectedYear,
+        month: `${this.selectedMonth}`,
+        value: this.newBound * 100
+      });
+    },
+    close() {
+      this.setShowDisplayPanel(false);
+    }
+  },
+  directives: {
+    focus: {
+      inserted: (el, binding, vnode) => {
+        el.style.width = el.value.length * 20 + 'px';
+      },
+      update: (el, binding, vnode) => {
+        el.style.width = el.value.length * 20 + 'px';
+        el.focus();
+      }
+    },
+    'add-focus': {
+      inserted: (el, binding, vnode) => {
+        el.focus();
+      }
+    }
+  }
+};
 </script>

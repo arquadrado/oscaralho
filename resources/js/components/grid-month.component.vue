@@ -12,7 +12,7 @@
             class="category"
             :style="{'background-color': getCategoryStatusColor(category)}"
           >
-            <i :class="[category.icon]"></i>
+            <i :class="[category.category.icon]"></i>
           </div>
         </div>
 
@@ -45,7 +45,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      items: 'getCategories',
+      items: 'getCategoriesByMonth',
       selectedItem: 'getSelectedCategoryId',
       selectedCategoryObject: 'getSelectedCategory',
       shouldDisplayPanel: 'shouldDisplayPanel',
@@ -79,16 +79,10 @@ export default {
         return sum;
       }, 0);
     },
-    getCategoryCurrentBound(category) {
-      if (!category || !category.bounds) {
+    getCategoryCurrentBound(bound) {
+      if (!bound) {
         return 0;
       }
-      const bound = category.bounds.find(bound => {
-        return (
-          bound.year === this.selectedYear &&
-          bound.month === `0${this.selectedMonth + 1}`
-        );
-      });
       return bound ? bound.bound_in_cents / 100 : 0;
     }
   }

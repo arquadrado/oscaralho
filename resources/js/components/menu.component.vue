@@ -58,6 +58,7 @@ export default {
     },
     showYearView() {
       this.setCurrentView('grid-year');
+      this.setMonth();
       this.toggleMenu();
     },
     showAllTimeView() {

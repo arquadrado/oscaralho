@@ -17,10 +17,10 @@ class CreateExpensesTable extends Migration
             $table->increments('id');
             $table->string('value');
             $table->text('notes')->nullable();
-            $table->integer('category_id')->unsigned();
+            $table->integer('bound_id')->unsigned();
             $table->timestamps();
 
-            $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
+            $table->foreign('bound_id')->references('id')->on('category_bounds')->onDelete('cascade');
         });
     }
 
@@ -32,7 +32,7 @@ class CreateExpensesTable extends Migration
     public function down()
     {
         Schema::dropIfExists('expenses', function (Blueprint $table) {
-            $table->dropForeign('expenses_category_id_foreign');
+            $table->dropForeign('expenses_bound_id_foreign');
         });
     }
 }

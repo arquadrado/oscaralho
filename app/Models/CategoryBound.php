@@ -25,6 +25,14 @@ class CategoryBound extends Model
     protected $hidden = [
     ];
 
-    protected $with = [];
+    protected $with = ['category', 'expenses'];
+
+    public function expenses() {
+      return $this->hasMany(Expense::class, 'bound_id');
+    }
+
+    public function category() {
+      return $this->belongsTo(Category::class);
+    }
 
 }

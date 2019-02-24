@@ -3,7 +3,7 @@ import Vuex from 'vuex';
 Vue.use(Vuex);
 
 const user = handover && handover.user ? handover.user : [];
-const categories = handover && handover.categories ? handover.categories : [];
+const categories = handover && handover.bounds ? handover.bounds : [];
 
 window.mobilePlatform = () => {
   var check = false;
@@ -18,31 +18,34 @@ const state = {
   categories: categories,
   selectedCategory: undefined,
   showDisplayPanel: false,
-  selectedYear: new Date(Date.now()).getFullYear(),
-  selectedMonth: new Date(Date.now()).getMonth(),
+  selectedYear: `${new Date(Date.now()).getFullYear()}`,
+  selectedMonth: `0${(new Date(Date.now()).getMonth() + 1)}`,
   justUpdated: undefined,
 };
 const getters = {
   isMobilePlatform: state => state.mobilePlatform,
   getUser: state => state.user,
-  getCategories: state => state.categories,
+  getCategoriesByMonth: state => state.categories.filter((bound) => {
+    return bound.year === state.selectedYear && bound.month === state.selectedMonth;
+  }),
+  getCategoriesByYear: state => state.categories.filter((bound) => {
+    return bound.year === state.selectedYear;
+  }),
   getSelectedCategoryId: state => state.selectedCategory,
   getSelectedCategory: state => state.categories.find(c => c.id === state.selectedCategory),
   shouldDisplayPanel: state => state.showDisplayPanel,
   getSelectedYear: state => state.selectedYear,
   getCurrentYearMonths: (state) => {
-    return state.categories.reduce((reduced, category) => {
-      category.bounds.forEach((bound) => {
-        if (
-          bound.year === state.selectedYear.toString() &&
-          reduced.indexOf(bound.month) === -1
-        ) {
-          reduced.push(bound.month);
-        }
-      });
+    return state.categories.reduce((reduced, bound) => {
+      if (
+        bound.year === state.selectedYear.toString() &&
+        reduced.indexOf(bound.month) === -1
+      ) {
+        reduced.push(bound.month);
+      }
       return reduced;
 
-    }, []);
+    }, []).sort();
   },
   getSelectedMonth: state => state.selectedMonth,
   getCurrentView: state => state.currentView,
@@ -62,12 +65,9 @@ const actions = {
     commit('SET_SHOW_DISPLAY_PANEL', value);
   },
   addExpense: ({ commit }, expenseData) => {
+    commit('ADD_EXPENSE', expenseData);
     axios.post('/add-expense', expenseData)
-      .then((response) => {
-        if (response && response.data) {
-          commit('ADD_EXPENSE', response.data);
-        }
-      })
+      .then()
       .catch(function (error) {
         console.log(error);
         commit('REMOVE_EXPENSE', expenseData);
@@ -79,30 +79,25 @@ const actions = {
     axios.delete('/expense', { data: expense })
       .then()
       .catch(() => {
-        commit('ADD_EXPENSE', { expense });
+        commit('ADD_EXPENSE', expense);
       })
   },
   updateCategoryBound: ({ commit }, data) => {
-    const category = state.categories.find(c => c.id === data.categoryId);
+    const bound = state.categories.find(c => c.id === data.categoryId);
 
-    if (category) {
-      const bound = category.bounds.find(b => {
-        return b.year === data.year && b.month === data.month;
-      })
+    if (bound) {
 
-      if (bound) {
-        const boundPreviousValue = bound.bound_in_cents;
-        commit('UPDATE_BOUND', { ...data, boundId: bound.id });
-        axios.post('/update-bound', { ...data, boundId: bound.id })
-          .then(function (response) {
-            if (response && response.data) {
-            }
-          })
-          .catch(function (error) {
-            console.log(error);
-            commit('UPDATE_BOUND', { ...data, value: boundPreviousValue });
-          });
-      }
+      const boundPreviousValue = bound.bound_in_cents;
+      commit('UPDATE_BOUND', { ...data, boundId: bound.id });
+      axios.post('/update-bound', { ...data, boundId: bound.id })
+        .then(function (response) {
+          if (response && response.data) {
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+          commit('UPDATE_BOUND', { ...data, value: boundPreviousValue });
+        });
     }
   },
 
@@ -131,16 +126,17 @@ const mutations = {
     state.showDisplayPanel = value;
   },
   'ADD_EXPENSE': (state, data) => {
-    const category = state.categories.find(c => c.id === data.expense.category_id);
+    // console.log(data);
+    const category = state.categories.find(c => c.id === data.boundId);
     if (category) {
       category.expenses = [
         ...(category.expenses ? category.expenses : []),
-        data.expense
+        data
       ]
     }
   },
   'REMOVE_EXPENSE': (state, exp) => {
-    const category = state.categories.find(c => c.id === exp.category_id);
+    const category = state.categories.find(c => c.id === exp.bound_id);
     if (category && category.expenses) {
       const expense = category.expenses.find(e => e.id === exp.id);
 
@@ -150,15 +146,10 @@ const mutations = {
     }
   },
   'UPDATE_BOUND': (state, data) => {
-    const category = state.categories.find(c => c.id === data.categoryId);
+    const bound = state.categories.find(c => c.id === data.categoryId);
 
-    if (category) {
-      const bound = category.bounds.find(b => {
-        return b.year === data.year && b.month === data.month;
-      })
-      if (bound) {
-        bound.bound_in_cents = data.value;
-      }
+    if (bound) {
+      bound.bound_in_cents = data.value;
     }
   },
 

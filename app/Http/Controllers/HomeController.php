@@ -39,8 +39,7 @@ class HomeController extends Controller
         $categories = Category::all();
 
         foreach($categories as $category) {
-            $bound = $category->bounds()
-                                ->where('year', Carbon::now()->format('Y'))
+            $bound = CategoryBound::where('year', Carbon::now()->format('Y'))
                                 ->where('month', Carbon::now()->format('m'))
                                 ->first();
             if (is_null($bound)) {
@@ -53,9 +52,8 @@ class HomeController extends Controller
             }
         }
         
-        foreach($categories as $category) {
-          $bound = $category->bounds()
-                              ->where('year', '2019')
+      foreach($categories as $category) {
+          $bound = CategoryBound::where('year', '2019')
                               ->where('month', '01')
                               ->first();
           if (is_null($bound)) {
@@ -67,17 +65,19 @@ class HomeController extends Controller
               ]);
           }
       }
+      
+      $bounds = CategoryBound::all();
 
-        return view('home', [
-            'user' => $user,
-            'token' => $token,
-            'categories' => $categories
-        ]);
+      return view('home', [
+          'user' => $user,
+          'token' => $token,
+          'bounds' => $bounds
+      ]);
     }
 
     public function addExpense() {
         $expense = Expense::create([
-            'category_id' => request()->get('categoryId'),
+            'bound_id' => request()->get('boundId'),
             'value'       => request()->get('value'),
         ]);
         
@@ -92,15 +92,13 @@ class HomeController extends Controller
     }
 
     public function updateBound() {
-        
-        $category = Category::find(request()->get('categoryId'));
+        $bound = CategoryBound::find(request()->get('categoryId'));
 
-        if (is_null($category)) {
+        if (is_null($bound)) {
 
-            return response()->json(['error' => 'no category'], 404);
+            return response()->json(['error' => 'no bound to update'], 404);
         }
 
-        $bound = $category->bounds()->find(request()->get('boundId'));
         $bound->bound_in_cents = request()->get('value');
         $bound->save();
 
