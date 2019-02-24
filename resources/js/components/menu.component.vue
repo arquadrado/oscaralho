@@ -62,7 +62,10 @@ export default {
       this.toggleMenu();
     },
     showAllTimeView() {
-      // this.setCurrentView('grid-all-time');
+      this.setCurrentView('grid-all-time');
+      this.setMonth();
+      this.setYear();
+      this.toggleMenu();
     }
   }
 };

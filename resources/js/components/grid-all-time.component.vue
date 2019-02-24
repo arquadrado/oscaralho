@@ -1,19 +1,18 @@
 <template>
   <div id="grid" v-grid>
     <div class="grid-cell"
-      v-card="month"
-      v-for="month in items"
-      :key="month"
+      v-card="year"
+      v-for="year in items"
+      :key="year"
       :style="{'width': cellWidth + 'px', 'height': cellHeight + 'px'}"
-      @click="clickMonth(month)"
+      @click="clickYear(year)"
     >
       <div 
         class="category"
-        :style="{'background-color': getMonthStatusColor(month)}"
+        :style="{'background-color': getYearStatusColor(year)}"
       >
-        <i>{{ month }}</i>
+        <i>{{ year }}</i>
       </div>
-    
     </div>
   </div>
 </template>
@@ -24,37 +23,33 @@ import CategoryDetail from './category-detail.component.vue';
 import GridMixin from '../mixins/grid.mixin';
 export default {
   mixins: [GridMixin],
-  components: {
-    'category-detail': CategoryDetail
-  },
   data() {
     return {};
   },
   computed: {
     ...mapGetters({
-      bounds: 'getCategoriesByYear',
-      items: 'getCurrentYearMonths',
-      selectedYear: 'getSelectedYear'
+      bounds: 'getCategories',
+      items: 'getAllTimeYears'
     })
   },
   methods: {
     ...mapActions({
       setCurrentView: 'setCurrentView',
-      setMonth: 'setMonth'
+      setYear: 'setYear'
     }),
-    clickMonth(month) {
-      this.setCurrentView('grid-month');
-      this.setMonth(month);
+    clickYear(year) {
+      this.setCurrentView('grid-year');
+      this.setYear(year);
     },
-    getMonthStatusColor(month) {
-      const bound = this.getMonthBoundsSum(month);
-      const sum = this.getMonthExpensesSum(month);
+    getYearStatusColor(year) {
+      const bound = this.getYearBoundsSum(year);
+      const sum = this.getYearExpensesSum(year);
       return this.getCellStatusColor(bound, sum);
     },
-    getMonthExpensesSum(month) {
+    getYearExpensesSum(year) {
       return this.bounds
         .filter(bound => {
-          return bound.year === this.selectedYear && bound.month === month;
+          return bound.year === year;
         })
         .reduce((sum, bound) => {
           sum += bound.expenses.reduce((expenseSum, expense) => {
@@ -64,10 +59,10 @@ export default {
           return sum;
         }, 0);
     },
-    getMonthBoundsSum(month) {
+    getYearBoundsSum(year) {
       return this.bounds
         .filter(bound => {
-          return bound.year === this.selectedYear && bound.month === month;
+          return bound.year === year;
         })
         .reduce((sum, bound) => {
           sum += bound.bound_in_cents / 100;

@@ -25,6 +25,7 @@ const state = {
 const getters = {
   isMobilePlatform: state => state.mobilePlatform,
   getUser: state => state.user,
+  getCategories: state => state.categories,
   getCategoriesByMonth: state => state.categories.filter((bound) => {
     return bound.year === state.selectedYear && bound.month === state.selectedMonth;
   }),
@@ -38,10 +39,20 @@ const getters = {
   getCurrentYearMonths: (state) => {
     return state.categories.reduce((reduced, bound) => {
       if (
+        state.selectedYear &&
         bound.year === state.selectedYear.toString() &&
         reduced.indexOf(bound.month) === -1
       ) {
         reduced.push(bound.month);
+      }
+      return reduced;
+
+    }, []).sort();
+  },
+  getAllTimeYears: (state) => {
+    return state.categories.reduce((reduced, bound) => {
+      if (reduced.indexOf(bound.year) === -1) {
+        reduced.push(bound.year);
       }
       return reduced;
 

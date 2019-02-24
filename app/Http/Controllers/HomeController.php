@@ -41,6 +41,7 @@ class HomeController extends Controller
         foreach($categories as $category) {
             $bound = CategoryBound::where('year', Carbon::now()->format('Y'))
                                 ->where('month', Carbon::now()->format('m'))
+                                ->where('category_id', $category->id)
                                 ->first();
             if (is_null($bound)) {
                 $bound = CategoryBound::create([
@@ -55,6 +56,7 @@ class HomeController extends Controller
       foreach($categories as $category) {
           $bound = CategoryBound::where('year', '2019')
                               ->where('month', '01')
+                              ->where('category_id', $category->id)
                               ->first();
           if (is_null($bound)) {
               $bound = CategoryBound::create([
@@ -64,6 +66,81 @@ class HomeController extends Controller
                   'month' => '01',
               ]);
           }
+      }
+
+      foreach($categories as $category) {
+        $bound = CategoryBound::where('year', '2019')
+                            ->where('month', '04')
+                            ->where('category_id', $category->id)
+                            ->first();
+        if (is_null($bound)) {
+            $bound = CategoryBound::create([
+                'category_id' => $category->id,
+                'bound_in_cents' => 0,
+                'year' => '2019',
+                'month' => '04',
+            ]);
+        }
+    }
+
+    foreach($categories as $category) {
+      $bound = CategoryBound::where('year', '2019')
+                          ->where('month', '05')
+                          ->where('category_id', $category->id)
+                          ->first();
+      if (is_null($bound)) {
+          $bound = CategoryBound::create([
+              'category_id' => $category->id,
+              'bound_in_cents' => 0,
+              'year' => '2019',
+              'month' => '05',
+          ]);
+      }
+  }
+
+      foreach($categories as $category) {
+        $bound = CategoryBound::where('year', '2018')
+                            ->where('month', '12')
+                            ->where('category_id', $category->id)
+                            ->first();
+        if (is_null($bound)) {
+            $bound = CategoryBound::create([
+                'category_id' => $category->id,
+                'bound_in_cents' => 0,
+                'year' => '2018',
+                'month' => '12',
+            ]);
+        }
+      }
+
+      foreach($categories as $category) {
+        $bound = CategoryBound::where('year', '2017')
+                            ->where('month', '12')
+                            ->where('category_id', $category->id)
+                            ->first();
+        if (is_null($bound)) {
+            $bound = CategoryBound::create([
+                'category_id' => $category->id,
+                'bound_in_cents' => 0,
+                'year' => '2017',
+                'month' => '12',
+            ]);
+        }
+      }
+
+      foreach($categories as $category) {
+        $bound = CategoryBound::where('year', '2014')
+                            ->where('month', '12')
+                            ->where('category_id', $category->id)
+                            ->first();
+        if (is_null($bound)) {
+            $bound = CategoryBound::create([
+                'category_id' => $category->id,
+                'bound_in_cents' => 0,
+                'year' => '2014',
+                'month' => '12',
+            ]);
+        }
       }
       
       $bounds = CategoryBound::all();

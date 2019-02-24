@@ -33,7 +33,7 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
-import CategoryDetail from './CategoryDetail.vue';
+import CategoryDetail from './category-detail.component.vue';
 import GridMixin from '../mixins/grid.mixin';
 export default {
   mixins: [GridMixin],
