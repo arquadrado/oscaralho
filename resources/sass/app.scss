@@ -24,4 +24,10 @@ body {
     height: 100vh;
     position: relative;
   }
+  
+  .centered-content-hv {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 }

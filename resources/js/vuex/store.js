@@ -76,12 +76,12 @@ const actions = {
     commit('SET_SHOW_DISPLAY_PANEL', value);
   },
   addExpense: ({ commit }, expenseData) => {
-    commit('ADD_EXPENSE', expenseData);
     axios.post('/add-expense', expenseData)
-      .then()
+      .then((response) => {
+        commit('ADD_EXPENSE', response.data.expense);
+      })
       .catch(function (error) {
         console.log(error);
-        commit('REMOVE_EXPENSE', expenseData);
       });
   },
   removeExpense: ({ commit }, expense) => {
@@ -138,7 +138,8 @@ const mutations = {
   },
   'ADD_EXPENSE': (state, data) => {
     // console.log(data);
-    const category = state.categories.find(c => c.id === data.boundId);
+    console.log(data);
+    const category = state.categories.find(c => c.id === data.bound_id);
     if (category) {
       category.expenses = [
         ...(category.expenses ? category.expenses : []),

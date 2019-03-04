@@ -34,11 +34,18 @@
     position: absolute;
     bottom: 0;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     width: 100%;
     height: 54px;
     background-color: #ffffff;
+    .arrow-button {
+      width: 54px;
+      height: 100%;
+      &.disabled {
+        opacity: 0.5;
+      }
+    }
   }
 
 &.open {

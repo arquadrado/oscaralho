@@ -2,11 +2,7 @@
   <div id="menu" :class="{'open': menuIsOpen}">
     <div v-if="menuIsOpen" class="menu-options">
 
-      <!-- <div class="menu-option" @click="showMonthView">
-        <span>Month</span>
-      </div> -->
-
-      <div class="menu-option" @click="showYearView">
+      <div v-if="shouldShowYearViewButton" class="menu-option" @click="showYearView">
         <span>Year</span>
       </div>
 
@@ -15,8 +11,10 @@
       </div>
 
     </div>
-    <div class="menu-trigger" @click="toggleMenu">
-      <span>{{ menuTriggerLabel }}</span>
+    <div class="menu-trigger">
+      <span class="arrow-button centered-content-hv" :class="{'disabled': !canGoBack}" @click="back"><i class="fa fa-chevron-left"></i></span>
+      <span @click="toggleMenu">{{ menuTriggerLabel }}</span>
+      <span class="arrow-button centered-content-hv" :class="{'disabled': !canGoForward}" @click="forward"><i class="fa fa-chevron-right"></i></span>
     </div>
   </div>
 </template>
@@ -34,7 +32,9 @@ export default {
     ...mapGetters({
       currentView: 'getCurrentView',
       selectedYear: 'getSelectedYear',
-      selectedMonth: 'getSelectedMonth'
+      selectedMonth: 'getSelectedMonth',
+      currentYearMonths: 'getCurrentYearMonths',
+      allYears: 'getAllTimeYears'
     }),
     menuTriggerLabel() {
       switch (this.currentView) {
@@ -45,6 +45,24 @@ export default {
         case 'grid-all-time':
           return 'All time';
       }
+    },
+    shouldShowYearViewButton() {
+      return this.currentView === 'grid-month';
+    },
+    canGoBack() {
+      return (
+        (this.currentYearMonths.indexOf(this.selectedMonth) > 0 &&
+          this.currentView === 'grid-month') ||
+        this.allYears.indexOf(this.selectedYear) > 0
+      );
+    },
+    canGoForward() {
+      return (
+        (this.currentYearMonths.indexOf(this.selectedMonth) <
+          this.currentYearMonths.length - 1 &&
+          this.currentView === 'grid-month') ||
+        this.allYears.indexOf(this.selectedYear) < this.allYears.length - 1
+      );
     }
   },
   methods: {
@@ -66,6 +84,37 @@ export default {
       this.setMonth();
       this.setYear();
       this.toggleMenu();
+    },
+    back() {
+      if (this.canGoBack) {
+        const monthIndex = this.currentYearMonths.indexOf(this.selectedMonth);
+
+        if (monthIndex > 0 && this.currentView === 'grid-month') {
+          this.setMonth(this.currentYearMonths[monthIndex - 1]);
+        } else {
+          const yearIndex = this.allYears.indexOf(this.selectedYear);
+          this.setYear(this.allYears[yearIndex - 1]);
+          this.setMonth(
+            this.currentYearMonths[this.currentYearMonths.length - 1]
+          );
+        }
+      }
+    },
+    forward() {
+      if (this.canGoForward) {
+        const monthIndex = this.currentYearMonths.indexOf(this.selectedMonth);
+
+        if (
+          monthIndex < this.currentYearMonths.length - 1 &&
+          this.currentView === 'grid-month'
+        ) {
+          this.setMonth(this.currentYearMonths[monthIndex + 1]);
+        } else {
+          const yearIndex = this.allYears.indexOf(this.selectedYear);
+          this.setYear(this.allYears[yearIndex + 1]);
+          this.setMonth(this.currentYearMonths[0]);
+        }
+      }
     }
   }
 };

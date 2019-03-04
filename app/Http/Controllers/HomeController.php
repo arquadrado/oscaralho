@@ -35,7 +35,7 @@ class HomeController extends Controller
         
         $token = csrf_token();
 
-        // $categories = Category::limit(3)->get();
+        // $categories = Category::limit(9)->get();
         $categories = Category::all();
 
         foreach($categories as $category) {

@@ -1,7 +1,7 @@
 <template>
     <div class="category-detail" v-if="showContent">
-      <span><i :class="[selectedCategory.icon]"></i></span>
-      <h2>{{ selectedCategory.name }}</h2>
+      <span><i :class="[selectedCategory.category.icon]"></i></span>
+      <h2>{{ selectedCategory.category.name }}</h2>
       <div class="balance">
 
         <!-- <span v-if="!boundBeingEdited">{{ selectedCategoryBound }}/{{ expensesSum }}</span> -->
