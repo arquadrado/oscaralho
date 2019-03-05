@@ -13,7 +13,9 @@
     </div>
     <div class="menu-trigger">
       <span class="arrow-button centered-content-hv" :class="{'disabled': !canGoBack}" @click="back"><i class="fa fa-chevron-left"></i></span>
-      <span @click="toggleMenu">{{ menuTriggerLabel }}</span>
+      <span class="arrow-button centered-content-hv" :class="{'disabled': isExpense}" @click="setCurrentCategoryType('expense')"><i class="fa fa-circle-o"></i></span>
+      <span @click="toggleMenu" class="arrow-button centered-content-hv"><i class="fa fa-bars"></i></span>
+      <span class="arrow-button centered-content-hv" :class="{'disabled': !isExpense}" @click="setCurrentCategoryType('revenue')"><i class="fa fa-circle-o"></i></span>
       <span class="arrow-button centered-content-hv" :class="{'disabled': !canGoForward}" @click="forward"><i class="fa fa-chevron-right"></i></span>
     </div>
   </div>
@@ -34,7 +36,8 @@ export default {
       selectedYear: 'getSelectedYear',
       selectedMonth: 'getSelectedMonth',
       currentYearMonths: 'getCurrentYearMonths',
-      allYears: 'getAllTimeYears'
+      allYears: 'getAllTimeYears',
+      getCurrentCategoryType: 'getCurrentCategoryType'
     }),
     menuTriggerLabel() {
       switch (this.currentView) {
@@ -63,13 +66,17 @@ export default {
           this.currentView === 'grid-month') ||
         this.allYears.indexOf(this.selectedYear) < this.allYears.length - 1
       );
+    },
+    isExpense() {
+      return this.getCurrentCategoryType === 'expense';
     }
   },
   methods: {
     ...mapActions({
       setYear: 'setYear',
       setMonth: 'setMonth',
-      setCurrentView: 'setCurrentView'
+      setCurrentView: 'setCurrentView',
+      setCurrentCategoryType: 'setCurrentCategoryType'
     }),
     toggleMenu() {
       this.menuIsOpen = !this.menuIsOpen;

@@ -24,6 +24,18 @@
   position: absolute;
 }
 
+.container .header {
+  position: absolute;
+  width: 100%;
+  height: 54px;
+  font-size: 17px;
+  color: #4f4f4f;
+}
+
+.container .header .title {
+  text-align: center;
+}
+
 #menu {
   font-size: 21px;
   font-weight: bold;
@@ -33,7 +45,7 @@
   height: 54px;
   bottom: 0;
   left: 0;
-  background-color: #ffffff;
+  background-color: #f3f3f3;
   -webkit-transition: all 100ms ease-out;
   transition: all 100ms ease-out;
   text-align: center;
@@ -81,7 +93,7 @@
           align-items: center;
   width: 100%;
   height: 54px;
-  background-color: #ffffff;
+  background-color: #f3f3f3;
 }
 
 #menu .menu-trigger .arrow-button {
@@ -96,13 +108,14 @@
 #menu.open {
   -webkit-transition: all 100ms ease-in;
   transition: all 100ms ease-in;
-  height: 100%;
+  height: calc(100% - 54px);
 }
 
 #grid {
   position: relative;
   width: 100%;
-  height: calc(100vh - 54px);
+  height: calc(100vh - 108px);
+  margin-top: 54px;
 }
 
 #grid .grid-cell {
@@ -124,8 +137,8 @@
 #grid .grid-cell .category {
   position: absolute;
   background-color: transparent;
-  width: calc(100% - 14px);
-  height: calc(100% - 14px);
+  width: calc(100% - 7px);
+  height: calc(100% - 7px);
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;

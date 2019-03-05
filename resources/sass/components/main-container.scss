@@ -4,4 +4,17 @@
     height: 100%;
     color: #ffffff;
     position: absolute;
+    
+    .header {
+      position: absolute;
+      width: 100%;
+      height: 54px;
+      font-size: 17px;
+      color: #4f4f4f;
+      .title {
+        text-align: center;
+        .subtitle {
+        }
+      }
+    }
 }

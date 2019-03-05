@@ -2,9 +2,10 @@
 
 #grid {
     position: relative;
-    width: (100%);
+    width: 100%;
     // height: 100vh;
-    height: calc(100vh - 54px);
+    height: calc(100vh - 108px);
+    margin-top: 54px;
 
     .grid-cell {
         position: relative;
@@ -16,8 +17,8 @@
         .category {
             position: absolute;
             background-color: transparent;
-            width: calc(100% - 14px);
-            height: calc(100% - 14px);
+            width: calc(100% - 7px);
+            height: calc(100% - 7px);
             display: flex;
             justify-content: center;
             align-items: center;

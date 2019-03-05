@@ -14,6 +14,7 @@ window.mobilePlatform = () => {
 const state = {
   mobilePlatform: window.mobilePlatform(),
   currentView: 'grid-month',
+  currentCategoryType: 'expense',
   user: user,
   categories: categories,
   selectedCategory: undefined,
@@ -27,7 +28,14 @@ const getters = {
   getUser: state => state.user,
   getCategories: state => state.categories,
   getCategoriesByMonth: state => state.categories.filter((bound) => {
-    return bound.year === state.selectedYear && bound.month === state.selectedMonth;
+    if (state.currentCategoryType === 'expense') {
+      return bound.year === state.selectedYear &&
+        bound.month === state.selectedMonth &&
+        bound.category.expense;
+    }
+    return bound.year === state.selectedYear &&
+      bound.month === state.selectedMonth &&
+      !bound.category.expense;
   }),
   getCategoriesByYear: state => state.categories.filter((bound) => {
     return bound.year === state.selectedYear;
@@ -60,6 +68,7 @@ const getters = {
   },
   getSelectedMonth: state => state.selectedMonth,
   getCurrentView: state => state.currentView,
+  getCurrentCategoryType: state => state.currentCategoryType,
   isJustUpdated: state => state.justUpdated,
 };
 const actions = {
@@ -120,7 +129,10 @@ const actions = {
   },
   setCurrentView: ({ commit }, view) => {
     commit('SET_CURRENT_VIEW', view);
-  }
+  },
+  setCurrentCategoryType: ({ commit }, type) => {
+    commit('SET_CURRENT_CATEGORY_TYPE', type);
+  },
 
 };
 const mutations = {
@@ -137,8 +149,6 @@ const mutations = {
     state.showDisplayPanel = value;
   },
   'ADD_EXPENSE': (state, data) => {
-    // console.log(data);
-    console.log(data);
     const category = state.categories.find(c => c.id === data.bound_id);
     if (category) {
       category.expenses = [
@@ -173,7 +183,10 @@ const mutations = {
   },
   'SET_CURRENT_VIEW': (state, view) => {
     state.currentView = view;
-  }
+  },
+  'SET_CURRENT_CATEGORY_TYPE': (state, type) => {
+    state.currentCategoryType = type;
+  },
 };
 
 export default new Vuex.Store({

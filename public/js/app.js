@@ -12609,10 +12609,10 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       }
     },
     overCardPosition: function overCardPosition() {
-      return [this.shouldDisplayPanel ? 0 : this.selectedCellPosition[0] + 7, this.shouldDisplayPanel ? 0 : this.selectedCellPosition[1] + 7];
+      return [this.shouldDisplayPanel ? 0 : this.selectedCellPosition[0] + 3.5, this.shouldDisplayPanel ? 0 : this.selectedCellPosition[1] + 3.5];
     },
     overCardDimension: function overCardDimension() {
-      return [this.shouldDisplayPanel ? "100%" : this.cellWidth - 14 + "px", this.shouldDisplayPanel ? "100%" : this.cellHeight - 14 + "px"];
+      return [this.shouldDisplayPanel ? '100%' : this.cellWidth - 14 + 'px', this.shouldDisplayPanel ? '100%' : this.cellHeight - 14 + 'px'];
     }
   }),
   methods: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({
@@ -12620,6 +12620,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     setJustUpdated: 'setJustUpdated'
   }), {
     buildGrid: function buildGrid() {
+      this.selectedCellPosition = [0, 0];
       var i = this.getItemsLength(this.items);
       this.gridSize = undefined;
       while (!this.gridSize) {
@@ -12726,6 +12727,13 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
             vnode.context.setShowDisplayPanel(true);
           }, 100);
         }
+      }
+    }
+  },
+  watch: {
+    items: function items(newValue, oldValue) {
+      if (newValue.length !== oldValue.length) {
+        this.buildGrid();
       }
     }
   }
@@ -48577,6 +48585,7 @@ window.mobilePlatform = function () {
 var state = {
   mobilePlatform: window.mobilePlatform(),
   currentView: 'grid-month',
+  currentCategoryType: 'expense',
   user: user,
   categories: categories,
   selectedCategory: undefined,
@@ -48597,7 +48606,10 @@ var getters = {
   },
   getCategoriesByMonth: function getCategoriesByMonth(state) {
     return state.categories.filter(function (bound) {
-      return bound.year === state.selectedYear && bound.month === state.selectedMonth;
+      if (state.currentCategoryType === 'expense') {
+        return bound.year === state.selectedYear && bound.month === state.selectedMonth && bound.category.expense;
+      }
+      return bound.year === state.selectedYear && bound.month === state.selectedMonth && !bound.category.expense;
     });
   },
   getCategoriesByYear: function getCategoriesByYear(state) {
@@ -48640,6 +48652,9 @@ var getters = {
   },
   getCurrentView: function getCurrentView(state) {
     return state.currentView;
+  },
+  getCurrentCategoryType: function getCurrentCategoryType(state) {
+    return state.currentCategoryType;
   },
   isJustUpdated: function isJustUpdated(state) {
     return state.justUpdated;
@@ -48719,6 +48734,11 @@ var actions = {
     var commit = _ref10.commit;
 
     commit('SET_CURRENT_VIEW', view);
+  },
+  setCurrentCategoryType: function setCurrentCategoryType(_ref11, type) {
+    var commit = _ref11.commit;
+
+    commit('SET_CURRENT_CATEGORY_TYPE', type);
   }
 
 };
@@ -48736,8 +48756,6 @@ var mutations = {
     state.showDisplayPanel = value;
   },
   'ADD_EXPENSE': function ADD_EXPENSE(state, data) {
-    // console.log(data);
-    console.log(data);
     var category = state.categories.find(function (c) {
       return c.id === data.bound_id;
     });
@@ -48777,6 +48795,9 @@ var mutations = {
   },
   'SET_CURRENT_VIEW': function SET_CURRENT_VIEW(state, view) {
     state.currentView = view;
+  },
+  'SET_CURRENT_CATEGORY_TYPE': function SET_CURRENT_CATEGORY_TYPE(state, type) {
+    state.currentCategoryType = type;
   }
 };
 
@@ -51509,7 +51530,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     selectedCategoryObject: 'getSelectedCategory',
     shouldDisplayPanel: 'shouldDisplayPanel',
     selectedYear: 'getSelectedYear',
-    selectedMonth: 'getSelectedMonth'
+    selectedMonth: 'getSelectedMonth',
+    getCurrentCategoryType: 'getCurrentCategoryType'
   })),
   methods: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({
     selectCategory: 'selectCategory',
@@ -51525,7 +51547,11 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       var bound = this.getCategoryCurrentBound(category);
       var sum = this.getCategoryExpensesSum(category);
 
-      return this.getCellStatusColor(bound, sum);
+      if (this.getCurrentCategoryType === 'expense') {
+        return this.getCellStatusColor(bound, sum);
+      }
+
+      return this.getCellStatusColor(sum, bound);
     },
     getCategoryExpensesSum: function getCategoryExpensesSum(category) {
       if (!category || !category.expenses) {
@@ -51985,6 +52011,12 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 
 
@@ -52004,8 +52036,25 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
   },
 
   computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])({
-    currentView: 'getCurrentView'
-  })),
+    currentView: 'getCurrentView',
+    selectedYear: 'getSelectedYear',
+    selectedMonth: 'getSelectedMonth',
+    getCurrentCategoryType: 'getCurrentCategoryType'
+  }), {
+    currentViewLabel: function currentViewLabel() {
+      switch (this.currentView) {
+        case 'grid-month':
+          return this.selectedYear + ' - ' + this.selectedMonth;
+        case 'grid-year':
+          return this.selectedYear;
+        case 'grid-all-time':
+          return 'All time';
+      }
+    },
+    currentCategoryTypeLabel: function currentCategoryTypeLabel() {
+      return this.getCurrentCategoryType === 'expense' ? 'Expenses' : 'Revenues';
+    }
+  }),
   methods: {}
 });
 
@@ -52462,6 +52511,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
+//
 
 
 
@@ -52477,7 +52528,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     selectedYear: 'getSelectedYear',
     selectedMonth: 'getSelectedMonth',
     currentYearMonths: 'getCurrentYearMonths',
-    allYears: 'getAllTimeYears'
+    allYears: 'getAllTimeYears',
+    getCurrentCategoryType: 'getCurrentCategoryType'
   }), {
     menuTriggerLabel: function menuTriggerLabel() {
       switch (this.currentView) {
@@ -52497,12 +52549,16 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     },
     canGoForward: function canGoForward() {
       return this.currentYearMonths.indexOf(this.selectedMonth) < this.currentYearMonths.length - 1 && this.currentView === 'grid-month' || this.allYears.indexOf(this.selectedYear) < this.allYears.length - 1;
+    },
+    isExpense: function isExpense() {
+      return this.getCurrentCategoryType === 'expense';
     }
   }),
   methods: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({
     setYear: 'setYear',
     setMonth: 'setMonth',
-    setCurrentView: 'setCurrentView'
+    setCurrentView: 'setCurrentView',
+    setCurrentCategoryType: 'setCurrentCategoryType'
   }), {
     toggleMenu: function toggleMenu() {
       this.menuIsOpen = !this.menuIsOpen;
@@ -52585,9 +52641,42 @@ var render = function() {
         [_c("i", { staticClass: "fa fa-chevron-left" })]
       ),
       _vm._v(" "),
-      _c("span", { on: { click: _vm.toggleMenu } }, [
-        _vm._v(_vm._s(_vm.menuTriggerLabel))
-      ]),
+      _c(
+        "span",
+        {
+          staticClass: "arrow-button centered-content-hv",
+          class: { disabled: _vm.isExpense },
+          on: {
+            click: function($event) {
+              _vm.setCurrentCategoryType("expense")
+            }
+          }
+        },
+        [_c("i", { staticClass: "fa fa-circle-o" })]
+      ),
+      _vm._v(" "),
+      _c(
+        "span",
+        {
+          staticClass: "arrow-button centered-content-hv",
+          on: { click: _vm.toggleMenu }
+        },
+        [_c("i", { staticClass: "fa fa-bars" })]
+      ),
+      _vm._v(" "),
+      _c(
+        "span",
+        {
+          staticClass: "arrow-button centered-content-hv",
+          class: { disabled: !_vm.isExpense },
+          on: {
+            click: function($event) {
+              _vm.setCurrentCategoryType("revenue")
+            }
+          }
+        },
+        [_c("i", { staticClass: "fa fa-circle-o" })]
+      ),
       _vm._v(" "),
       _c(
         "span",
@@ -52622,7 +52711,22 @@ var render = function() {
   return _c(
     "div",
     { staticClass: "container" },
-    [_c(_vm.currentView, { tag: "component" }), _vm._v(" "), _c("app-menu")],
+    [
+      _c("div", { staticClass: "header centered-content-hv" }, [
+        _c("div", { staticClass: "title" }, [
+          _c("span", [_vm._v(_vm._s(_vm.currentCategoryTypeLabel))]),
+          _c("br"),
+          _vm._v(" "),
+          _c("span", { staticClass: "subtitle" }, [
+            _vm._v(_vm._s(_vm.currentViewLabel))
+          ])
+        ])
+      ]),
+      _vm._v(" "),
+      _c(_vm.currentView, { tag: "component" }),
+      _vm._v(" "),
+      _c("app-menu")
+    ],
     1
   )
 }

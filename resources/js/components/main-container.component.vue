@@ -1,5 +1,11 @@
 <template>
   <div class="container">
+    <div class="header centered-content-hv">
+      <div class="title">
+        <span>{{ currentCategoryTypeLabel }}</span><br>
+        <span class="subtitle">{{ currentViewLabel }}</span>
+      </div>
+    </div>
     <component :is="currentView"></component>
     <app-menu></app-menu>
   </div>
@@ -24,8 +30,26 @@ export default {
   },
   computed: {
     ...mapGetters({
-      currentView: 'getCurrentView'
-    })
+      currentView: 'getCurrentView',
+      selectedYear: 'getSelectedYear',
+      selectedMonth: 'getSelectedMonth',
+      getCurrentCategoryType: 'getCurrentCategoryType'
+    }),
+    currentViewLabel() {
+      switch (this.currentView) {
+        case 'grid-month':
+          return `${this.selectedYear} - ${this.selectedMonth}`;
+        case 'grid-year':
+          return this.selectedYear;
+        case 'grid-all-time':
+          return 'All time';
+      }
+    },
+    currentCategoryTypeLabel() {
+      return this.getCurrentCategoryType === 'expense'
+        ? 'Expenses'
+        : 'Revenues';
+    }
   },
   methods: {}
 };

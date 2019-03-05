@@ -29,14 +29,14 @@ export default {
     },
     overCardPosition() {
       return [
-        this.shouldDisplayPanel ? 0 : this.selectedCellPosition[0] + 7,
-        this.shouldDisplayPanel ? 0 : this.selectedCellPosition[1] + 7
+        this.shouldDisplayPanel ? 0 : this.selectedCellPosition[0] + 3.5,
+        this.shouldDisplayPanel ? 0 : this.selectedCellPosition[1] + 3.5
       ];
     },
     overCardDimension() {
       return [
-        this.shouldDisplayPanel ? "100%" : this.cellWidth - 14 + "px",
-        this.shouldDisplayPanel ? "100%" : this.cellHeight - 14 + "px"
+        this.shouldDisplayPanel ? '100%' : this.cellWidth - 14 + 'px',
+        this.shouldDisplayPanel ? '100%' : this.cellHeight - 14 + 'px',
       ];
     }
   },
@@ -46,6 +46,7 @@ export default {
       setJustUpdated: 'setJustUpdated',
     }),
     buildGrid() {
+      this.selectedCellPosition = [0, 0];
       let i = this.getItemsLength(this.items);
       this.gridSize = undefined;
       while (!this.gridSize) {
@@ -158,6 +159,13 @@ export default {
             vnode.context.setShowDisplayPanel(true);
           }, 100);
         }
+      }
+    }
+  },
+  watch: {
+    items(newValue, oldValue) {
+      if (newValue.length !== oldValue.length) {
+        this.buildGrid();
       }
     }
   }

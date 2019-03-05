@@ -79,6 +79,24 @@ class CategoriesTableSeeder extends Seeder
                 'expense' => 1,
                 'icon' => 'fa fa-square'
             ],
+            [
+              'user_id' => 1,
+              'name' => 'Salary',
+              'expense' => 0,
+              'icon' => 'fa fa-briefcase'
+            ],
+            [
+              'user_id' => 1,
+              'name' => 'Subsidies',
+              'expense' => 0,
+              'icon' => 'fa fa-envelope'
+            ],
+            [
+              'user_id' => 1,
+              'name' => 'Other',
+              'expense' => 0,
+              'icon' => 'fa fa-square'
+          ],
         ];
 
         foreach($categories as $category) {

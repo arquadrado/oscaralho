@@ -50,7 +50,8 @@ export default {
       selectedCategoryObject: 'getSelectedCategory',
       shouldDisplayPanel: 'shouldDisplayPanel',
       selectedYear: 'getSelectedYear',
-      selectedMonth: 'getSelectedMonth'
+      selectedMonth: 'getSelectedMonth',
+      getCurrentCategoryType: 'getCurrentCategoryType'
     })
   },
   methods: {
@@ -68,7 +69,11 @@ export default {
       const bound = this.getCategoryCurrentBound(category);
       const sum = this.getCategoryExpensesSum(category);
 
-      return this.getCellStatusColor(bound, sum);
+      if (this.getCurrentCategoryType === 'expense') {
+        return this.getCellStatusColor(bound, sum);
+      }
+
+      return this.getCellStatusColor(sum, bound);
     },
     getCategoryExpensesSum(category) {
       if (!category || !category.expenses) {
