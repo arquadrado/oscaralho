@@ -11,24 +11,40 @@
   background-color: rgb(243, 243, 243);
   transition: all 100ms ease-out;
   text-align: center;
-  overflow: auto;
+  overflow: hidden;
 
-  display: flex;
-  align-items: center;
-  
-  .menu-options {
+  .opened-menu-content {
     width: 100%;
-    padding: 14px;
-    .menu-option {
-      height: 60px;
-      border: 2px solid #4f4f4f;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin: 14px;
-      border-radius: 30px;
+    height: calc(100% - 54px);
+    display: flex;
+    align-items: center;
+    
+    .slide-fade-enter-active {
+      transition: all .3s ease;
+    }
+    .slide-fade-leave-active {
+      transition: all .8s ease-out;
+    }
+    .slide-fade-enter, .slide-fade-leave-to
+    /* .slide-fade-leave-active below version 2.1.8 */ {
+      transform: translateX(-100%);
+    }
+
+    .menu-options {
+      width: 100%;
+      padding: 14px;
+      .menu-option {
+        height: 60px;
+        border: 2px solid #4f4f4f;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 14px;
+        border-radius: 30px;
+      }
     }
   }
+  
 
   .menu-trigger {
     position: absolute;

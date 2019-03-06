@@ -1,16 +1,29 @@
 <template>
   <div id="menu" :class="{'open': menuIsOpen}">
-    <div v-if="menuIsOpen" class="menu-options">
+    <div class="opened-menu-content" v-if="menuIsOpen">
 
-      <div v-if="shouldShowYearViewButton" class="menu-option" @click="showYearView">
-        <span>Year</span>
-      </div>
+      <transition name="slide-fade">
+        <div class="menu-options" v-if="isMenuOptions">
 
-      <div class="menu-option" @click="showAllTimeView">
-        <span>All time</span>
-      </div>
+          <div class="menu-option" @click="changeMenuView('category')">
+            <span>Add category</span>
+          </div>
 
+          <div v-if="shouldShowYearViewButton" class="menu-option" @click="showYearView">
+            <span>Year</span>
+          </div>
+
+          <div class="menu-option" @click="showAllTimeView">
+            <span>All time</span>
+          </div>
+
+        </div>
+      </transition>
+      <transition name="slide-fade">
+        <menu-add-category v-if="isMenuAddCategory"></menu-add-category>
+      </transition>
     </div>
+
     <div class="menu-trigger">
       <span class="arrow-button centered-content-hv" :class="{'disabled': !canGoBack}" @click="back"><i class="fa fa-chevron-left"></i></span>
       <span class="arrow-button centered-content-hv" :class="{'disabled': isExpense}" @click="setCurrentCategoryType('expense')"><i class="fa fa-circle-o"></i></span>
@@ -23,11 +36,16 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
+import MenuAddCategoryComponent from './menu-add-category.component.vue';
 
 export default {
+  components: {
+    'menu-add-category': MenuAddCategoryComponent
+  },
   data() {
     return {
-      menuIsOpen: false
+      menuIsOpen: false,
+      menuDisplay: 'options'
     };
   },
   computed: {
@@ -69,6 +87,15 @@ export default {
     },
     isExpense() {
       return this.getCurrentCategoryType === 'expense';
+    },
+    isMenuOptions() {
+      return this.menuDisplay === 'options';
+    },
+    isMenuAddCategory() {
+      return this.menuDisplay === 'category';
+    },
+    isMenuAddMonth() {
+      return this.menuDisplay === 'month';
     }
   },
   methods: {
@@ -122,6 +149,9 @@ export default {
           this.setMonth(this.currentYearMonths[0]);
         }
       }
+    },
+    changeMenuView(view) {
+      this.menuDisplay = view;
     }
   }
 };
