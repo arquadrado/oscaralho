@@ -15,7 +15,7 @@ export default {
   computed: {
     ...mapGetters({
       justUpdated: 'isJustUpdated',
-
+      currentCategoryType: 'getCurrentCategoryType'
     }),
     cellWidth() {
       if (this.gridSize) {
@@ -103,9 +103,11 @@ export default {
 
       return selectedCombination;
     },
-    getCellStatusColor(bound, sum) {
+    getCellStatusColor(item) {
 
-      const ratio = bound / sum;
+      const bound = this.getBoundsSum(item);
+      const sum = this.getExpensesSum(item);
+      const ratio = this.currentCategoryType === 'expense' ? bound / sum : sum / bound;
 
       if (isNaN(ratio)) {
         return "rgba(100, 100, 100, 1)";

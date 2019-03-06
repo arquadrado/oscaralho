@@ -121,16 +121,20 @@ const actions = {
     }
   },
 
-  setMonth: ({ commit }, month) => {
+  setMonth: ({ commit, dispatch }, month) => {
+    dispatch('setShowDisplayPanel', false);
     commit('SET_MONTH', month);
   },
-  setYear: ({ commit }, year) => {
+  setYear: ({ commit, dispatch }, year) => {
+    dispatch('setShowDisplayPanel', false);
     commit('SET_YEAR', year);
   },
-  setCurrentView: ({ commit }, view) => {
+  setCurrentView: ({ commit, dispatch }, view) => {
+    dispatch('setShowDisplayPanel', false);
     commit('SET_CURRENT_VIEW', view);
   },
-  setCurrentCategoryType: ({ commit }, type) => {
+  setCurrentCategoryType: ({ commit, dispatch }, type) => {
+    dispatch('setShowDisplayPanel', false);
     commit('SET_CURRENT_CATEGORY_TYPE', type);
   },
 

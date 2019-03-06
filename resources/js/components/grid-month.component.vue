@@ -10,7 +10,7 @@
         >
           <div 
             class="category"
-            :style="{'background-color': getCategoryStatusColor(category)}"
+            :style="{'background-color': getCellStatusColor(category)}"
           >
             <i :class="[category.category.icon]"></i>
           </div>
@@ -19,7 +19,7 @@
         <div class="category-to-expand"
           :class="{'expand': shouldDisplayPanel}"
           :style="{
-            'background-color': getCategoryStatusColor(selectedCategoryObject),
+            'background-color': getCellStatusColor(selectedCategoryObject),
             'width': overCardDimension[0], 
             'height': overCardDimension[1],
             'top': overCardPosition[0] + 'px', 
@@ -50,8 +50,7 @@ export default {
       selectedCategoryObject: 'getSelectedCategory',
       shouldDisplayPanel: 'shouldDisplayPanel',
       selectedYear: 'getSelectedYear',
-      selectedMonth: 'getSelectedMonth',
-      getCurrentCategoryType: 'getCurrentCategoryType'
+      selectedMonth: 'getSelectedMonth'
     })
   },
   methods: {
@@ -65,17 +64,7 @@ export default {
       }
       this.selectCategory(categoryId);
     },
-    getCategoryStatusColor(category) {
-      const bound = this.getCategoryCurrentBound(category);
-      const sum = this.getCategoryExpensesSum(category);
-
-      if (this.getCurrentCategoryType === 'expense') {
-        return this.getCellStatusColor(bound, sum);
-      }
-
-      return this.getCellStatusColor(sum, bound);
-    },
-    getCategoryExpensesSum(category) {
+    getExpensesSum(category) {
       if (!category || !category.expenses) {
         return 0;
       }
@@ -84,7 +73,7 @@ export default {
         return sum;
       }, 0);
     },
-    getCategoryCurrentBound(bound) {
+    getBoundsSum(bound) {
       if (!bound) {
         return 0;
       }

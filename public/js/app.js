@@ -12595,8 +12595,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
   },
 
   computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])({
-    justUpdated: 'isJustUpdated'
-
+    justUpdated: 'isJustUpdated',
+    currentCategoryType: 'getCurrentCategoryType'
   }), {
     cellWidth: function cellWidth() {
       if (this.gridSize) {
@@ -12674,9 +12674,11 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
       return selectedCombination;
     },
-    getCellStatusColor: function getCellStatusColor(bound, sum) {
+    getCellStatusColor: function getCellStatusColor(item) {
 
-      var ratio = bound / sum;
+      var bound = this.getBoundsSum(item);
+      var sum = this.getExpensesSum(item);
+      var ratio = this.currentCategoryType === 'expense' ? bound / sum : sum / bound;
 
       if (isNaN(ratio)) {
         return "rgba(100, 100, 100, 1)";
@@ -48721,23 +48723,31 @@ var actions = {
   },
 
   setMonth: function setMonth(_ref8, month) {
-    var commit = _ref8.commit;
+    var commit = _ref8.commit,
+        dispatch = _ref8.dispatch;
 
+    dispatch('setShowDisplayPanel', false);
     commit('SET_MONTH', month);
   },
   setYear: function setYear(_ref9, year) {
-    var commit = _ref9.commit;
+    var commit = _ref9.commit,
+        dispatch = _ref9.dispatch;
 
+    dispatch('setShowDisplayPanel', false);
     commit('SET_YEAR', year);
   },
   setCurrentView: function setCurrentView(_ref10, view) {
-    var commit = _ref10.commit;
+    var commit = _ref10.commit,
+        dispatch = _ref10.dispatch;
 
+    dispatch('setShowDisplayPanel', false);
     commit('SET_CURRENT_VIEW', view);
   },
   setCurrentCategoryType: function setCurrentCategoryType(_ref11, type) {
-    var commit = _ref11.commit;
+    var commit = _ref11.commit,
+        dispatch = _ref11.dispatch;
 
+    dispatch('setShowDisplayPanel', false);
     commit('SET_CURRENT_CATEGORY_TYPE', type);
   }
 
@@ -51530,8 +51540,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     selectedCategoryObject: 'getSelectedCategory',
     shouldDisplayPanel: 'shouldDisplayPanel',
     selectedYear: 'getSelectedYear',
-    selectedMonth: 'getSelectedMonth',
-    getCurrentCategoryType: 'getCurrentCategoryType'
+    selectedMonth: 'getSelectedMonth'
   })),
   methods: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({
     selectCategory: 'selectCategory',
@@ -51543,17 +51552,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       }
       this.selectCategory(categoryId);
     },
-    getCategoryStatusColor: function getCategoryStatusColor(category) {
-      var bound = this.getCategoryCurrentBound(category);
-      var sum = this.getCategoryExpensesSum(category);
-
-      if (this.getCurrentCategoryType === 'expense') {
-        return this.getCellStatusColor(bound, sum);
-      }
-
-      return this.getCellStatusColor(sum, bound);
-    },
-    getCategoryExpensesSum: function getCategoryExpensesSum(category) {
+    getExpensesSum: function getExpensesSum(category) {
       if (!category || !category.expenses) {
         return 0;
       }
@@ -51562,7 +51561,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         return sum;
       }, 0);
     },
-    getCategoryCurrentBound: function getCategoryCurrentBound(bound) {
+    getBoundsSum: function getBoundsSum(bound) {
       if (!bound) {
         return 0;
       }
@@ -51894,9 +51893,7 @@ var render = function() {
               "div",
               {
                 staticClass: "category",
-                style: {
-                  "background-color": _vm.getCategoryStatusColor(category)
-                }
+                style: { "background-color": _vm.getCellStatusColor(category) }
               },
               [_c("i", { class: [category.category.icon] })]
             )
@@ -51910,7 +51907,7 @@ var render = function() {
           staticClass: "category-to-expand",
           class: { expand: _vm.shouldDisplayPanel },
           style: {
-            "background-color": _vm.getCategoryStatusColor(
+            "background-color": _vm.getCellStatusColor(
               _vm.selectedCategoryObject
             ),
             width: _vm.overCardDimension[0],
@@ -52163,16 +52160,14 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       this.setCurrentView('grid-month');
       this.setMonth(month);
     },
-    getMonthStatusColor: function getMonthStatusColor(month) {
-      var bound = this.getMonthBoundsSum(month);
-      var sum = this.getMonthExpensesSum(month);
-      return this.getCellStatusColor(bound, sum);
-    },
-    getMonthExpensesSum: function getMonthExpensesSum(month) {
+    getExpensesSum: function getExpensesSum(month) {
       var _this = this;
 
       return this.bounds.filter(function (bound) {
-        return bound.year === _this.selectedYear && bound.month === month;
+        if (_this.currentCategoryType === 'expense') {
+          return bound.year === _this.selectedYear && bound.month === month && bound.category.expense;
+        }
+        return bound.year === _this.selectedYear && bound.month === month && !bound.category.expense;
       }).reduce(function (sum, bound) {
         sum += bound.expenses.reduce(function (expenseSum, expense) {
           expenseSum += Number(expense.value);
@@ -52181,11 +52176,14 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         return sum;
       }, 0);
     },
-    getMonthBoundsSum: function getMonthBoundsSum(month) {
+    getBoundsSum: function getBoundsSum(month) {
       var _this2 = this;
 
       return this.bounds.filter(function (bound) {
-        return bound.year === _this2.selectedYear && bound.month === month;
+        if (_this2.currentCategoryType === 'expense') {
+          return bound.year === _this2.selectedYear && bound.month === month && bound.category.expense;
+        }
+        return bound.year === _this2.selectedYear && bound.month === month && !bound.category.expense;
       }).reduce(function (sum, bound) {
         sum += bound.bound_in_cents / 100;
         return sum;
@@ -52234,7 +52232,7 @@ var render = function() {
             "div",
             {
               staticClass: "category",
-              style: { "background-color": _vm.getMonthStatusColor(month) }
+              style: { "background-color": _vm.getCellStatusColor(month) }
             },
             [_c("i", [_vm._v(_vm._s(month))])]
           )
@@ -52353,14 +52351,14 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       this.setCurrentView('grid-year');
       this.setYear(year);
     },
-    getYearStatusColor: function getYearStatusColor(year) {
-      var bound = this.getYearBoundsSum(year);
-      var sum = this.getYearExpensesSum(year);
-      return this.getCellStatusColor(bound, sum);
-    },
-    getYearExpensesSum: function getYearExpensesSum(year) {
+    getExpensesSum: function getExpensesSum(year) {
+      var _this = this;
+
       return this.bounds.filter(function (bound) {
-        return bound.year === year;
+        if (_this.currentCategoryType === 'expense') {
+          return bound.year === year && bound.category.expense;
+        }
+        return bound.year === year && !bound.category.expense;
       }).reduce(function (sum, bound) {
         sum += bound.expenses.reduce(function (expenseSum, expense) {
           expenseSum += Number(expense.value);
@@ -52369,9 +52367,14 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         return sum;
       }, 0);
     },
-    getYearBoundsSum: function getYearBoundsSum(year) {
+    getBoundsSum: function getBoundsSum(year) {
+      var _this2 = this;
+
       return this.bounds.filter(function (bound) {
-        return bound.year === year;
+        if (_this2.currentCategoryType === 'expense') {
+          return bound.year === year && bound.category.expense;
+        }
+        return bound.year === year && !bound.category.expense;
       }).reduce(function (sum, bound) {
         sum += bound.bound_in_cents / 100;
         return sum;
@@ -52415,7 +52418,7 @@ var render = function() {
             "div",
             {
               staticClass: "category",
-              style: { "background-color": _vm.getYearStatusColor(year) }
+              style: { "background-color": _vm.getCellStatusColor(year) }
             },
             [_c("i", [_vm._v(_vm._s(year))])]
           )

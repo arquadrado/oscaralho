@@ -9,7 +9,7 @@
     >
       <div 
         class="category"
-        :style="{'background-color': getYearStatusColor(year)}"
+        :style="{'background-color': getCellStatusColor(year)}"
       >
         <i>{{ year }}</i>
       </div>
@@ -41,15 +41,13 @@ export default {
       this.setCurrentView('grid-year');
       this.setYear(year);
     },
-    getYearStatusColor(year) {
-      const bound = this.getYearBoundsSum(year);
-      const sum = this.getYearExpensesSum(year);
-      return this.getCellStatusColor(bound, sum);
-    },
-    getYearExpensesSum(year) {
+    getExpensesSum(year) {
       return this.bounds
         .filter(bound => {
-          return bound.year === year;
+          if (this.currentCategoryType === 'expense') {
+            return bound.year === year && bound.category.expense;
+          }
+          return bound.year === year && !bound.category.expense;
         })
         .reduce((sum, bound) => {
           sum += bound.expenses.reduce((expenseSum, expense) => {
@@ -59,10 +57,13 @@ export default {
           return sum;
         }, 0);
     },
-    getYearBoundsSum(year) {
+    getBoundsSum(year) {
       return this.bounds
         .filter(bound => {
-          return bound.year === year;
+          if (this.currentCategoryType === 'expense') {
+            return bound.year === year && bound.category.expense;
+          }
+          return bound.year === year && !bound.category.expense;
         })
         .reduce((sum, bound) => {
           sum += bound.bound_in_cents / 100;

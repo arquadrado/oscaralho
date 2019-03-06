@@ -9,7 +9,7 @@
     >
       <div 
         class="category"
-        :style="{'background-color': getMonthStatusColor(month)}"
+        :style="{'background-color': getCellStatusColor(month)}"
       >
         <i>{{ month }}</i>
       </div>
@@ -46,15 +46,21 @@ export default {
       this.setCurrentView('grid-month');
       this.setMonth(month);
     },
-    getMonthStatusColor(month) {
-      const bound = this.getMonthBoundsSum(month);
-      const sum = this.getMonthExpensesSum(month);
-      return this.getCellStatusColor(bound, sum);
-    },
-    getMonthExpensesSum(month) {
+    getExpensesSum(month) {
       return this.bounds
         .filter(bound => {
-          return bound.year === this.selectedYear && bound.month === month;
+          if (this.currentCategoryType === 'expense') {
+            return (
+              bound.year === this.selectedYear &&
+              bound.month === month &&
+              bound.category.expense
+            );
+          }
+          return (
+            bound.year === this.selectedYear &&
+            bound.month === month &&
+            !bound.category.expense
+          );
         })
         .reduce((sum, bound) => {
           sum += bound.expenses.reduce((expenseSum, expense) => {
@@ -64,10 +70,21 @@ export default {
           return sum;
         }, 0);
     },
-    getMonthBoundsSum(month) {
+    getBoundsSum(month) {
       return this.bounds
         .filter(bound => {
-          return bound.year === this.selectedYear && bound.month === month;
+          if (this.currentCategoryType === 'expense') {
+            return (
+              bound.year === this.selectedYear &&
+              bound.month === month &&
+              bound.category.expense
+            );
+          }
+          return (
+            bound.year === this.selectedYear &&
+            bound.month === month &&
+            !bound.category.expense
+          );
         })
         .reduce((sum, bound) => {
           sum += bound.bound_in_cents / 100;
