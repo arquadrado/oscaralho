@@ -2,34 +2,72 @@
   <div id="menu" :class="{'open': menuIsOpen}">
     <div class="opened-menu-content" v-if="menuIsOpen">
 
-      <transition name="slide-fade">
-        <div class="menu-options" v-if="isMenuOptions">
+        <div class="slidable-panel"
+          :class="{
+            'move-left': isMenuPeriods || isMenuEditPeriod,
+            'move-right': isMenuCategories || isMenuEditCategory,
+            'move-down': isMenuEditCategory || isMenuEditPeriod
+            }"
+        >
 
-          <div class="menu-option" @click="changeMenuView('category')">
-            <span>Add category</span>
+          <div class="menu-options x0">
+
+            <div class="menu-option" @click="changeMenuView('category')">
+              <span>Categories</span>
+            </div>
+
+            <div class="menu-option" @click="changeMenuView('period')">
+              <span>Periods</span>
+            </div>
+
+            <div v-if="shouldShowYearViewButton" class="menu-option" @click="showYearView">
+              <span>Year</span>
+            </div>
+
+            <div class="menu-option" @click="showAllTimeView">
+              <span>All time</span>
+            </div>
+          </div>
+          
+          <div class="menu-options x1">
+            <div class="menu-option" @click="changeMenuView('category-edit')">
+              <span>New category</span>
+            </div>
+            <div class="menu-option" @click="changeMenuView('options')">
+              <span>what</span>
+            </div>
           </div>
 
-          <div v-if="shouldShowYearViewButton" class="menu-option" @click="showYearView">
-            <span>Year</span>
+          <div class="menu-options x1 y1">
+            <div class="menu-option" @click="changeMenuView('category')">
+              <span>Back</span>
+            </div>
           </div>
 
-          <div class="menu-option" @click="showAllTimeView">
-            <span>All time</span>
+          <div class="menu-options x-1">
+            <div class="menu-option" @click="changeMenuView('period-edit')">
+              <span>New period</span>
+            </div>
+            <div class="menu-option" @click="changeMenuView('options')">
+              <span>Back</span>
+            </div>
+          </div>
+
+          <div class="menu-options x-1 y1">
+            <div class="menu-option" @click="changeMenuView('period')">
+              <span>Back</span>
+            </div>
           </div>
 
         </div>
-      </transition>
-      <transition name="slide-fade">
-        <menu-add-category v-if="isMenuAddCategory"></menu-add-category>
-      </transition>
     </div>
 
     <div class="menu-trigger">
-      <span class="arrow-button centered-content-hv" :class="{'disabled': !canGoBack}" @click="back"><i class="fa fa-chevron-left"></i></span>
-      <span class="arrow-button centered-content-hv" :class="{'disabled': isExpense}" @click="setCurrentCategoryType('expense')"><i class="fa fa-circle-o"></i></span>
       <span @click="toggleMenu" class="arrow-button centered-content-hv"><i class="fa fa-bars"></i></span>
-      <span class="arrow-button centered-content-hv" :class="{'disabled': !isExpense}" @click="setCurrentCategoryType('revenue')"><i class="fa fa-circle-o"></i></span>
-      <span class="arrow-button centered-content-hv" :class="{'disabled': !canGoForward}" @click="forward"><i class="fa fa-chevron-right"></i></span>
+      <span class="arrow-button centered-content-hv" :class="{'disabled': isExpense}" @click="setCurrentCategoryType('expense')"><i class="fa fa-circle-thin"></i></span>
+      <span class="arrow-button centered-content-hv" :class="{'disabled': !isExpense}" @click="setCurrentCategoryType('revenue')"><i class="fa fa-circle-thin"></i></span>
+      <span class="arrow-button centered-content-hv" :class="{'disabled': !canGoBack}" @click="back"><i class="fa fa-angle-left"></i></span>
+      <span class="arrow-button centered-content-hv" :class="{'disabled': !canGoForward}" @click="forward"><i class="fa fa-angle-right"></i></span>
     </div>
   </div>
 </template>
@@ -91,11 +129,20 @@ export default {
     isMenuOptions() {
       return this.menuDisplay === 'options';
     },
-    isMenuAddCategory() {
+    isMenuCategories() {
       return this.menuDisplay === 'category';
+    },
+    isMenuEditCategory() {
+      return this.menuDisplay === 'category-edit';
     },
     isMenuAddMonth() {
       return this.menuDisplay === 'month';
+    },
+    isMenuPeriods() {
+      return this.menuDisplay === 'period';
+    },
+    isMenuEditPeriod() {
+      return this.menuDisplay === 'period-edit';
     }
   },
   methods: {
@@ -151,6 +198,7 @@ export default {
       }
     },
     changeMenuView(view) {
+      console.log(view);
       this.menuDisplay = view;
     }
   }

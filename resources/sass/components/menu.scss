@@ -14,35 +14,63 @@
   overflow: hidden;
 
   .opened-menu-content {
+    position: relative;
     width: 100%;
     height: calc(100% - 54px);
-    display: flex;
-    align-items: center;
     
-    .slide-fade-enter-active {
-      transition: all .3s ease;
-    }
-    .slide-fade-leave-active {
-      transition: all .8s ease-out;
-    }
-    .slide-fade-enter, .slide-fade-leave-to
-    /* .slide-fade-leave-active below version 2.1.8 */ {
-      transform: translateX(-100%);
-    }
+    .slidable-panel {
+      left: -100%;
+      top: 0;
+      position: absolute;
+      height: 200%;
+      width: 300%;
+      transition: all 200ms ease-out;
+      
+      &.move-left {
+        transition: all 200ms ease-in;
+        left: 0;
+      }
 
-    .menu-options {
-      width: 100%;
-      padding: 14px;
-      .menu-option {
-        height: 60px;
-        border: 2px solid #4f4f4f;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin: 14px;
-        border-radius: 30px;
+      &.move-right {
+        transition: all 200ms ease-in;
+        left: -200%;
+      }
+      
+      &.move-down {
+        transition: all 200ms ease-in;
+        top: -100%;
+      }
+
+      .menu-options {
+        position: absolute;
+        width: 33.33%;
+        height: 50%;
+        overflow: auto;
+        .menu-option {
+          height: 60px;
+          border: 2px solid #4f4f4f;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          margin: 14px;
+          border-radius: 30px;
+        }
+      }
+      
+      .x-1 {
+        left: 0;
+      }
+      .x0 {
+        left: 33.333%;
+      }
+      .x1 {
+        left: 66.667%;
+      }
+      .y1 {
+        top: 50%;
       }
     }
+
   }
   
 

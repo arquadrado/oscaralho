@@ -26203,7 +26203,7 @@ module.exports = Component.exports
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(18);
-module.exports = __webpack_require__(63);
+module.exports = __webpack_require__(66);
 
 
 /***/ }),
@@ -51946,7 +51946,7 @@ var normalizeComponent = __webpack_require__(2)
 /* script */
 var __vue_script__ = __webpack_require__(52)
 /* template */
-var __vue_template__ = __webpack_require__(62)
+var __vue_template__ = __webpack_require__(65)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -52446,7 +52446,7 @@ var normalizeComponent = __webpack_require__(2)
 /* script */
 var __vue_script__ = __webpack_require__(60)
 /* template */
-var __vue_template__ = __webpack_require__(61)
+var __vue_template__ = __webpack_require__(64)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -52491,10 +52491,48 @@ module.exports = Component.exports
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__menu_add_category_component_vue__ = __webpack_require__(68);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__menu_add_category_component_vue__ = __webpack_require__(61);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__menu_add_category_component_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__menu_add_category_component_vue__);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -52579,11 +52617,20 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     isMenuOptions: function isMenuOptions() {
       return this.menuDisplay === 'options';
     },
-    isMenuAddCategory: function isMenuAddCategory() {
+    isMenuCategories: function isMenuCategories() {
       return this.menuDisplay === 'category';
+    },
+    isMenuEditCategory: function isMenuEditCategory() {
+      return this.menuDisplay === 'category-edit';
     },
     isMenuAddMonth: function isMenuAddMonth() {
       return this.menuDisplay === 'month';
+    },
+    isMenuPeriods: function isMenuPeriods() {
+      return this.menuDisplay === 'period';
+    },
+    isMenuEditPeriod: function isMenuEditPeriod() {
+      return this.menuDisplay === 'period-edit';
     }
   }),
   methods: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({
@@ -52633,6 +52680,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       }
     },
     changeMenuView: function changeMenuView(view) {
+      console.log(view);
       this.menuDisplay = view;
     }
   })
@@ -52642,91 +52690,260 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 /* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
+var disposed = false
+var normalizeComponent = __webpack_require__(2)
+/* script */
+var __vue_script__ = __webpack_require__(62)
+/* template */
+var __vue_template__ = __webpack_require__(63)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/menu-add-category.component.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-75ed4e6c", Component.options)
+  } else {
+    hotAPI.reload("data-v-75ed4e6c", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 62 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({});
+
+/***/ }),
+/* 63 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _vm._m(0)
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "add-category" }, [
+      _c("div", { staticClass: "menu-option" }, [
+        _c("span", [_vm._v("Add category")])
+      ])
+    ])
+  }
+]
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-75ed4e6c", module.exports)
+  }
+}
+
+/***/ }),
+/* 64 */
+/***/ (function(module, exports, __webpack_require__) {
+
 var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { class: { open: _vm.menuIsOpen }, attrs: { id: "menu" } }, [
     _vm.menuIsOpen
-      ? _c(
-          "div",
-          { staticClass: "opened-menu-content" },
-          [
-            _c("transition", { attrs: { name: "slide-fade" } }, [
-              _vm.isMenuOptions
-                ? _c("div", { staticClass: "menu-options" }, [
-                    _c(
+      ? _c("div", { staticClass: "opened-menu-content" }, [
+          _c(
+            "div",
+            {
+              staticClass: "slidable-panel",
+              class: {
+                "move-left": _vm.isMenuPeriods || _vm.isMenuEditPeriod,
+                "move-right": _vm.isMenuCategories || _vm.isMenuEditCategory,
+                "move-down": _vm.isMenuEditCategory || _vm.isMenuEditPeriod
+              }
+            },
+            [
+              _c("div", { staticClass: "menu-options x0" }, [
+                _c(
+                  "div",
+                  {
+                    staticClass: "menu-option",
+                    on: {
+                      click: function($event) {
+                        _vm.changeMenuView("category")
+                      }
+                    }
+                  },
+                  [_c("span", [_vm._v("Categories")])]
+                ),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  {
+                    staticClass: "menu-option",
+                    on: {
+                      click: function($event) {
+                        _vm.changeMenuView("period")
+                      }
+                    }
+                  },
+                  [_c("span", [_vm._v("Periods")])]
+                ),
+                _vm._v(" "),
+                _vm.shouldShowYearViewButton
+                  ? _c(
                       "div",
                       {
                         staticClass: "menu-option",
-                        on: {
-                          click: function($event) {
-                            _vm.changeMenuView("category")
-                          }
-                        }
+                        on: { click: _vm.showYearView }
                       },
-                      [_c("span", [_vm._v("Add category")])]
-                    ),
-                    _vm._v(" "),
-                    _vm.shouldShowYearViewButton
-                      ? _c(
-                          "div",
-                          {
-                            staticClass: "menu-option",
-                            on: { click: _vm.showYearView }
-                          },
-                          [_c("span", [_vm._v("Year")])]
-                        )
-                      : _vm._e(),
-                    _vm._v(" "),
-                    _c(
-                      "div",
-                      {
-                        staticClass: "menu-option",
-                        on: { click: _vm.showAllTimeView }
-                      },
-                      [_c("span", [_vm._v("All time")])]
+                      [_c("span", [_vm._v("Year")])]
                     )
-                  ])
-                : _vm._e()
-            ]),
-            _vm._v(" "),
-            _c(
-              "transition",
-              { attrs: { name: "slide-fade" } },
-              [_vm.isMenuAddCategory ? _c("menu-add-category") : _vm._e()],
-              1
-            )
-          ],
-          1
-        )
+                  : _vm._e(),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  {
+                    staticClass: "menu-option",
+                    on: { click: _vm.showAllTimeView }
+                  },
+                  [_c("span", [_vm._v("All time")])]
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "menu-options x1" }, [
+                _c(
+                  "div",
+                  {
+                    staticClass: "menu-option",
+                    on: {
+                      click: function($event) {
+                        _vm.changeMenuView("category-edit")
+                      }
+                    }
+                  },
+                  [_c("span", [_vm._v("New category")])]
+                ),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  {
+                    staticClass: "menu-option",
+                    on: {
+                      click: function($event) {
+                        _vm.changeMenuView("options")
+                      }
+                    }
+                  },
+                  [_c("span", [_vm._v("what")])]
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "menu-options x1 y1" }, [
+                _c(
+                  "div",
+                  {
+                    staticClass: "menu-option",
+                    on: {
+                      click: function($event) {
+                        _vm.changeMenuView("category")
+                      }
+                    }
+                  },
+                  [_c("span", [_vm._v("Back")])]
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "menu-options x-1" }, [
+                _c(
+                  "div",
+                  {
+                    staticClass: "menu-option",
+                    on: {
+                      click: function($event) {
+                        _vm.changeMenuView("period-edit")
+                      }
+                    }
+                  },
+                  [_c("span", [_vm._v("New period")])]
+                ),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  {
+                    staticClass: "menu-option",
+                    on: {
+                      click: function($event) {
+                        _vm.changeMenuView("options")
+                      }
+                    }
+                  },
+                  [_c("span", [_vm._v("Back")])]
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "menu-options x-1 y1" }, [
+                _c(
+                  "div",
+                  {
+                    staticClass: "menu-option",
+                    on: {
+                      click: function($event) {
+                        _vm.changeMenuView("period")
+                      }
+                    }
+                  },
+                  [_c("span", [_vm._v("Back")])]
+                )
+              ])
+            ]
+          )
+        ])
       : _vm._e(),
     _vm._v(" "),
     _c("div", { staticClass: "menu-trigger" }, [
-      _c(
-        "span",
-        {
-          staticClass: "arrow-button centered-content-hv",
-          class: { disabled: !_vm.canGoBack },
-          on: { click: _vm.back }
-        },
-        [_c("i", { staticClass: "fa fa-chevron-left" })]
-      ),
-      _vm._v(" "),
-      _c(
-        "span",
-        {
-          staticClass: "arrow-button centered-content-hv",
-          class: { disabled: _vm.isExpense },
-          on: {
-            click: function($event) {
-              _vm.setCurrentCategoryType("expense")
-            }
-          }
-        },
-        [_c("i", { staticClass: "fa fa-circle-o" })]
-      ),
-      _vm._v(" "),
       _c(
         "span",
         {
@@ -52740,6 +52957,20 @@ var render = function() {
         "span",
         {
           staticClass: "arrow-button centered-content-hv",
+          class: { disabled: _vm.isExpense },
+          on: {
+            click: function($event) {
+              _vm.setCurrentCategoryType("expense")
+            }
+          }
+        },
+        [_c("i", { staticClass: "fa fa-circle-thin" })]
+      ),
+      _vm._v(" "),
+      _c(
+        "span",
+        {
+          staticClass: "arrow-button centered-content-hv",
           class: { disabled: !_vm.isExpense },
           on: {
             click: function($event) {
@@ -52747,7 +52978,17 @@ var render = function() {
             }
           }
         },
-        [_c("i", { staticClass: "fa fa-circle-o" })]
+        [_c("i", { staticClass: "fa fa-circle-thin" })]
+      ),
+      _vm._v(" "),
+      _c(
+        "span",
+        {
+          staticClass: "arrow-button centered-content-hv",
+          class: { disabled: !_vm.canGoBack },
+          on: { click: _vm.back }
+        },
+        [_c("i", { staticClass: "fa fa-angle-left" })]
       ),
       _vm._v(" "),
       _c(
@@ -52757,7 +52998,7 @@ var render = function() {
           class: { disabled: !_vm.canGoForward },
           on: { click: _vm.forward }
         },
-        [_c("i", { staticClass: "fa fa-chevron-right" })]
+        [_c("i", { staticClass: "fa fa-angle-right" })]
       )
     ])
   ])
@@ -52773,7 +53014,7 @@ if (false) {
 }
 
 /***/ }),
-/* 62 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -52813,105 +53054,10 @@ if (false) {
 }
 
 /***/ }),
-/* 63 */
+/* 66 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 64 */,
-/* 65 */,
-/* 66 */,
-/* 67 */,
-/* 68 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-var normalizeComponent = __webpack_require__(2)
-/* script */
-var __vue_script__ = __webpack_require__(69)
-/* template */
-var __vue_template__ = __webpack_require__(70)
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = null
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __vue_script__,
-  __vue_template__,
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-Component.options.__file = "resources/js/components/menu-add-category.component.vue"
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-75ed4e6c", Component.options)
-  } else {
-    hotAPI.reload("data-v-75ed4e6c", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 69 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-//
-//
-//
-//
-//
-//
-
-/* harmony default export */ __webpack_exports__["default"] = ({});
-
-/***/ }),
-/* 70 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _vm._m(0)
-}
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "add-item add-category" }, [
-      _c("div", { staticClass: "test" })
-    ])
-  }
-]
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-75ed4e6c", module.exports)
-  }
-}
 
 /***/ })
 /******/ ]);

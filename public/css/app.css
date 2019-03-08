@@ -53,38 +53,47 @@
 }
 
 #menu .opened-menu-content {
+  position: relative;
   width: 100%;
   height: calc(100% - 54px);
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
 }
 
-#menu .opened-menu-content .slide-fade-enter-active {
-  -webkit-transition: all .3s ease;
-  transition: all .3s ease;
+#menu .opened-menu-content .slidable-panel {
+  left: -100%;
+  top: 0;
+  position: absolute;
+  height: 200%;
+  width: 300%;
+  -webkit-transition: all 200ms ease-out;
+  transition: all 200ms ease-out;
 }
 
-#menu .opened-menu-content .slide-fade-leave-active {
-  -webkit-transition: all .8s ease-out;
-  transition: all .8s ease-out;
+#menu .opened-menu-content .slidable-panel.move-left {
+  -webkit-transition: all 200ms ease-in;
+  transition: all 200ms ease-in;
+  left: 0;
 }
 
-#menu .opened-menu-content .slide-fade-enter,
-#menu .opened-menu-content .slide-fade-leave-to {
-  -webkit-transform: translateX(-100%);
-          transform: translateX(-100%);
+#menu .opened-menu-content .slidable-panel.move-right {
+  -webkit-transition: all 200ms ease-in;
+  transition: all 200ms ease-in;
+  left: -200%;
 }
 
-#menu .opened-menu-content .menu-options {
-  width: 100%;
-  padding: 14px;
+#menu .opened-menu-content .slidable-panel.move-down {
+  -webkit-transition: all 200ms ease-in;
+  transition: all 200ms ease-in;
+  top: -100%;
 }
 
-#menu .opened-menu-content .menu-options .menu-option {
+#menu .opened-menu-content .slidable-panel .menu-options {
+  position: absolute;
+  width: 33.33%;
+  height: 50%;
+  overflow: auto;
+}
+
+#menu .opened-menu-content .slidable-panel .menu-options .menu-option {
   height: 60px;
   border: 2px solid #4f4f4f;
   display: -webkit-box;
@@ -98,6 +107,22 @@
           align-items: center;
   margin: 14px;
   border-radius: 30px;
+}
+
+#menu .opened-menu-content .slidable-panel .x-1 {
+  left: 0;
+}
+
+#menu .opened-menu-content .slidable-panel .x0 {
+  left: 33.333%;
+}
+
+#menu .opened-menu-content .slidable-panel .x1 {
+  left: 66.667%;
+}
+
+#menu .opened-menu-content .slidable-panel .y1 {
+  top: 50%;
 }
 
 #menu .menu-trigger {
@@ -133,17 +158,25 @@
 }
 
 .add-category {
-  background-color: orange;
-  width: 100%;
-  height: 100%;
-  text-align: center;
+  left: 50%;
+  position: absolute;
+  width: 50%;
 }
 
-.add-category .test {
-  background-color: blue;
-  width: 300px;
-  height: 50px;
-  margin: auto;
+.add-category .menu-option {
+  height: 60px;
+  border: 2px solid #4f4f4f;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin: 14px;
+  border-radius: 30px;
 }
 
 #grid {

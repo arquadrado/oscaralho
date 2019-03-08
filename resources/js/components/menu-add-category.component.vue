@@ -1,6 +1,10 @@
 <template>
-  <div class="add-item add-category">
-    <div class="test"></div>
+  <div class="add-category">
+
+    <div class="menu-option">
+      <span>Add category</span>
+    </div>
+
   </div>
 </template>
 
