@@ -32,7 +32,7 @@ class Budget extends Model
     }
 
     public function bounds() {
-        return $this->hasMany(CategoryBound::class, 'category_bounds');
+        return $this->hasMany(CategoryBound::class);
     }
 
 }

@@ -1,0 +1,43 @@
+@import '../_variables';
+
+.add-budget {
+  .menu-option {
+    height: 60px;
+    border: 2px solid #4f4f4f;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 14px;
+    border-radius: 30px;
+  }
+
+  .form-field {
+    margin: 14px;
+    select,input {
+      text-align: center;
+      font-size: 17px;
+      display: block;
+      background-color: transparent;
+      height: 35px;
+      width: 100%;
+      border: none;
+      border-bottom: 1px solid #4f4f4f;
+      &:focus {
+        outline: none;
+      }
+    }
+  }
+  :nth-child(4) {
+    margin-bottom: 30px;
+  }
+  
+  .actions {
+    margin: 14px;
+    display: flex;
+    justify-content: space-between;
+    .button {
+      border-color: #4f4f4f;
+    }
+  }
+  
+}

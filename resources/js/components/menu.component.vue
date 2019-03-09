@@ -4,9 +4,9 @@
 
         <div class="slidable-panel"
           :class="{
-            'move-left': isMenuPeriods || isMenuEditPeriod,
+            'move-left': isMenuBudgets || isMenuEditBudget,
             'move-right': isMenuCategories || isMenuEditCategory,
-            'move-down': isMenuEditCategory || isMenuEditPeriod
+            'move-down': isMenuEditCategory || isMenuEditBudget
             }"
         >
 
@@ -16,8 +16,8 @@
               <span>Categories</span>
             </div>
 
-            <div class="menu-option" @click="changeMenuView('period')">
-              <span>Periods</span>
+            <div class="menu-option" @click="changeMenuView('budget')">
+              <span>Budgets</span>
             </div>
 
             <div v-if="shouldShowYearViewButton" class="menu-option" @click="showYearView">
@@ -49,16 +49,20 @@
           </div>
 
           <div class="menu-options x-1">
-            <div class="menu-option" @click="changeMenuView('period-edit')">
-              <span>New period</span>
-            </div>
             <div class="menu-option" @click="changeMenuView('options')">
               <span>Back</span>
+            </div>
+            <div class="menu-option" @click="editBudget()">
+              <span>New budget</span>
+            </div>
+            <div class="menu-option" v-for="budget in budgetsToEdit" :key="budget.id" @click="editBudget(budget)">
+              <span>{{ budget.year }} - {{ budget.month }}</span>
             </div>
           </div>
 
           <div class="menu-options x-1 y1">
-            <div class="menu-option" @click="changeMenuView('period')">
+            <menu-add-budget v-if="isMenuEditBudget" @done="changeMenuView('budget')"></menu-add-budget>
+            <div class="menu-option" @click="changeMenuView('budget')">
               <span>Back</span>
             </div>
           </div>
@@ -79,10 +83,12 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import MenuAddCategoryComponent from './menu-add-category.component.vue';
+import MenuAddBudgetComponent from './menu-add-budget.component.vue';
 
 export default {
   components: {
-    'menu-add-category': MenuAddCategoryComponent
+    'menu-add-category': MenuAddCategoryComponent,
+    'menu-add-budget': MenuAddBudgetComponent
   },
   data() {
     return {
@@ -98,7 +104,9 @@ export default {
       currentYearMonths: 'getCurrentYearMonths',
       allYears: 'getAllTimeYears',
       getCurrentCategoryType: 'getCurrentCategoryType',
-      categoriesToEdit: 'getCategoriesToEdit'
+
+      categoriesToEdit: 'getCategoriesToEdit',
+      budgetsToEdit: 'getBudgetsToEdit'
     }),
     menuTriggerLabel() {
       switch (this.currentView) {
@@ -143,11 +151,11 @@ export default {
     isMenuAddMonth() {
       return this.menuDisplay === 'month';
     },
-    isMenuPeriods() {
-      return this.menuDisplay === 'period';
+    isMenuBudgets() {
+      return this.menuDisplay === 'budget';
     },
-    isMenuEditPeriod() {
-      return this.menuDisplay === 'period-edit';
+    isMenuEditBudget() {
+      return this.menuDisplay === 'budget-edit';
     }
   },
   methods: {
@@ -156,9 +164,11 @@ export default {
       setMonth: 'setMonth',
       setCurrentView: 'setCurrentView',
       setCurrentCategoryType: 'setCurrentCategoryType',
-      setCategoryToEdit: 'setCategoryToEdit'
+      setCategoryToEdit: 'setCategoryToEdit',
+      setBudgetToEdit: 'setBudgetToEdit'
     }),
     toggleMenu() {
+      this.changeMenuView('options');
       this.menuIsOpen = !this.menuIsOpen;
     },
     showYearView() {
@@ -210,6 +220,10 @@ export default {
     editCategory(category) {
       this.setCategoryToEdit(category);
       this.changeMenuView('category-edit');
+    },
+    editBudget(budget) {
+      this.setBudgetToEdit(budget);
+      this.changeMenuView('budget-edit');
     }
   }
 };

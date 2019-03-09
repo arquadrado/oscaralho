@@ -26203,7 +26203,7 @@ module.exports = Component.exports
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(18);
-module.exports = __webpack_require__(67);
+module.exports = __webpack_require__(70);
 
 
 /***/ }),
@@ -48705,8 +48705,18 @@ var actions = {
       commit('ADD_EXPENSE', expense);
     });
   },
-  updateCategoryBound: function updateCategoryBound(_ref7, data) {
+  addBounds: function addBounds(_ref7, bounds) {
     var commit = _ref7.commit;
+
+    commit('ADD_BOUNDS', bounds);
+  },
+  deleteBounds: function deleteBounds(_ref8, budgetId) {
+    var commit = _ref8.commit;
+
+    commit('DELETE_BOUNDS', budgetId);
+  },
+  updateCategoryBound: function updateCategoryBound(_ref9, data) {
+    var commit = _ref9.commit;
 
     var bound = state.bounds.find(function (c) {
       return c.id === data.categoryId;
@@ -48725,30 +48735,30 @@ var actions = {
     }
   },
 
-  setMonth: function setMonth(_ref8, month) {
-    var commit = _ref8.commit,
-        dispatch = _ref8.dispatch;
-
-    dispatch('setShowDisplayPanel', false);
-    commit('SET_MONTH', month);
-  },
-  setYear: function setYear(_ref9, year) {
-    var commit = _ref9.commit,
-        dispatch = _ref9.dispatch;
-
-    dispatch('setShowDisplayPanel', false);
-    commit('SET_YEAR', year);
-  },
-  setCurrentView: function setCurrentView(_ref10, view) {
+  setMonth: function setMonth(_ref10, month) {
     var commit = _ref10.commit,
         dispatch = _ref10.dispatch;
 
     dispatch('setShowDisplayPanel', false);
-    commit('SET_CURRENT_VIEW', view);
+    commit('SET_MONTH', month);
   },
-  setCurrentCategoryType: function setCurrentCategoryType(_ref11, type) {
+  setYear: function setYear(_ref11, year) {
     var commit = _ref11.commit,
         dispatch = _ref11.dispatch;
+
+    dispatch('setShowDisplayPanel', false);
+    commit('SET_YEAR', year);
+  },
+  setCurrentView: function setCurrentView(_ref12, view) {
+    var commit = _ref12.commit,
+        dispatch = _ref12.dispatch;
+
+    dispatch('setShowDisplayPanel', false);
+    commit('SET_CURRENT_VIEW', view);
+  },
+  setCurrentCategoryType: function setCurrentCategoryType(_ref13, type) {
+    var commit = _ref13.commit,
+        dispatch = _ref13.dispatch;
 
     dispatch('setShowDisplayPanel', false);
     commit('SET_CURRENT_CATEGORY_TYPE', type);
@@ -48756,9 +48766,6 @@ var actions = {
 
 };
 var mutations = {
-  'ADD_CATEGORY': function ADD_CATEGORY(state, category) {
-    // state.bounds.push(category);
-  },
   'SELECT_CATEGORY': function SELECT_CATEGORY(state, categoryId) {
     state.selectedCategory = categoryId;
   },
@@ -48799,7 +48806,26 @@ var mutations = {
       bound.bound_in_cents = data.value;
     }
   },
+  'ADD_BOUNDS': function ADD_BOUNDS(state, bounds) {
+    bounds.forEach(function (bound) {
+      state.bounds.push(bound);
+    });
+  },
+  'DELETE_BOUNDS': function DELETE_BOUNDS(state, budgetId) {
 
+    var indexesToRemove = state.bounds.map(function (b, i) {
+      if (b.budget_id === budgetId) {
+        return i;
+      }
+      return false;
+    }).filter(function (i) {
+      return i;
+    });
+
+    for (var i = indexesToRemove.length - 1; i >= 0; i--) {
+      state.bounds.splice(indexesToRemove[i], 1);
+    }
+  },
   'SET_MONTH': function SET_MONTH(state, month) {
     state.selectedMonth = month;
   },
@@ -48832,17 +48858,28 @@ var mutations = {
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var categories = handover && handover.categories ? handover.categories : [];
+var budgets = handover && handover.budgets ? handover.budgets : [];
 
 var state = {
+  budgets: budgets,
   categories: categories,
-  selectedCategoryToEdit: undefined
+  selectedCategoryToEdit: undefined,
+  selectedBudgetToEdit: undefined
 };
 var getters = {
+  getBudgetsToEdit: function getBudgetsToEdit(state) {
+    return state.budgets.sort(function (a, b) {
+      return a.year + '-' + a.month < b.year + '-' + b.month;
+    });
+  },
   getCategoriesToEdit: function getCategoriesToEdit(state) {
     return state.categories;
   },
   getSelectedCategoryToEdit: function getSelectedCategoryToEdit(state) {
     return state.selectedCategoryToEdit;
+  },
+  getSelectedBudgetToEdit: function getSelectedBudgetToEdit(state) {
+    return state.selectedBudgetToEdit;
   }
 };
 var actions = {
@@ -48851,8 +48888,13 @@ var actions = {
 
     commit('SET_CATEGORY_TO_EDIT', category);
   },
-  saveCategory: function saveCategory(_ref2, data) {
+  setBudgetToEdit: function setBudgetToEdit(_ref2, budget) {
     var commit = _ref2.commit;
+
+    commit('SET_BUDGET_TO_EDIT', budget);
+  },
+  saveCategory: function saveCategory(_ref3, data) {
+    var commit = _ref3.commit;
 
     axios.post('/category', data).then(function (response) {
       commit('ADD_CATEGORY', response.data.category);
@@ -48860,12 +48902,35 @@ var actions = {
       console.log(error);
     });
   },
-  deleteCategory: function deleteCategory(_ref3, data) {
-    var commit = _ref3.commit;
+  deleteCategory: function deleteCategory(_ref4, data) {
+    var commit = _ref4.commit;
 
     commit('REMOVE_CATEGORY', data);
     axios.delete('/category', { data: data }).then(function (response) {}).catch(function (error) {
       commit('ADD_CATEGORY', data);
+      console.log(error);
+    });
+  },
+  saveBudget: function saveBudget(_ref5, data) {
+    var commit = _ref5.commit,
+        dispatch = _ref5.dispatch;
+
+    axios.post('/budget', data).then(function (response) {
+      commit('ADD_BUDGET', response.data.budget);
+      dispatch('addBounds', response.data.bounds);
+    }).catch(function (error) {
+      console.log(error);
+    });
+  },
+  deleteBudget: function deleteBudget(_ref6, data) {
+    var commit = _ref6.commit,
+        dispatch = _ref6.dispatch;
+
+    commit('REMOVE_BUDGET', data);
+    axios.delete('/budget', { data: data }).then(function (response) {
+      dispatch('deleteBounds', data.id);
+    }).catch(function (error) {
+      commit('ADD_BUDGET', data);
       console.log(error);
     });
   }
@@ -48873,6 +48938,9 @@ var actions = {
 var mutations = {
   'SET_CATEGORY_TO_EDIT': function SET_CATEGORY_TO_EDIT(state, category) {
     state.selectedCategoryToEdit = category;
+  },
+  'SET_BUDGET_TO_EDIT': function SET_BUDGET_TO_EDIT(state, budget) {
+    state.selectedBudgetToEdit = budget;
   },
   'ADD_CATEGORY': function ADD_CATEGORY(state, data) {
     var category = state.categories.find(function (c) {
@@ -48891,6 +48959,25 @@ var mutations = {
     var index = state.categories.indexOf(category);
     if (index > -1) {
       state.categories.splice(index, 1);
+    }
+  },
+  'ADD_BUDGET': function ADD_BUDGET(state, data) {
+    var budget = state.budgets.find(function (c) {
+      return c.id === data.id;
+    });
+    if (budget) {
+      budget = _extends({}, budget, data);
+    } else {
+      state.budgets.push(data);
+    }
+  },
+  'REMOVE_BUDGET': function REMOVE_BUDGET(state, data) {
+    var budget = state.budgets.find(function (c) {
+      return c.id === data.id;
+    });
+    var index = state.budgets.indexOf(budget);
+    if (index > -1) {
+      state.budgets.splice(index, 1);
     }
   }
 };
@@ -52029,7 +52116,7 @@ var normalizeComponent = __webpack_require__(2)
 /* script */
 var __vue_script__ = __webpack_require__(53)
 /* template */
-var __vue_template__ = __webpack_require__(66)
+var __vue_template__ = __webpack_require__(69)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -52529,7 +52616,7 @@ var normalizeComponent = __webpack_require__(2)
 /* script */
 var __vue_script__ = __webpack_require__(61)
 /* template */
-var __vue_template__ = __webpack_require__(65)
+var __vue_template__ = __webpack_require__(68)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -52576,6 +52663,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__menu_add_category_component_vue__ = __webpack_require__(62);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__menu_add_category_component_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__menu_add_category_component_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__menu_add_budget_component_vue__ = __webpack_require__(65);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__menu_add_budget_component_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__menu_add_budget_component_vue__);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 //
@@ -52656,13 +52745,19 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
+//
+//
+//
+
 
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
-    'menu-add-category': __WEBPACK_IMPORTED_MODULE_1__menu_add_category_component_vue___default.a
+    'menu-add-category': __WEBPACK_IMPORTED_MODULE_1__menu_add_category_component_vue___default.a,
+    'menu-add-budget': __WEBPACK_IMPORTED_MODULE_2__menu_add_budget_component_vue___default.a
   },
   data: function data() {
     return {
@@ -52678,7 +52773,9 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     currentYearMonths: 'getCurrentYearMonths',
     allYears: 'getAllTimeYears',
     getCurrentCategoryType: 'getCurrentCategoryType',
-    categoriesToEdit: 'getCategoriesToEdit'
+
+    categoriesToEdit: 'getCategoriesToEdit',
+    budgetsToEdit: 'getBudgetsToEdit'
   }), {
     menuTriggerLabel: function menuTriggerLabel() {
       switch (this.currentView) {
@@ -52714,11 +52811,11 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     isMenuAddMonth: function isMenuAddMonth() {
       return this.menuDisplay === 'month';
     },
-    isMenuPeriods: function isMenuPeriods() {
-      return this.menuDisplay === 'period';
+    isMenuBudgets: function isMenuBudgets() {
+      return this.menuDisplay === 'budget';
     },
-    isMenuEditPeriod: function isMenuEditPeriod() {
-      return this.menuDisplay === 'period-edit';
+    isMenuEditBudget: function isMenuEditBudget() {
+      return this.menuDisplay === 'budget-edit';
     }
   }),
   methods: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({
@@ -52726,9 +52823,11 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     setMonth: 'setMonth',
     setCurrentView: 'setCurrentView',
     setCurrentCategoryType: 'setCurrentCategoryType',
-    setCategoryToEdit: 'setCategoryToEdit'
+    setCategoryToEdit: 'setCategoryToEdit',
+    setBudgetToEdit: 'setBudgetToEdit'
   }), {
     toggleMenu: function toggleMenu() {
+      this.changeMenuView('options');
       this.menuIsOpen = !this.menuIsOpen;
     },
     showYearView: function showYearView() {
@@ -52775,6 +52874,10 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     editCategory: function editCategory(category) {
       this.setCategoryToEdit(category);
       this.changeMenuView('category-edit');
+    },
+    editBudget: function editBudget(budget) {
+      this.setBudgetToEdit(budget);
+      this.changeMenuView('budget-edit');
     }
   })
 });
@@ -53085,6 +53188,236 @@ if (false) {
 /* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
+var disposed = false
+var normalizeComponent = __webpack_require__(2)
+/* script */
+var __vue_script__ = __webpack_require__(66)
+/* template */
+var __vue_template__ = __webpack_require__(67)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/menu-add-budget.component.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-4f3bc39a", Component.options)
+  } else {
+    hotAPI.reload("data-v-4f3bc39a", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 66 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(1);
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  mounted: function mounted() {
+    console.log(this.budgetToEdit);
+    if (this.budgetToEdit) {
+      this.budgetForm.year = this.budgetToEdit.year;
+      this.budgetForm.month = this.budgetToEdit.month;
+    }
+  },
+  data: function data() {
+    return {
+      months: [{ number: '01', name: 'January' }, { number: '02', name: 'February' }, { number: '03', name: 'March' }, { number: '04', name: 'April' }, { number: '05', name: 'May' }, { number: '06', name: 'June' }, { number: '07', name: 'July' }, { number: '08', name: 'August' }, { number: '09', name: 'September' }, { number: '10', name: 'October' }, { number: '11', name: 'November' }, { number: '12', name: 'December' }],
+      budgetForm: {
+        year: '',
+        month: ''
+      }
+    };
+  },
+
+  computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])({
+    budgetToEdit: 'getSelectedBudgetToEdit'
+  })),
+  methods: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({
+    saveBudget: 'saveBudget',
+    deleteBudget: 'deleteBudget'
+  }), {
+    save: function save() {
+      if (this.budgetForm.year && this.budgetForm.month) {
+        this.saveBudget(_extends({
+          id: this.budgetToEdit ? this.budgetToEdit.id : undefined
+        }, this.budgetForm));
+        this.$emit('done');
+      }
+    },
+    remove: function remove() {
+      this.deleteBudget(this.budgetToEdit);
+      this.$emit('done');
+    }
+  })
+});
+
+/***/ }),
+/* 67 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "add-budget" }, [
+    _c("div", { staticClass: "form-field" }, [
+      _c("label", { attrs: { for: "budget-year" } }, [_vm._v("Year")]),
+      _vm._v(" "),
+      _c("input", {
+        directives: [
+          {
+            name: "model",
+            rawName: "v-model",
+            value: _vm.budgetForm.year,
+            expression: "budgetForm.year"
+          }
+        ],
+        attrs: { type: "number", name: "budget-year" },
+        domProps: { value: _vm.budgetForm.year },
+        on: {
+          input: function($event) {
+            if ($event.target.composing) {
+              return
+            }
+            _vm.$set(_vm.budgetForm, "year", $event.target.value)
+          }
+        }
+      })
+    ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "form-field" }, [
+      _c("label", { attrs: { for: "budget-month" } }, [_vm._v("Month")]),
+      _vm._v(" "),
+      _c(
+        "select",
+        {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.budgetForm.month,
+              expression: "budgetForm.month"
+            }
+          ],
+          attrs: { name: "budget-month" },
+          on: {
+            change: function($event) {
+              var $$selectedVal = Array.prototype.filter
+                .call($event.target.options, function(o) {
+                  return o.selected
+                })
+                .map(function(o) {
+                  var val = "_value" in o ? o._value : o.value
+                  return val
+                })
+              _vm.$set(
+                _vm.budgetForm,
+                "month",
+                $event.target.multiple ? $$selectedVal : $$selectedVal[0]
+              )
+            }
+          }
+        },
+        _vm._l(_vm.months, function(m) {
+          return _c(
+            "option",
+            { key: m.number, domProps: { value: m.number } },
+            [_vm._v(_vm._s(m.name))]
+          )
+        })
+      )
+    ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "actions" }, [
+      _c("span", { staticClass: "button", on: { click: _vm.save } }, [
+        _c("i", { staticClass: "fa fa-save" })
+      ]),
+      _vm._v(" "),
+      _vm.budgetToEdit
+        ? _c("span", { staticClass: "button", on: { click: _vm.remove } }, [
+            _c("i", { staticClass: "fa fa-remove" })
+          ])
+        : _vm._e()
+    ])
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-4f3bc39a", module.exports)
+  }
+}
+
+/***/ }),
+/* 68 */
+/***/ (function(module, exports, __webpack_require__) {
+
 var render = function() {
   var _vm = this
   var _h = _vm.$createElement
@@ -53097,9 +53430,9 @@ var render = function() {
             {
               staticClass: "slidable-panel",
               class: {
-                "move-left": _vm.isMenuPeriods || _vm.isMenuEditPeriod,
+                "move-left": _vm.isMenuBudgets || _vm.isMenuEditBudget,
                 "move-right": _vm.isMenuCategories || _vm.isMenuEditCategory,
-                "move-down": _vm.isMenuEditCategory || _vm.isMenuEditPeriod
+                "move-down": _vm.isMenuEditCategory || _vm.isMenuEditBudget
               }
             },
             [
@@ -53123,11 +53456,11 @@ var render = function() {
                     staticClass: "menu-option",
                     on: {
                       click: function($event) {
-                        _vm.changeMenuView("period")
+                        _vm.changeMenuView("budget")
                       }
                     }
                   },
-                  [_c("span", [_vm._v("Periods")])]
+                  [_c("span", [_vm._v("Budgets")])]
                 ),
                 _vm._v(" "),
                 _vm.shouldShowYearViewButton
@@ -53230,48 +53563,90 @@ var render = function() {
                 1
               ),
               _vm._v(" "),
-              _c("div", { staticClass: "menu-options x-1" }, [
-                _c(
-                  "div",
-                  {
-                    staticClass: "menu-option",
-                    on: {
-                      click: function($event) {
-                        _vm.changeMenuView("period-edit")
+              _c(
+                "div",
+                { staticClass: "menu-options x-1" },
+                [
+                  _c(
+                    "div",
+                    {
+                      staticClass: "menu-option",
+                      on: {
+                        click: function($event) {
+                          _vm.changeMenuView("options")
+                        }
                       }
-                    }
-                  },
-                  [_c("span", [_vm._v("New period")])]
-                ),
-                _vm._v(" "),
-                _c(
-                  "div",
-                  {
-                    staticClass: "menu-option",
-                    on: {
-                      click: function($event) {
-                        _vm.changeMenuView("options")
+                    },
+                    [_c("span", [_vm._v("Back")])]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    {
+                      staticClass: "menu-option",
+                      on: {
+                        click: function($event) {
+                          _vm.editBudget()
+                        }
                       }
-                    }
-                  },
-                  [_c("span", [_vm._v("Back")])]
-                )
-              ]),
+                    },
+                    [_c("span", [_vm._v("New budget")])]
+                  ),
+                  _vm._v(" "),
+                  _vm._l(_vm.budgetsToEdit, function(budget) {
+                    return _c(
+                      "div",
+                      {
+                        key: budget.id,
+                        staticClass: "menu-option",
+                        on: {
+                          click: function($event) {
+                            _vm.editBudget(budget)
+                          }
+                        }
+                      },
+                      [
+                        _c("span", [
+                          _vm._v(
+                            _vm._s(budget.year) + " - " + _vm._s(budget.month)
+                          )
+                        ])
+                      ]
+                    )
+                  })
+                ],
+                2
+              ),
               _vm._v(" "),
-              _c("div", { staticClass: "menu-options x-1 y1" }, [
-                _c(
-                  "div",
-                  {
-                    staticClass: "menu-option",
-                    on: {
-                      click: function($event) {
-                        _vm.changeMenuView("period")
+              _c(
+                "div",
+                { staticClass: "menu-options x-1 y1" },
+                [
+                  _vm.isMenuEditBudget
+                    ? _c("menu-add-budget", {
+                        on: {
+                          done: function($event) {
+                            _vm.changeMenuView("budget")
+                          }
+                        }
+                      })
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    {
+                      staticClass: "menu-option",
+                      on: {
+                        click: function($event) {
+                          _vm.changeMenuView("budget")
+                        }
                       }
-                    }
-                  },
-                  [_c("span", [_vm._v("Back")])]
-                )
-              ])
+                    },
+                    [_c("span", [_vm._v("Back")])]
+                  )
+                ],
+                1
+              )
             ]
           )
         ])
@@ -53348,7 +53723,7 @@ if (false) {
 }
 
 /***/ }),
-/* 66 */
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -53388,7 +53763,7 @@ if (false) {
 }
 
 /***/ }),
-/* 67 */
+/* 70 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin

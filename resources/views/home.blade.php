@@ -10,6 +10,7 @@
 	window.handover = {
         user: {!! $user !!},
         token: '{{ csrf_token() }}',
+        budgets: {!! $budgets !!},
         bounds: {!! $bounds !!},
         categories: {!! $categories !!},
 	};

@@ -104,6 +104,12 @@ const actions = {
         commit('ADD_EXPENSE', expense);
       })
   },
+  addBounds: ({ commit }, bounds) => {
+    commit('ADD_BOUNDS', bounds);
+  },
+  deleteBounds: ({ commit }, budgetId) => {
+    commit('DELETE_BOUNDS', budgetId);
+  },
   updateCategoryBound: ({ commit }, data) => {
     const bound = state.bounds.find(c => c.id === data.categoryId);
 
@@ -142,9 +148,6 @@ const actions = {
 
 };
 const mutations = {
-  'ADD_CATEGORY': (state, category) => {
-    // state.bounds.push(category);
-  },
   'SELECT_CATEGORY': (state, categoryId) => {
     state.selectedCategory = categoryId;
   },
@@ -180,7 +183,25 @@ const mutations = {
       bound.bound_in_cents = data.value;
     }
   },
+  'ADD_BOUNDS': (state, bounds) => {
+    bounds.forEach(bound => {
+      state.bounds.push(bound);
+    });
+  },
+  'DELETE_BOUNDS': (state, budgetId) => {
 
+    const indexesToRemove = state.bounds.map((b, i) => {
+      if (b.budget_id === budgetId) {
+        return i;
+      }
+      return false;
+    })
+      .filter(i => i);
+
+    for (var i = indexesToRemove.length - 1; i >= 0; i--) {
+      state.bounds.splice(indexesToRemove[i], 1);
+    }
+  },
   'SET_MONTH': (state, month) => {
     state.selectedMonth = month;
   },

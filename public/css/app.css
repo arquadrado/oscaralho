@@ -156,6 +156,61 @@
   height: calc(100% - 54px);
 }
 
+.add-budget .menu-option {
+  height: 60px;
+  border: 2px solid #4f4f4f;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin: 14px;
+  border-radius: 30px;
+}
+
+.add-budget .form-field {
+  margin: 14px;
+}
+
+.add-budget .form-field select,
+.add-budget .form-field input {
+  text-align: center;
+  font-size: 17px;
+  display: block;
+  background-color: transparent;
+  height: 35px;
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid #4f4f4f;
+}
+
+.add-budget .form-field select:focus,
+.add-budget .form-field input:focus {
+  outline: none;
+}
+
+.add-budget :nth-child(4) {
+  margin-bottom: 30px;
+}
+
+.add-budget .actions {
+  margin: 14px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+
+.add-budget .actions .button {
+  border-color: #4f4f4f;
+}
+
 .add-category .menu-option {
   height: 60px;
   border: 2px solid #4f4f4f;
