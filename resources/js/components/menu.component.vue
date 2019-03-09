@@ -30,15 +30,19 @@
           </div>
           
           <div class="menu-options x1">
-            <div class="menu-option" @click="changeMenuView('category-edit')">
+            <div class="menu-option" @click="changeMenuView('options')">
+              <span>Back</span>
+            </div>
+            <div class="menu-option" @click="editCategory()">
               <span>New category</span>
             </div>
-            <div class="menu-option" @click="changeMenuView('options')">
-              <span>what</span>
+            <div class="menu-option" v-for="category in categoriesToEdit" :key="category.id" @click="editCategory(category)">
+              <span>{{ category.name }}</span>
             </div>
           </div>
 
           <div class="menu-options x1 y1">
+            <menu-add-category v-if="isMenuEditCategory" @done="changeMenuView('category')"></menu-add-category>
             <div class="menu-option" @click="changeMenuView('category')">
               <span>Back</span>
             </div>
@@ -93,7 +97,8 @@ export default {
       selectedMonth: 'getSelectedMonth',
       currentYearMonths: 'getCurrentYearMonths',
       allYears: 'getAllTimeYears',
-      getCurrentCategoryType: 'getCurrentCategoryType'
+      getCurrentCategoryType: 'getCurrentCategoryType',
+      categoriesToEdit: 'getCategoriesToEdit'
     }),
     menuTriggerLabel() {
       switch (this.currentView) {
@@ -150,7 +155,8 @@ export default {
       setYear: 'setYear',
       setMonth: 'setMonth',
       setCurrentView: 'setCurrentView',
-      setCurrentCategoryType: 'setCurrentCategoryType'
+      setCurrentCategoryType: 'setCurrentCategoryType',
+      setCategoryToEdit: 'setCategoryToEdit'
     }),
     toggleMenu() {
       this.menuIsOpen = !this.menuIsOpen;
@@ -200,6 +206,10 @@ export default {
     changeMenuView(view) {
       console.log(view);
       this.menuDisplay = view;
+    },
+    editCategory(category) {
+      this.setCategoryToEdit(category);
+      this.changeMenuView('category-edit');
     }
   }
 };

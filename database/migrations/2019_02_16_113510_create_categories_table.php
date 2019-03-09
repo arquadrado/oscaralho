@@ -19,6 +19,7 @@ class CreateCategoriesTable extends Migration
             $table->string('icon');
             $table->text('description')->nullable();
             $table->boolean('expense')->default(1);
+            $table->integer('default_bound_in_cents')->default(0);
             $table->integer('user_id')->unsigned();
             $table->timestamps();
 

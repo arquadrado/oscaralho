@@ -45,7 +45,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      items: 'getCategoriesByMonth',
+      items: 'getBoundsByMonth',
       selectedItem: 'getSelectedCategoryId',
       selectedCategoryObject: 'getSelectedCategory',
       shouldDisplayPanel: 'shouldDisplayPanel',

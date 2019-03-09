@@ -11,6 +11,7 @@
         user: {!! $user !!},
         token: '{{ csrf_token() }}',
         bounds: {!! $bounds !!},
+        categories: {!! $categories !!},
 	};
 </script>
 @endsection

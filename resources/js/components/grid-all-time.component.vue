@@ -28,7 +28,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      bounds: 'getCategories',
+      bounds: 'getBounds',
       items: 'getAllTimeYears'
     })
   },

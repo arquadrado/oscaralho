@@ -6,7 +6,7 @@ use Auth;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
-class Category extends Model
+class Budget extends Model
 {
 
     protected $rules = [];
@@ -15,7 +15,7 @@ class Category extends Model
      *
      * @var array
      */
-    protected $fillable = ['user_id', 'name', 'description', 'expense', 'icon', 'default_bound_in_cents'];
+    protected $fillable = ['user_id', 'year', 'month'];
 
     /**
      * The attributes that should be hidden for arrays.
@@ -27,11 +27,10 @@ class Category extends Model
 
     protected $with = [];
 
-    
-    public function budgets() {
-      return $this->belongsToMany(Budget::class);
+    public function categories() {
+      return $this->belongsToMany(Category::class);
     }
-    
+
     public function bounds() {
         return $this->hasMany(CategoryBound::class, 'category_bounds');
     }

@@ -32,7 +32,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      bounds: 'getCategoriesByYear',
+      bounds: 'getBoundsByYear',
       items: 'getCurrentYearMonths',
       selectedYear: 'getSelectedYear'
     })

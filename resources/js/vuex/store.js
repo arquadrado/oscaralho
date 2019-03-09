@@ -2,8 +2,10 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 Vue.use(Vuex);
 
+import MenuModule from './modules/menu.module';
+
 const user = handover && handover.user ? handover.user : [];
-const categories = handover && handover.bounds ? handover.bounds : [];
+const bounds = handover && handover.bounds ? handover.bounds : [];
 
 window.mobilePlatform = () => {
   var check = false;
@@ -16,7 +18,7 @@ const state = {
   currentView: 'grid-month',
   currentCategoryType: 'expense',
   user: user,
-  categories: categories,
+  bounds: bounds,
   selectedCategory: undefined,
   showDisplayPanel: false,
   selectedYear: `${new Date(Date.now()).getFullYear()}`,
@@ -26,8 +28,8 @@ const state = {
 const getters = {
   isMobilePlatform: state => state.mobilePlatform,
   getUser: state => state.user,
-  getCategories: state => state.categories,
-  getCategoriesByMonth: state => state.categories.filter((bound) => {
+  getBounds: state => state.bounds,
+  getBoundsByMonth: state => state.bounds.filter((bound) => {
     if (state.currentCategoryType === 'expense') {
       return bound.year === state.selectedYear &&
         bound.month === state.selectedMonth &&
@@ -37,15 +39,15 @@ const getters = {
       bound.month === state.selectedMonth &&
       !bound.category.expense;
   }),
-  getCategoriesByYear: state => state.categories.filter((bound) => {
+  getBoundsByYear: state => state.bounds.filter((bound) => {
     return bound.year === state.selectedYear;
   }),
   getSelectedCategoryId: state => state.selectedCategory,
-  getSelectedCategory: state => state.categories.find(c => c.id === state.selectedCategory),
+  getSelectedCategory: state => state.bounds.find(c => c.id === state.selectedCategory),
   shouldDisplayPanel: state => state.showDisplayPanel,
   getSelectedYear: state => state.selectedYear,
   getCurrentYearMonths: (state) => {
-    return state.categories.reduce((reduced, bound) => {
+    return state.bounds.reduce((reduced, bound) => {
       if (
         state.selectedYear &&
         bound.year === state.selectedYear.toString() &&
@@ -58,7 +60,7 @@ const getters = {
     }, []).sort();
   },
   getAllTimeYears: (state) => {
-    return state.categories.reduce((reduced, bound) => {
+    return state.bounds.reduce((reduced, bound) => {
       if (reduced.indexOf(bound.year) === -1) {
         reduced.push(bound.year);
       }
@@ -103,7 +105,7 @@ const actions = {
       })
   },
   updateCategoryBound: ({ commit }, data) => {
-    const bound = state.categories.find(c => c.id === data.categoryId);
+    const bound = state.bounds.find(c => c.id === data.categoryId);
 
     if (bound) {
 
@@ -141,7 +143,7 @@ const actions = {
 };
 const mutations = {
   'ADD_CATEGORY': (state, category) => {
-    state.categories.push(category);
+    // state.bounds.push(category);
   },
   'SELECT_CATEGORY': (state, categoryId) => {
     state.selectedCategory = categoryId;
@@ -153,26 +155,26 @@ const mutations = {
     state.showDisplayPanel = value;
   },
   'ADD_EXPENSE': (state, data) => {
-    const category = state.categories.find(c => c.id === data.bound_id);
-    if (category) {
-      category.expenses = [
-        ...(category.expenses ? category.expenses : []),
+    const bound = state.bounds.find(c => c.id === data.bound_id);
+    if (bound) {
+      bound.expenses = [
+        ...(bound.expenses ? bound.expenses : []),
         data
       ]
     }
   },
   'REMOVE_EXPENSE': (state, exp) => {
-    const category = state.categories.find(c => c.id === exp.bound_id);
-    if (category && category.expenses) {
-      const expense = category.expenses.find(e => e.id === exp.id);
+    const bound = state.bounds.find(c => c.id === exp.bound_id);
+    if (bound && bound.expenses) {
+      const expense = bound.expenses.find(e => e.id === exp.id);
 
       if (expense) {
-        category.expenses.splice(category.expenses.indexOf(expense), 1)
+        bound.expenses.splice(bound.expenses.indexOf(expense), 1)
       }
     }
   },
   'UPDATE_BOUND': (state, data) => {
-    const bound = state.categories.find(c => c.id === data.categoryId);
+    const bound = state.bounds.find(c => c.id === data.categoryId);
 
     if (bound) {
       bound.bound_in_cents = data.value;
@@ -198,5 +200,7 @@ export default new Vuex.Store({
   getters,
   actions,
   mutations,
-  modules: {}
+  modules: {
+    MenuModule
+  }
 });

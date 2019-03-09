@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Auth;
+use App\Models\Budget;
 use App\Models\Category;
 use App\Models\Expense;
 use App\Models\CategoryBound;
@@ -34,121 +35,46 @@ class HomeController extends Controller
         }
         
         $token = csrf_token();
-
-        // $categories = Category::limit(9)->get();
+        
         $categories = Category::all();
+        $budget = Budget::where('year', Carbon::now()->format('Y'))
+                        ->where('month', Carbon::now()->format('m'))
+                        ->first();
 
-        foreach($categories as $category) {
-            $bound = CategoryBound::where('year', Carbon::now()->format('Y'))
-                                ->where('month', Carbon::now()->format('m'))
+        if (is_null($budget)) {
+          $budget = Budget::create([
+            'user_id' => $user->id,
+            'year' => Carbon::now()->format('Y'),
+            'month' => Carbon::now()->format('m'),
+          ]);
+
+          $categoriesIds = $categories->map(function($category) {
+            return $category->id;
+          })->toArray();
+          
+          $budget->categories()->sync($categoriesIds);
+        }
+
+        foreach($budget->categories as $category) {
+            $bound = CategoryBound::where('budget_id', $budget->id)
                                 ->where('category_id', $category->id)
                                 ->first();
             if (is_null($bound)) {
                 $bound = CategoryBound::create([
                     'category_id' => $category->id,
-                    'bound_in_cents' => 0,
-                    'year' => Carbon::now()->format('Y'),
-                    'month' => Carbon::now()->format('m'),
+                    'budget_id' => $budget->id,
+                    'bound_in_cents' => $category->default_bound_in_cents
                 ]);
             }
         }
-        
-      foreach($categories as $category) {
-          $bound = CategoryBound::where('year', '2019')
-                              ->where('month', '01')
-                              ->where('category_id', $category->id)
-                              ->first();
-          if (is_null($bound)) {
-              $bound = CategoryBound::create([
-                  'category_id' => $category->id,
-                  'bound_in_cents' => 0,
-                  'year' => '2019',
-                  'month' => '01',
-              ]);
-          }
-      }
-
-      foreach($categories as $category) {
-        $bound = CategoryBound::where('year', '2019')
-                            ->where('month', '04')
-                            ->where('category_id', $category->id)
-                            ->first();
-        if (is_null($bound)) {
-            $bound = CategoryBound::create([
-                'category_id' => $category->id,
-                'bound_in_cents' => 0,
-                'year' => '2019',
-                'month' => '04',
-            ]);
-        }
-    }
-
-    foreach($categories as $category) {
-      $bound = CategoryBound::where('year', '2019')
-                          ->where('month', '05')
-                          ->where('category_id', $category->id)
-                          ->first();
-      if (is_null($bound)) {
-          $bound = CategoryBound::create([
-              'category_id' => $category->id,
-              'bound_in_cents' => 0,
-              'year' => '2019',
-              'month' => '05',
-          ]);
-      }
-  }
-
-      foreach($categories as $category) {
-        $bound = CategoryBound::where('year', '2018')
-                            ->where('month', '12')
-                            ->where('category_id', $category->id)
-                            ->first();
-        if (is_null($bound)) {
-            $bound = CategoryBound::create([
-                'category_id' => $category->id,
-                'bound_in_cents' => 0,
-                'year' => '2018',
-                'month' => '12',
-            ]);
-        }
-      }
-
-      foreach($categories as $category) {
-        $bound = CategoryBound::where('year', '2017')
-                            ->where('month', '12')
-                            ->where('category_id', $category->id)
-                            ->first();
-        if (is_null($bound)) {
-            $bound = CategoryBound::create([
-                'category_id' => $category->id,
-                'bound_in_cents' => 0,
-                'year' => '2017',
-                'month' => '12',
-            ]);
-        }
-      }
-
-      foreach($categories as $category) {
-        $bound = CategoryBound::where('year', '2014')
-                            ->where('month', '12')
-                            ->where('category_id', $category->id)
-                            ->first();
-        if (is_null($bound)) {
-            $bound = CategoryBound::create([
-                'category_id' => $category->id,
-                'bound_in_cents' => 0,
-                'year' => '2014',
-                'month' => '12',
-            ]);
-        }
-      }
       
       $bounds = CategoryBound::all();
 
       return view('home', [
           'user' => $user,
           'token' => $token,
-          'bounds' => $bounds
+          'bounds' => $bounds,
+          'categories' => $categories
       ]);
     }
 
@@ -181,5 +107,27 @@ class HomeController extends Controller
 
         return response()->json(['bound' => $bound], 200);
         
+      }
+      
+      public function saveCategory() {
+        $category = Category::find(request()->get('id'));
+        $requestData = request()->all();
+        $requestData['default_bound_in_cents'] = (int)$requestData['default_bound'] * 100;
+        
+        if (is_null($category)) {
+          $category = Category::create(array_merge(['user_id' => Auth::user()->id], $requestData));
+          return response()->json(['category' => $category], 200);
+        }
+
+        $category->update($requestData);
+
+        return response()->json(['category' => $category], 200);
     }
+    
+    public function deleteCategory() {
+      $category = Category::find(request()->get('id'));
+      $category->delete();
+      
+      return response()->json(['message' => 'Expense was deleted'], 200);
+  }
 }

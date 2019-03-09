@@ -15,15 +15,15 @@ class CategoryBound extends Model
      *
      * @var array
      */
-    protected $fillable = ['category_id', 'bound_in_cents', 'year', 'month'];
+    protected $fillable = ['budget_id', 'category_id', 'bound_in_cents'];
 
     /**
      * The attributes that should be hidden for arrays.
      *
      * @var array
      */
-    protected $hidden = [
-    ];
+    protected $hidden = [];
+    protected $appends = ['year', 'month'];
 
     protected $with = ['category', 'expenses'];
 
@@ -31,8 +31,22 @@ class CategoryBound extends Model
       return $this->hasMany(Expense::class, 'bound_id');
     }
 
+    public function budget() {
+      return $this->belongsTo(Budget::class);
+    }
+
     public function category() {
       return $this->belongsTo(Category::class);
+    }
+    
+    // mutators
+
+    public function getYearAttribute() {
+      return $this->budget->year;
+    }
+
+    public function getMonthAttribute() {
+      return $this->budget->month;
     }
 
 }

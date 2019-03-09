@@ -16,12 +16,12 @@ class CreateCategoryBoundsTable extends Migration
         Schema::create('category_bounds', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('category_id')->unsigned();
+            $table->integer('budget_id')->unsigned();
             $table->integer('bound_in_cents');
-            $table->string('year');
-            $table->string('month');
             $table->timestamps();
 
             $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
+            $table->foreign('budget_id')->references('id')->on('budgets')->onDelete('cascade');
         });
     }
 
@@ -34,6 +34,7 @@ class CreateCategoryBoundsTable extends Migration
     {
         Schema::dropIfExists('category_bounds', function (Blueprint $table) {
             $table->dropForeign('category_bounds_category_id_foreign');
+            $table->dropForeign('category_bounds_budget_id_foreign');
         });
     }
 }
