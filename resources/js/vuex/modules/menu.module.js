@@ -73,7 +73,11 @@ const mutations = {
   'ADD_CATEGORY': (state, data) => {
     let category = state.categories.find(c => c.id === data.id);
     if (category) {
-      category = { ...category, ...data }
+      Object.keys(data).forEach(key => {
+        if (category.hasOwnProperty(key)) {
+          category[key] = data[key];
+        }
+      });
     } else {
       state.categories.push(data);
     }

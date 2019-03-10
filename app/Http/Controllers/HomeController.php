@@ -29,32 +29,31 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $user = Auth::user();
-        if (is_null($user)) {
-            return view('error');
-        }
+      $user = Auth::user();
+      if (is_null($user)) {
+          return view('error');
+      }
+      
+      $token = csrf_token();
+      
+      $categories = Category::all();
+      $budget = Budget::where('year', Carbon::now()->format('Y'))
+                      ->where('month', Carbon::now()->format('m'))
+                      ->first();
+
+      if (is_null($budget) && !$categories->isEmpty()) {
+        $budget = Budget::create([
+          'user_id' => $user->id,
+          'year' => Carbon::now()->format('Y'),
+          'month' => Carbon::now()->format('m'),
+        ]);
+
+        $categoriesIds = $categories->map(function($category) {
+          return $category->id;
+        })->toArray();
         
-        $token = csrf_token();
+        $budget->categories()->sync($categoriesIds);
         
-        $categories = Category::all();
-        $budget = Budget::where('year', Carbon::now()->format('Y'))
-                        ->where('month', Carbon::now()->format('m'))
-                        ->first();
-
-        if (is_null($budget)) {
-          $budget = Budget::create([
-            'user_id' => $user->id,
-            'year' => Carbon::now()->format('Y'),
-            'month' => Carbon::now()->format('m'),
-          ]);
-
-          $categoriesIds = $categories->map(function($category) {
-            return $category->id;
-          })->toArray();
-          
-          $budget->categories()->sync($categoriesIds);
-        }
-
         foreach($budget->categories as $category) {
             $bound = CategoryBound::where('budget_id', $budget->id)
                                 ->where('category_id', $category->id)
@@ -67,6 +66,7 @@ class HomeController extends Controller
                 ]);
             }
         }
+      }
       
       $budgets = Budget::all();
       $bounds = CategoryBound::all();

@@ -18,8 +18,8 @@
 
     <div class="form-field">
       <label for="category-type">Type</label>
-      <select name="category-type" v-model="categoryForm.type">
-        <option v-for="t in types" :key="t" :value="t">{{ t }}</option>
+      <select name="category-type" v-model="categoryForm.expense">
+        <option v-for="t in types" :key="t.name" :value="t.value">{{ t.name }}</option>
       </select>
     </div>
     
@@ -49,19 +49,17 @@ export default {
       this.categoryForm.default_bound =
         this.categoryToEdit.default_bound_in_cents / 100;
       this.categoryForm.icon = this.categoryToEdit.icon;
-      this.categoryForm.type = this.categoryToEdit.expense
-        ? 'expense'
-        : 'revenue';
+      this.categoryForm.expense = this.categoryToEdit.expense;
     }
   },
   data() {
     return {
-      types: ['expense', 'revenue'],
+      types: [{ name: 'expense', value: 1 }, { name: 'revenue', value: 0 }],
       categoryForm: {
         name: '',
         default_bound: 0,
-        icon: 'fa-square',
-        type: 'expense'
+        icon: 'fa fa-square',
+        expense: 1
       }
     };
   },

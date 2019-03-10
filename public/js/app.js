@@ -48947,7 +48947,11 @@ var mutations = {
       return c.id === data.id;
     });
     if (category) {
-      category = _extends({}, category, data);
+      Object.keys(data).forEach(function (key) {
+        if (category.hasOwnProperty(key)) {
+          category[key] = data[key];
+        }
+      });
     } else {
       state.categories.push(data);
     }
@@ -51691,6 +51695,18 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -52071,6 +52087,20 @@ var render = function() {
         )
       }),
       _vm._v(" "),
+      _vm.items.length === 0
+        ? _c("div", { staticClass: "message" }, [
+            _c("p", { staticClass: "message" }, [
+              _vm._v(
+                "\n        You have no categories so this month's budget could not be automatically created.\n      "
+              )
+            ]),
+            _vm._v(" "),
+            _vm._m(0),
+            _vm._v(" "),
+            _vm._m(1)
+          ])
+        : _vm._e(),
+      _vm._v(" "),
       _c(
         "div",
         {
@@ -52097,7 +52127,34 @@ var render = function() {
     2
   )
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("p", [
+      _vm._v("\n        Use the ("),
+      _c("i", { staticClass: "fa fa-bars" }),
+      _vm._v(") menu's section "),
+      _c("strong", [_vm._v("Categories")]),
+      _vm._v(
+        " to add new categories and refresh the page to create the current's month budget.\n      "
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("p", [
+      _vm._v(
+        "\n        You can also add budgets manually in the menu's section "
+      ),
+      _c("strong", [_vm._v("Budgets")]),
+      _vm._v(".\n      ")
+    ])
+  }
+]
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
@@ -52988,17 +53045,17 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       this.categoryForm.name = this.categoryToEdit.name;
       this.categoryForm.default_bound = this.categoryToEdit.default_bound_in_cents / 100;
       this.categoryForm.icon = this.categoryToEdit.icon;
-      this.categoryForm.type = this.categoryToEdit.expense ? 'expense' : 'revenue';
+      this.categoryForm.expense = this.categoryToEdit.expense;
     }
   },
   data: function data() {
     return {
-      types: ['expense', 'revenue'],
+      types: [{ name: 'expense', value: 1 }, { name: 'revenue', value: 0 }],
       categoryForm: {
         name: '',
         default_bound: 0,
-        icon: 'fa-square',
-        type: 'expense'
+        icon: 'fa fa-square',
+        expense: 1
       }
     };
   },
@@ -53130,8 +53187,8 @@ var render = function() {
             {
               name: "model",
               rawName: "v-model",
-              value: _vm.categoryForm.type,
-              expression: "categoryForm.type"
+              value: _vm.categoryForm.expense,
+              expression: "categoryForm.expense"
             }
           ],
           attrs: { name: "category-type" },
@@ -53147,15 +53204,15 @@ var render = function() {
                 })
               _vm.$set(
                 _vm.categoryForm,
-                "type",
+                "expense",
                 $event.target.multiple ? $$selectedVal : $$selectedVal[0]
               )
             }
           }
         },
         _vm._l(_vm.types, function(t) {
-          return _c("option", { key: t, domProps: { value: t } }, [
-            _vm._v(_vm._s(t))
+          return _c("option", { key: t.name, domProps: { value: t.value } }, [
+            _vm._v(_vm._s(t.name))
           ])
         })
       )

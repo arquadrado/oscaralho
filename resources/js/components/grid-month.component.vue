@@ -15,6 +15,18 @@
             <i :class="[category.category.icon]"></i>
           </div>
         </div>
+        
+        <div class="message" v-if="items.length === 0">
+          <p class="message" >
+            You have no categories so this month's budget could not be automatically created.
+          </p>
+          <p>
+            Use the (<i class="fa fa-bars"></i>) menu's section <strong>Categories</strong> to add new categories and refresh the page to create the current's month budget.
+          </p>
+          <p>
+            You can also add budgets manually in the menu's section <strong>Budgets</strong>.
+          </p>
+        </div>
 
         <div class="category-to-expand"
           :class="{'expand': shouldDisplayPanel}"
