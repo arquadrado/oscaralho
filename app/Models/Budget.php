@@ -26,6 +26,7 @@ class Budget extends Model
     ];
 
     protected $with = [];
+    protected $appends = ['categoriesIds'];
 
     public function categories() {
       return $this->belongsToMany(Category::class);
@@ -33,6 +34,15 @@ class Budget extends Model
 
     public function bounds() {
         return $this->hasMany(CategoryBound::class);
+    }
+
+    /* Mutators */
+    
+    public function getCategoriesIdsAttribute() {
+      $bounds = CategoryBound::where('budget_id', $this->id)->get();
+      return $bounds->map(function($bound) {
+        return $bound->category_id;
+      });
     }
 
 }

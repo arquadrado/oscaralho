@@ -156,6 +156,11 @@
   height: calc(100% - 54px);
 }
 
+.add-budget {
+  max-height: calc(100% - 86px);
+  overflow: auto;
+}
+
 .add-budget .menu-option {
   height: 60px;
   border: 2px solid #4f4f4f;
@@ -170,6 +175,11 @@
           align-items: center;
   margin: 14px;
   border-radius: 30px;
+}
+
+.add-budget .menu-option.selected {
+  background-color: #4f4f4f;
+  color: #f3f3f3;
 }
 
 .add-budget .form-field {

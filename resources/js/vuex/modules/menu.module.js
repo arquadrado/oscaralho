@@ -45,7 +45,7 @@ const actions = {
     axios.post('/budget', data)
       .then((response) => {
         commit('ADD_BUDGET', response.data.budget);
-        dispatch('addBounds', response.data.bounds);
+        dispatch('updateBounds', response.data.bounds);
       })
       .catch(function (error) {
         console.log(error);

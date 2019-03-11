@@ -48705,10 +48705,10 @@ var actions = {
       commit('ADD_EXPENSE', expense);
     });
   },
-  addBounds: function addBounds(_ref7, bounds) {
+  updateBounds: function updateBounds(_ref7, bounds) {
     var commit = _ref7.commit;
 
-    commit('ADD_BOUNDS', bounds);
+    commit('UPDATE_BOUNDS', bounds);
   },
   deleteBounds: function deleteBounds(_ref8, budgetId) {
     var commit = _ref8.commit;
@@ -48806,10 +48806,44 @@ var mutations = {
       bound.bound_in_cents = data.value;
     }
   },
-  'ADD_BOUNDS': function ADD_BOUNDS(state, bounds) {
-    bounds.forEach(function (bound) {
-      state.bounds.push(bound);
-    });
+  'UPDATE_BOUNDS': function UPDATE_BOUNDS(state, bounds) {
+
+    // to refactor complex logic in mutations
+    if (bounds.length) {
+
+      var budgetId = bounds[0].budget_id;
+
+      var budgetBounds = state.bounds.filter(function (b) {
+        return b.budget_id === budgetId;
+      });
+
+      var currentBoundsIds = bounds.map(function (b) {
+        return b.id;
+      });
+
+      var indexesToRemove = [];
+
+      budgetBounds.forEach(function (bound) {
+        var index = currentBoundsIds.indexOf(bound.id);
+
+        if (index === -1) {
+          indexesToRemove.push(index);
+        }
+      });
+
+      for (var i = indexesToRemove.length - 1; i >= 0; i--) {
+        state.bounds.splice(indexesToRemove[i], 1);
+      }
+
+      bounds.forEach(function (bound) {
+        var boundToAdd = state.bounds.find(function (b) {
+          return b.id === bound.id;
+        });
+        if (!boundToAdd) {
+          state.bounds.push(bound);
+        }
+      });
+    }
   },
   'DELETE_BOUNDS': function DELETE_BOUNDS(state, budgetId) {
 
@@ -48917,7 +48951,7 @@ var actions = {
 
     axios.post('/budget', data).then(function (response) {
       commit('ADD_BUDGET', response.data.budget);
-      dispatch('addBounds', response.data.bounds);
+      dispatch('updateBounds', response.data.bounds);
     }).catch(function (error) {
       console.log(error);
     });
@@ -53328,15 +53362,25 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   mounted: function mounted() {
-    console.log(this.budgetToEdit);
     if (this.budgetToEdit) {
       this.budgetForm.year = this.budgetToEdit.year;
       this.budgetForm.month = this.budgetToEdit.month;
+      this.budgetForm.categories = this.budgetToEdit.categoriesIds;
     }
   },
   data: function data() {
@@ -53344,18 +53388,32 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       months: [{ number: '01', name: 'January' }, { number: '02', name: 'February' }, { number: '03', name: 'March' }, { number: '04', name: 'April' }, { number: '05', name: 'May' }, { number: '06', name: 'June' }, { number: '07', name: 'July' }, { number: '08', name: 'August' }, { number: '09', name: 'September' }, { number: '10', name: 'October' }, { number: '11', name: 'November' }, { number: '12', name: 'December' }],
       budgetForm: {
         year: '',
-        month: ''
+        month: '',
+        categories: []
       }
     };
   },
 
   computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])({
-    budgetToEdit: 'getSelectedBudgetToEdit'
+    budgetToEdit: 'getSelectedBudgetToEdit',
+    categories: 'getCategoriesToEdit'
   })),
   methods: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({
     saveBudget: 'saveBudget',
     deleteBudget: 'deleteBudget'
   }), {
+    toggleCategory: function toggleCategory(id) {
+      var index = this.budgetForm.categories.indexOf(id);
+
+      if (index > -1) {
+        this.budgetForm.categories.splice(index, 1);
+      } else {
+        this.budgetForm.categories.push(id);
+      }
+    },
+    categoryIsToggledOn: function categoryIsToggledOn(id) {
+      return this.budgetForm.categories.indexOf(id) > -1;
+    },
     save: function save() {
       if (this.budgetForm.year && this.budgetForm.month) {
         this.saveBudget(_extends({
@@ -53379,89 +53437,120 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "add-budget" }, [
-    _c("div", { staticClass: "form-field" }, [
-      _c("label", { attrs: { for: "budget-year" } }, [_vm._v("Year")]),
-      _vm._v(" "),
-      _c("input", {
-        directives: [
-          {
-            name: "model",
-            rawName: "v-model",
-            value: _vm.budgetForm.year,
-            expression: "budgetForm.year"
-          }
-        ],
-        attrs: { type: "number", name: "budget-year" },
-        domProps: { value: _vm.budgetForm.year },
-        on: {
-          input: function($event) {
-            if ($event.target.composing) {
-              return
-            }
-            _vm.$set(_vm.budgetForm, "year", $event.target.value)
-          }
-        }
-      })
-    ]),
-    _vm._v(" "),
-    _c("div", { staticClass: "form-field" }, [
-      _c("label", { attrs: { for: "budget-month" } }, [_vm._v("Month")]),
-      _vm._v(" "),
-      _c(
-        "select",
-        {
+  return _c(
+    "div",
+    { staticClass: "add-budget" },
+    [
+      _c("div", { staticClass: "form-field" }, [
+        _c("label", { attrs: { for: "budget-year" } }, [_vm._v("Year")]),
+        _vm._v(" "),
+        _c("input", {
           directives: [
             {
               name: "model",
               rawName: "v-model",
-              value: _vm.budgetForm.month,
-              expression: "budgetForm.month"
+              value: _vm.budgetForm.year,
+              expression: "budgetForm.year"
             }
           ],
-          attrs: { name: "budget-month" },
+          attrs: { type: "number", name: "budget-year" },
+          domProps: { value: _vm.budgetForm.year },
           on: {
-            change: function($event) {
-              var $$selectedVal = Array.prototype.filter
-                .call($event.target.options, function(o) {
-                  return o.selected
-                })
-                .map(function(o) {
-                  var val = "_value" in o ? o._value : o.value
-                  return val
-                })
-              _vm.$set(
-                _vm.budgetForm,
-                "month",
-                $event.target.multiple ? $$selectedVal : $$selectedVal[0]
-              )
+            input: function($event) {
+              if ($event.target.composing) {
+                return
+              }
+              _vm.$set(_vm.budgetForm, "year", $event.target.value)
             }
           }
-        },
-        _vm._l(_vm.months, function(m) {
-          return _c(
-            "option",
-            { key: m.number, domProps: { value: m.number } },
-            [_vm._v(_vm._s(m.name))]
-          )
         })
-      )
-    ]),
-    _vm._v(" "),
-    _c("div", { staticClass: "actions" }, [
-      _c("span", { staticClass: "button", on: { click: _vm.save } }, [
-        _c("i", { staticClass: "fa fa-save" })
       ]),
       _vm._v(" "),
-      _vm.budgetToEdit
-        ? _c("span", { staticClass: "button", on: { click: _vm.remove } }, [
-            _c("i", { staticClass: "fa fa-remove" })
-          ])
-        : _vm._e()
-    ])
-  ])
+      _c("div", { staticClass: "form-field" }, [
+        _c("label", { attrs: { for: "budget-month" } }, [_vm._v("Month")]),
+        _vm._v(" "),
+        _c(
+          "select",
+          {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.budgetForm.month,
+                expression: "budgetForm.month"
+              }
+            ],
+            attrs: { name: "budget-month" },
+            on: {
+              change: function($event) {
+                var $$selectedVal = Array.prototype.filter
+                  .call($event.target.options, function(o) {
+                    return o.selected
+                  })
+                  .map(function(o) {
+                    var val = "_value" in o ? o._value : o.value
+                    return val
+                  })
+                _vm.$set(
+                  _vm.budgetForm,
+                  "month",
+                  $event.target.multiple ? $$selectedVal : $$selectedVal[0]
+                )
+              }
+            }
+          },
+          _vm._l(_vm.months, function(m) {
+            return _c(
+              "option",
+              { key: m.number, domProps: { value: m.number } },
+              [_vm._v(_vm._s(m.name))]
+            )
+          })
+        )
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "actions" }, [
+        _c("span", { staticClass: "button", on: { click: _vm.save } }, [
+          _c("i", { staticClass: "fa fa-save" })
+        ]),
+        _vm._v(" "),
+        _vm.budgetToEdit
+          ? _c("span", { staticClass: "button", on: { click: _vm.remove } }, [
+              _c("i", { staticClass: "fa fa-remove" })
+            ])
+          : _vm._e()
+      ]),
+      _vm._v(" "),
+      _vm._m(0),
+      _vm._v(" "),
+      _vm._l(_vm.categories, function(category) {
+        return _c(
+          "div",
+          {
+            key: category.id,
+            staticClass: "menu-option half",
+            class: { selected: _vm.categoryIsToggledOn(category.id) },
+            on: {
+              click: function($event) {
+                _vm.toggleCategory(category.id)
+              }
+            }
+          },
+          [_c("span", [_vm._v(_vm._s(category.name))])]
+        )
+      })
+    ],
+    2
+  )
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", [_c("strong", [_vm._v("Categories")])])
+  }
+]
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {

@@ -25,6 +25,16 @@
       </span>
     </div>
 
+    <span><strong>Categories</strong></span>
+
+    <div class="menu-option half" 
+      v-for="category in categories" 
+      :key="category.id"
+      :class="{'selected': categoryIsToggledOn(category.id)}"
+      @click="toggleCategory(category.id)"
+    >
+      <span>{{ category.name }}</span>
+    </div>
 
   </div>
 </template>
@@ -34,10 +44,10 @@ import { mapGetters, mapActions } from 'vuex';
 
 export default {
   mounted() {
-    console.log(this.budgetToEdit);
     if (this.budgetToEdit) {
       this.budgetForm.year = this.budgetToEdit.year;
       this.budgetForm.month = this.budgetToEdit.month;
+      this.budgetForm.categories = this.budgetToEdit.categoriesIds;
     }
   },
   data() {
@@ -58,13 +68,15 @@ export default {
       ],
       budgetForm: {
         year: '',
-        month: ''
+        month: '',
+        categories: []
       }
     };
   },
   computed: {
     ...mapGetters({
-      budgetToEdit: 'getSelectedBudgetToEdit'
+      budgetToEdit: 'getSelectedBudgetToEdit',
+      categories: 'getCategoriesToEdit'
     })
   },
   methods: {
@@ -72,6 +84,18 @@ export default {
       saveBudget: 'saveBudget',
       deleteBudget: 'deleteBudget'
     }),
+    toggleCategory(id) {
+      const index = this.budgetForm.categories.indexOf(id);
+
+      if (index > -1) {
+        this.budgetForm.categories.splice(index, 1);
+      } else {
+        this.budgetForm.categories.push(id);
+      }
+    },
+    categoryIsToggledOn(id) {
+      return this.budgetForm.categories.indexOf(id) > -1;
+    },
     save() {
       if (this.budgetForm.year && this.budgetForm.month) {
         this.saveBudget({

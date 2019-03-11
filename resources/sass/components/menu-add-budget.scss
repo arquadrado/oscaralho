@@ -1,6 +1,8 @@
 @import '../_variables';
 
 .add-budget {
+  max-height: calc(100% - 86px);
+  overflow: auto;
   .menu-option {
     height: 60px;
     border: 2px solid #4f4f4f;
@@ -9,6 +11,10 @@
     align-items: center;
     margin: 14px;
     border-radius: 30px;
+    &.selected {
+      background-color: #4f4f4f;
+      color: rgb(243, 243, 243);
+    }
   }
 
   .form-field {

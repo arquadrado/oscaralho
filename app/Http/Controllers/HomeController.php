@@ -135,8 +135,12 @@ class HomeController extends Controller
 
   public function saveBudget() {
     $budget = Budget::find(request()->get('id'));
-    $requestData = request()->all();
-    
+    $requestData = [
+      'month' => request()->get('month'),
+      'year' => request()->get('year')
+    ];
+
+    $categoriesIds = request()->get('categories');
     
     if (is_null($budget)) {
       
@@ -148,37 +152,69 @@ class HomeController extends Controller
 
         $budget = Budget::create(array_merge(['user_id' => Auth::user()->id], $requestData));
   
-        /* To replace by chosen categories */
-        $categories = Category::all();
-        $categoriesIds = $categories->map(function($category) {
-          return $category->id;
-        })->toArray();
-        
         $budget->categories()->sync($categoriesIds);
-        /* To replace by chosen categories */
+        $budget->bounds->each(function($bound) use ($categoriesIds) {
+          if (!in_array($bound->category_id, $categoriesIds)) {
+            $bound->delete();
+          }
+        });
         
+        foreach($categoriesIds as $categoryId) {
+          $bound = $budget->bounds()->where('category_id', $categoryId)->first();
+          if (is_null($bound)) {
+            $category = Category::find($categoryId);
+            $bound = CategoryBound::create([
+              'category_id' => $category->id,
+              'budget_id' => $budget->id,
+              'bound_in_cents' => $category->default_bound_in_cents
+              ]);
+            }
+          }
+          
         foreach($budget->categories as $category) {
           $bound = CategoryBound::where('budget_id', $budget->id)
-                              ->where('category_id', $category->id)
-                              ->first();
+          ->where('category_id', $category->id)
+          ->first();
           if (is_null($bound)) {
-              $bound = CategoryBound::create([
-                  'category_id' => $category->id,
-                  'budget_id' => $budget->id,
-                  'bound_in_cents' => $category->default_bound_in_cents
-              ]);
+            $bound = CategoryBound::create([
+              'category_id' => $category->id,
+              'budget_id' => $budget->id,
+              'bound_in_cents' => $category->default_bound_in_cents
+            ]);
           }
         }
-
+        $budget->load('bounds');
         return response()->json(['budget' => $budget, 'bounds' => $budget->bounds], 200);
       }
-      return response()->json(['error' => 'Budget for the same period already exist'], 400);
 
+      return response()->json(['error' => 'Budget for the same period already exist'], 400);
+    }
+        
+    $budget->update($requestData);
+    $budget->categories()->sync($categoriesIds);
+    
+    $budget->bounds->each(function($bound) use ($categoriesIds) {
+      if (!in_array($bound->category_id, $categoriesIds)) {
+        $bound->delete();
+      }
+    });
+    
+    foreach($categoriesIds as $categoryId) {
+      $bound = $budget->bounds()->where('category_id', $categoryId)->first();
+      if (is_null($bound)) {
+        $category = Category::find($categoryId);
+        $bound = CategoryBound::create([
+          'category_id' => $category->id,
+          'budget_id' => $budget->id,
+          'bound_in_cents' => $category->default_bound_in_cents
+          ]);
+          
+      }
     }
 
-    $category->update($requestData);
+    $budget->load('bounds');
 
-    return response()->json(['category' => $category], 200);
+    return response()->json(['budget' => $budget, 'bounds' => $budget->bounds], 200);
   }
     
   public function deleteBudget() {
