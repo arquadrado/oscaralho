@@ -68,8 +68,16 @@ class HomeController extends Controller
         }
       }
       
-      $budgets = Budget::all();
-      $bounds = CategoryBound::all();
+      $budgets = Budget::where('user_id', $user->id)->get();
+      // $bounds = CategoryBound::all();
+      $bounds = collect();
+
+      foreach($budgets as $budget) {
+        $bs = CategoryBound::where('budget_id', $budget->id)->get();
+        
+        $bounds = $bounds->merge($bs);
+      }
+      
 
       return view('home', [
           'user' => $user,
