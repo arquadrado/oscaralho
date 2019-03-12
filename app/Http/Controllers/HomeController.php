@@ -36,8 +36,9 @@ class HomeController extends Controller
       
       $token = csrf_token();
       
-      $categories = Category::all();
-      $budget = Budget::where('year', Carbon::now()->format('Y'))
+      $categories = Category::where('user_id', $user->id)->get();
+      $budget = Budget::where('user_id', $user->id)
+                      ->where('year', Carbon::now()->format('Y'))
                       ->where('month', Carbon::now()->format('m'))
                       ->first();
 
