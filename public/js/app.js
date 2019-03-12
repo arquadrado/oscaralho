@@ -48593,7 +48593,7 @@ var state = {
   currentCategoryType: 'expense',
   user: user,
   bounds: bounds,
-  selectedCategory: undefined,
+  selectedBound: undefined,
   showDisplayPanel: false,
   selectedYear: '' + new Date(Date.now()).getFullYear(),
   selectedMonth: '0' + (new Date(Date.now()).getMonth() + 1),
@@ -48622,12 +48622,12 @@ var getters = {
       return bound.year === state.selectedYear;
     });
   },
-  getSelectedCategoryId: function getSelectedCategoryId(state) {
-    return state.selectedCategory;
+  getSelectedBoundId: function getSelectedBoundId(state) {
+    return state.selectedBound;
   },
-  getSelectedCategory: function getSelectedCategory(state) {
+  getSelectedBound: function getSelectedBound(state) {
     return state.bounds.find(function (c) {
-      return c.id === state.selectedCategory;
+      return c.id === state.selectedBound;
     });
   },
   shouldDisplayPanel: function shouldDisplayPanel(state) {
@@ -48666,29 +48666,24 @@ var getters = {
   }
 };
 var actions = {
-  addCategory: function addCategory(_ref, category) {
-    var commit = _ref.commit;
+  selectBound: function selectBound(_ref, categoryId) {
+    var commit = _ref.commit,
+        state = _ref.state;
 
-    commit('ADD_CATEGORY', category);
+    commit('SELECT_BOUND', categoryId);
   },
-  selectCategory: function selectCategory(_ref2, categoryId) {
-    var commit = _ref2.commit,
-        state = _ref2.state;
-
-    commit('SELECT_CATEGORY', categoryId);
-  },
-  setJustUpdated: function setJustUpdated(_ref3, identifier) {
-    var commit = _ref3.commit;
+  setJustUpdated: function setJustUpdated(_ref2, identifier) {
+    var commit = _ref2.commit;
 
     commit('SET_JUST_UPDATED', identifier);
   },
-  setShowDisplayPanel: function setShowDisplayPanel(_ref4, value) {
-    var commit = _ref4.commit;
+  setShowDisplayPanel: function setShowDisplayPanel(_ref3, value) {
+    var commit = _ref3.commit;
 
     commit('SET_SHOW_DISPLAY_PANEL', value);
   },
-  addExpense: function addExpense(_ref5, expenseData) {
-    var commit = _ref5.commit;
+  addExpense: function addExpense(_ref4, expenseData) {
+    var commit = _ref4.commit;
 
     axios.post('/add-expense', expenseData).then(function (response) {
       commit('ADD_EXPENSE', response.data.expense);
@@ -48696,8 +48691,8 @@ var actions = {
       console.log(error);
     });
   },
-  removeExpense: function removeExpense(_ref6, expense) {
-    var commit = _ref6.commit;
+  removeExpense: function removeExpense(_ref5, expense) {
+    var commit = _ref5.commit;
 
     commit('REMOVE_EXPENSE', expense);
 
@@ -48705,18 +48700,60 @@ var actions = {
       commit('ADD_EXPENSE', expense);
     });
   },
-  updateBounds: function updateBounds(_ref7, bounds) {
+  updateBounds: function updateBounds(_ref6, bounds) {
+    var commit = _ref6.commit,
+        state = _ref6.state;
+
+
+    if (bounds.length) {
+      var budgetId = bounds[0].budget_id;
+
+      var budgetBounds = state.bounds.filter(function (b) {
+        return b.budget_id === budgetId;
+      });
+
+      var currentBoundsIds = bounds.map(function (b) {
+        return b.id;
+      });
+
+      var indexesToRemove = [];
+
+      budgetBounds.forEach(function (bound, i) {
+        var index = currentBoundsIds.indexOf(bound.id);
+
+        if (index === -1) {
+          indexesToRemove.push(i);
+        }
+      });
+
+      commit('DELETE_BOUNDS', indexesToRemove);
+
+      var boundsToAdd = bounds.filter(function (bound) {
+        var boundToAdd = state.bounds.find(function (b) {
+          return b.id === bound.id;
+        });
+        return !boundToAdd;
+      });
+
+      commit('ADD_BOUNDS', boundsToAdd);
+    }
+  },
+  deleteBounds: function deleteBounds(_ref7, budgetId) {
     var commit = _ref7.commit;
 
-    commit('UPDATE_BOUNDS', bounds);
-  },
-  deleteBounds: function deleteBounds(_ref8, budgetId) {
-    var commit = _ref8.commit;
+    var indexesToRemove = state.bounds.map(function (b, i) {
+      if (b.budget_id === budgetId) {
+        return i;
+      }
+      return false;
+    }).filter(function (i) {
+      return i;
+    });
 
-    commit('DELETE_BOUNDS', budgetId);
+    commit('DELETE_BOUNDS', indexesToRemove);
   },
-  updateCategoryBound: function updateCategoryBound(_ref9, data) {
-    var commit = _ref9.commit;
+  updateCategoryBound: function updateCategoryBound(_ref8, data) {
+    var commit = _ref8.commit;
 
     var bound = state.bounds.find(function (c) {
       return c.id === data.categoryId;
@@ -48735,30 +48772,30 @@ var actions = {
     }
   },
 
-  setMonth: function setMonth(_ref10, month) {
-    var commit = _ref10.commit,
-        dispatch = _ref10.dispatch;
+  setMonth: function setMonth(_ref9, month) {
+    var commit = _ref9.commit,
+        dispatch = _ref9.dispatch;
 
     dispatch('setShowDisplayPanel', false);
     commit('SET_MONTH', month);
   },
-  setYear: function setYear(_ref11, year) {
-    var commit = _ref11.commit,
-        dispatch = _ref11.dispatch;
+  setYear: function setYear(_ref10, year) {
+    var commit = _ref10.commit,
+        dispatch = _ref10.dispatch;
 
     dispatch('setShowDisplayPanel', false);
     commit('SET_YEAR', year);
   },
-  setCurrentView: function setCurrentView(_ref12, view) {
-    var commit = _ref12.commit,
-        dispatch = _ref12.dispatch;
+  setCurrentView: function setCurrentView(_ref11, view) {
+    var commit = _ref11.commit,
+        dispatch = _ref11.dispatch;
 
     dispatch('setShowDisplayPanel', false);
     commit('SET_CURRENT_VIEW', view);
   },
-  setCurrentCategoryType: function setCurrentCategoryType(_ref13, type) {
-    var commit = _ref13.commit,
-        dispatch = _ref13.dispatch;
+  setCurrentCategoryType: function setCurrentCategoryType(_ref12, type) {
+    var commit = _ref12.commit,
+        dispatch = _ref12.dispatch;
 
     dispatch('setShowDisplayPanel', false);
     commit('SET_CURRENT_CATEGORY_TYPE', type);
@@ -48766,8 +48803,8 @@ var actions = {
 
 };
 var mutations = {
-  'SELECT_CATEGORY': function SELECT_CATEGORY(state, categoryId) {
-    state.selectedCategory = categoryId;
+  'SELECT_BOUND': function SELECT_BOUND(state, categoryId) {
+    state.selectedBound = categoryId;
   },
   'SET_JUST_UPDATED': function SET_JUST_UPDATED(state, identifier) {
     state.justUpdated = identifier;
@@ -48806,56 +48843,12 @@ var mutations = {
       bound.bound_in_cents = data.value;
     }
   },
-  'UPDATE_BOUNDS': function UPDATE_BOUNDS(state, bounds) {
-
-    // to refactor complex logic in mutations
-    if (bounds.length) {
-
-      var budgetId = bounds[0].budget_id;
-
-      var budgetBounds = state.bounds.filter(function (b) {
-        return b.budget_id === budgetId;
-      });
-
-      var currentBoundsIds = bounds.map(function (b) {
-        return b.id;
-      });
-
-      var indexesToRemove = [];
-
-      budgetBounds.forEach(function (bound) {
-        var index = currentBoundsIds.indexOf(bound.id);
-
-        if (index === -1) {
-          indexesToRemove.push(index);
-        }
-      });
-
-      for (var i = indexesToRemove.length - 1; i >= 0; i--) {
-        state.bounds.splice(indexesToRemove[i], 1);
-      }
-
-      bounds.forEach(function (bound) {
-        var boundToAdd = state.bounds.find(function (b) {
-          return b.id === bound.id;
-        });
-        if (!boundToAdd) {
-          state.bounds.push(bound);
-        }
-      });
-    }
-  },
-  'DELETE_BOUNDS': function DELETE_BOUNDS(state, budgetId) {
-
-    var indexesToRemove = state.bounds.map(function (b, i) {
-      if (b.budget_id === budgetId) {
-        return i;
-      }
-      return false;
-    }).filter(function (i) {
-      return i;
+  'ADD_BOUNDS': function ADD_BOUNDS(state, bounds) {
+    bounds.forEach(function (bound) {
+      state.bounds.push(bound);
     });
-
+  },
+  'DELETE_BOUNDS': function DELETE_BOUNDS(state, indexesToRemove) {
     for (var i = indexesToRemove.length - 1; i >= 0; i--) {
       state.bounds.splice(indexesToRemove[i], 1);
     }
@@ -48906,7 +48899,7 @@ var getters = {
       return a.year + '-' + a.month < b.year + '-' + b.month;
     });
   },
-  getCategoriesToEdit: function getCategoriesToEdit(state) {
+  getCategories: function getCategories(state) {
     return state.categories;
   },
   getSelectedCategoryToEdit: function getSelectedCategoryToEdit(state) {
@@ -51755,28 +51748,34 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
   },
 
   computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])({
+    categories: 'getCategories',
     items: 'getBoundsByMonth',
-    selectedItem: 'getSelectedCategoryId',
-    selectedCategoryObject: 'getSelectedCategory',
+    selectedItem: 'getSelectedBoundId',
+    selectedCategoryObject: 'getSelectedBound',
     shouldDisplayPanel: 'shouldDisplayPanel',
     selectedYear: 'getSelectedYear',
     selectedMonth: 'getSelectedMonth'
   })),
   methods: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({
-    selectCategory: 'selectCategory',
+    selectBound: 'selectBound',
     setJustUpdated: 'setJustUpdated'
   }), {
-    clickCategory: function clickCategory(categoryId) {
-      if (this.justUpdated === categoryId) {
+    getBoundCategory: function getBoundCategory(bound) {
+      return this.categories.find(function (c) {
+        return c.id === bound.category.id;
+      });
+    },
+    clickBound: function clickBound(boundId) {
+      if (this.justUpdated === boundId) {
         this.setJustUpdated();
       }
-      this.selectCategory(categoryId);
+      this.selectBound(boundId);
     },
-    getExpensesSum: function getExpensesSum(category) {
-      if (!category || !category.expenses) {
+    getExpensesSum: function getExpensesSum(bound) {
+      if (!bound || !bound.expenses) {
         return 0;
       }
-      return category.expenses.reduce(function (sum, expense) {
+      return bound.expenses.reduce(function (sum, expense) {
         sum += Number(expense.value);
         return sum;
       }, 0);
@@ -51838,6 +51837,10 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
+//
+//
+//
 
 
 
@@ -51860,10 +51863,18 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
   },
 
   computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])({
-    selectedCategory: 'getSelectedCategory',
+    categories: 'getCategories',
+    selectedCategory: 'getSelectedBound',
     selectedYear: 'getSelectedYear',
     selectedMonth: 'getSelectedMonth'
   }), {
+    boundCategory: function boundCategory() {
+      var _this2 = this;
+
+      return this.categories.find(function (c) {
+        return c.id === _this2.selectedCategory.category.id;
+      });
+    },
     selectedCategoryBound: function selectedCategoryBound() {
       var bound = this.selectedCategory;
 
@@ -51935,82 +51946,84 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _vm.showContent
     ? _c("div", { staticClass: "category-detail" }, [
-        _c("span", [_c("i", { class: [_vm.selectedCategory.category.icon] })]),
-        _vm._v(" "),
-        _c("h2", [_vm._v(_vm._s(_vm.selectedCategory.category.name))]),
-        _vm._v(" "),
-        _c("div", { staticClass: "balance" }, [
-          _c("span", [
-            _c("input", {
-              directives: [
-                { name: "focus", rawName: "v-focus" },
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.newBound,
-                  expression: "newBound"
-                }
-              ],
-              attrs: { disabled: !_vm.boundBeingEdited, type: "number" },
-              domProps: { value: _vm.newBound },
-              on: {
-                input: function($event) {
-                  if ($event.target.composing) {
-                    return
-                  }
-                  _vm.newBound = $event.target.value
-                }
-              }
-            }),
-            _vm._v("/" + _vm._s(_vm.expensesSum))
-          ])
-        ]),
-        _vm._v(" "),
-        _c("span", { staticClass: "unit" }, [_vm._v("euros")]),
-        _vm._v(" "),
-        _c("div", { staticClass: "balance-action" }, [
-          !_vm.boundBeingEdited
-            ? _c(
-                "span",
-                { staticClass: "button", on: { click: _vm.editBound } },
-                [_c("i", { staticClass: "fa fa-pencil" })]
-              )
-            : _vm._e(),
+        _c("div", { staticClass: "compressable-content" }, [
+          _c("span", [_c("i", { class: [_vm.boundCategory.icon] })]),
           _vm._v(" "),
-          _vm.boundBeingEdited
-            ? _c(
-                "span",
-                { staticClass: "button", on: { click: _vm.saveNewBound } },
-                [_c("i", { staticClass: "fa fa-save" })]
-              )
-            : _vm._e()
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "content" }, [
-          _c(
-            "div",
-            { staticClass: "expenses" },
-            _vm._l(_vm.selectedCategory.expenses, function(expense) {
-              return _c("div", { key: expense.id, staticClass: "expense" }, [
-                _c("div", { staticClass: "expense-value" }, [
-                  _vm._v(_vm._s(expense.value))
-                ]),
-                _vm._v(" "),
-                _c("div", { staticClass: "expense-actions" }, [
-                  _c("i", { staticClass: "fa fa-pencil" }),
-                  _vm._v(" "),
-                  _c("i", {
-                    staticClass: "fa fa-trash-o",
-                    on: {
-                      click: function($event) {
-                        _vm.removeExpense(expense)
-                      }
+          _c("h2", [_vm._v(_vm._s(_vm.boundCategory.name))]),
+          _vm._v(" "),
+          _c("div", { staticClass: "balance" }, [
+            _c("span", [
+              _c("input", {
+                directives: [
+                  { name: "focus", rawName: "v-focus" },
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.newBound,
+                    expression: "newBound"
+                  }
+                ],
+                attrs: { disabled: !_vm.boundBeingEdited, type: "number" },
+                domProps: { value: _vm.newBound },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
                     }
-                  })
+                    _vm.newBound = $event.target.value
+                  }
+                }
+              }),
+              _vm._v("/" + _vm._s(_vm.expensesSum))
+            ])
+          ]),
+          _vm._v(" "),
+          _c("span", { staticClass: "unit" }, [_vm._v("euros")]),
+          _vm._v(" "),
+          _c("div", { staticClass: "balance-action" }, [
+            !_vm.boundBeingEdited
+              ? _c(
+                  "span",
+                  { staticClass: "button", on: { click: _vm.editBound } },
+                  [_c("i", { staticClass: "fa fa-pencil" })]
+                )
+              : _vm._e(),
+            _vm._v(" "),
+            _vm.boundBeingEdited
+              ? _c(
+                  "span",
+                  { staticClass: "button", on: { click: _vm.saveNewBound } },
+                  [_c("i", { staticClass: "fa fa-save" })]
+                )
+              : _vm._e()
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "content" }, [
+            _c(
+              "div",
+              { staticClass: "expenses" },
+              _vm._l(_vm.selectedCategory.expenses, function(expense) {
+                return _c("div", { key: expense.id, staticClass: "expense" }, [
+                  _c("div", { staticClass: "expense-value" }, [
+                    _vm._v(_vm._s(expense.value))
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "expense-actions" }, [
+                    _c("i", { staticClass: "fa fa-pencil" }),
+                    _vm._v(" "),
+                    _c("i", {
+                      staticClass: "fa fa-trash-o",
+                      on: {
+                        click: function($event) {
+                          _vm.removeExpense(expense)
+                        }
+                      }
+                    })
+                  ])
                 ])
-              ])
-            })
-          )
+              })
+            )
+          ])
         ]),
         _vm._v(" "),
         _c("div", { staticClass: "add-form" }, [
@@ -52083,7 +52096,7 @@ var render = function() {
       attrs: { id: "grid" }
     },
     [
-      _vm._l(_vm.items, function(category) {
+      _vm._l(_vm.items, function(item) {
         return _c(
           "div",
           {
@@ -52091,20 +52104,20 @@ var render = function() {
               {
                 name: "card",
                 rawName: "v-card",
-                value: category.id,
-                expression: "category.id"
+                value: item.id,
+                expression: "item.id"
               }
             ],
-            key: category.id,
+            key: item.id,
             staticClass: "grid-cell",
-            class: { selected: _vm.selectedItem === category.id },
+            class: { selected: _vm.selectedItem === item.id },
             style: {
               width: _vm.cellWidth + "px",
               height: _vm.cellHeight + "px"
             },
             on: {
               click: function($event) {
-                _vm.clickCategory(category.id)
+                _vm.clickBound(item.id)
               }
             }
           },
@@ -52113,9 +52126,9 @@ var render = function() {
               "div",
               {
                 staticClass: "category",
-                style: { "background-color": _vm.getCellStatusColor(category) }
+                style: { "background-color": _vm.getCellStatusColor(item) }
               },
-              [_c("i", { class: [category.category.icon] })]
+              [_c("i", { class: [_vm.getBoundCategory(item).icon] })]
             )
           ]
         )
@@ -52865,7 +52878,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     allYears: 'getAllTimeYears',
     getCurrentCategoryType: 'getCurrentCategoryType',
 
-    categoriesToEdit: 'getCategoriesToEdit',
+    categoriesToEdit: 'getCategories',
     budgetsToEdit: 'getBudgetsToEdit'
   }), {
     menuTriggerLabel: function menuTriggerLabel() {
@@ -53259,7 +53272,7 @@ var render = function() {
       _vm._v(" "),
       _vm.categoryToEdit && _vm.canRemoveCategory
         ? _c("span", { staticClass: "button", on: { click: _vm.remove } }, [
-            _c("i", { staticClass: "fa fa-remove" })
+            _c("i", { staticClass: "fa fa-trash-o" })
           ])
         : _vm._e()
     ])
@@ -53396,7 +53409,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
   computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])({
     budgetToEdit: 'getSelectedBudgetToEdit',
-    categories: 'getCategoriesToEdit'
+    categories: 'getCategories'
   })),
   methods: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({
     saveBudget: 'saveBudget',
@@ -53516,7 +53529,7 @@ var render = function() {
         _vm._v(" "),
         _vm.budgetToEdit
           ? _c("span", { staticClass: "button", on: { click: _vm.remove } }, [
-              _c("i", { staticClass: "fa fa-remove" })
+              _c("i", { staticClass: "fa fa-trash-o" })
             ])
           : _vm._e()
       ]),

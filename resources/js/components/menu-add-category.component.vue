@@ -1,6 +1,6 @@
 <template>
   <div class="add-category">
-    
+
     <div class="form-field">
       <label for="category-name">Name</label>
       <input type="text" name="category-name" v-model="categoryForm.name">
@@ -22,7 +22,7 @@
         <option v-for="t in types" :key="t.name" :value="t.value">{{ t.name }}</option>
       </select>
     </div>
-    
+
     <div class="actions">
 
       <span class="button" @click="save">
@@ -30,7 +30,7 @@
       </span>
 
       <span class="button" v-if="categoryToEdit && canRemoveCategory" @click="remove">
-        <i class="fa fa-remove"></i>
+        <i class="fa fa-trash-o"></i>
       </span>
     </div>
 

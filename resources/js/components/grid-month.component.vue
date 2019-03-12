@@ -1,21 +1,21 @@
 <template>
     <div id="grid" v-grid>
         <div class="grid-cell"
-          v-card="category.id"
-          v-for="category in items"
-          :key="category.id"
+          v-card="item.id"
+          v-for="item in items"
+          :key="item.id"
           :style="{'width': cellWidth + 'px', 'height': cellHeight + 'px'}"
-          :class="{'selected': selectedItem === category.id}"
-          @click="clickCategory(category.id)"
+          :class="{'selected': selectedItem === item.id}"
+          @click="clickBound(item.id)"
         >
-          <div 
+          <div
             class="category"
-            :style="{'background-color': getCellStatusColor(category)}"
+            :style="{'background-color': getCellStatusColor(item)}"
           >
-            <i :class="[category.category.icon]"></i>
+            <i :class="[getBoundCategory(item).icon]"></i>
           </div>
         </div>
-        
+
         <div class="message" v-if="items.length === 0">
           <p class="message" >
             You have no categories so this month's budget could not be automatically created.
@@ -32,9 +32,9 @@
           :class="{'expand': shouldDisplayPanel}"
           :style="{
             'background-color': getCellStatusColor(selectedCategoryObject),
-            'width': overCardDimension[0], 
+            'width': overCardDimension[0],
             'height': overCardDimension[1],
-            'top': overCardPosition[0] + 'px', 
+            'top': overCardPosition[0] + 'px',
             'left': overCardPosition[1] + 'px'
           }"
         >
@@ -57,9 +57,10 @@ export default {
   },
   computed: {
     ...mapGetters({
+      categories: 'getCategories',
       items: 'getBoundsByMonth',
-      selectedItem: 'getSelectedCategoryId',
-      selectedCategoryObject: 'getSelectedCategory',
+      selectedItem: 'getSelectedBoundId',
+      selectedCategoryObject: 'getSelectedBound',
       shouldDisplayPanel: 'shouldDisplayPanel',
       selectedYear: 'getSelectedYear',
       selectedMonth: 'getSelectedMonth'
@@ -67,20 +68,23 @@ export default {
   },
   methods: {
     ...mapActions({
-      selectCategory: 'selectCategory',
+      selectBound: 'selectBound',
       setJustUpdated: 'setJustUpdated'
     }),
-    clickCategory(categoryId) {
-      if (this.justUpdated === categoryId) {
+    getBoundCategory(bound) {
+      return this.categories.find(c => c.id === bound.category.id);
+    },
+    clickBound(boundId) {
+      if (this.justUpdated === boundId) {
         this.setJustUpdated();
       }
-      this.selectCategory(categoryId);
+      this.selectBound(boundId);
     },
-    getExpensesSum(category) {
-      if (!category || !category.expenses) {
+    getExpensesSum(bound) {
+      if (!bound || !bound.expenses) {
         return 0;
       }
-      return category.expenses.reduce((sum, expense) => {
+      return bound.expenses.reduce((sum, expense) => {
         sum += Number(expense.value);
         return sum;
       }, 0);

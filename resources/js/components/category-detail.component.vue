@@ -1,7 +1,9 @@
 <template>
     <div class="category-detail" v-if="showContent">
-      <span><i :class="[selectedCategory.category.icon]"></i></span>
-      <h2>{{ selectedCategory.category.name }}</h2>
+
+    <div class="compressable-content">
+      <span><i :class="[boundCategory.icon]"></i></span>
+      <h2>{{ boundCategory.name }}</h2>
       <div class="balance">
 
         <!-- <span v-if="!boundBeingEdited">{{ selectedCategoryBound }}/{{ expensesSum }}</span> -->
@@ -25,6 +27,8 @@
         </div>
 
       </div>
+    </div>
+
 
       <div class="add-form">
         <input v-add-focus type="number" class="add-value" v-model="expenseInput">
@@ -57,10 +61,14 @@ export default {
   },
   computed: {
     ...mapGetters({
-      selectedCategory: 'getSelectedCategory',
+      categories: 'getCategories',
+      selectedCategory: 'getSelectedBound',
       selectedYear: 'getSelectedYear',
       selectedMonth: 'getSelectedMonth'
     }),
+    boundCategory() {
+      return this.categories.find(c => c.id === this.selectedCategory.category.id);
+    },
     selectedCategoryBound() {
       const bound = this.selectedCategory;
 

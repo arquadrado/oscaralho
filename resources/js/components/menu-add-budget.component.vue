@@ -1,6 +1,6 @@
 <template>
   <div class="add-budget">
-    
+
     <div class="form-field">
       <label for="budget-year">Year</label>
       <input type="number" name="budget-year" v-model="budgetForm.year">
@@ -13,7 +13,7 @@
       </select>
     </div>
 
-    
+
     <div class="actions">
 
       <span class="button" @click="save">
@@ -21,14 +21,14 @@
       </span>
 
       <span class="button" v-if="budgetToEdit" @click="remove">
-        <i class="fa fa-remove"></i>
+        <i class="fa fa-trash-o"></i>
       </span>
     </div>
 
     <span><strong>Categories</strong></span>
 
-    <div class="menu-option half" 
-      v-for="category in categories" 
+    <div class="menu-option half"
+      v-for="category in categories"
       :key="category.id"
       :class="{'selected': categoryIsToggledOn(category.id)}"
       @click="toggleCategory(category.id)"
@@ -76,7 +76,7 @@ export default {
   computed: {
     ...mapGetters({
       budgetToEdit: 'getSelectedBudgetToEdit',
-      categories: 'getCategoriesToEdit'
+      categories: 'getCategories'
     })
   },
   methods: {

@@ -356,6 +356,10 @@
   margin: 0;
 }
 
+.category-detail .compressable-content {
+  overflow: hidden;
+}
+
 .category-detail .balance {
   font-weight: 400;
   font-size: 35px;

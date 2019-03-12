@@ -19,7 +19,7 @@ const state = {
   currentCategoryType: 'expense',
   user: user,
   bounds: bounds,
-  selectedCategory: undefined,
+  selectedBound: undefined,
   showDisplayPanel: false,
   selectedYear: `${new Date(Date.now()).getFullYear()}`,
   selectedMonth: `0${(new Date(Date.now()).getMonth() + 1)}`,
@@ -42,8 +42,8 @@ const getters = {
   getBoundsByYear: state => state.bounds.filter((bound) => {
     return bound.year === state.selectedYear;
   }),
-  getSelectedCategoryId: state => state.selectedCategory,
-  getSelectedCategory: state => state.bounds.find(c => c.id === state.selectedCategory),
+  getSelectedBoundId: state => state.selectedBound,
+  getSelectedBound: state => state.bounds.find(c => c.id === state.selectedBound),
   shouldDisplayPanel: state => state.showDisplayPanel,
   getSelectedYear: state => state.selectedYear,
   getCurrentYearMonths: (state) => {
@@ -74,11 +74,8 @@ const getters = {
   isJustUpdated: state => state.justUpdated,
 };
 const actions = {
-  addCategory: ({ commit }, category) => {
-    commit('ADD_CATEGORY', category);
-  },
-  selectCategory: ({ commit, state }, categoryId) => {
-    commit('SELECT_CATEGORY', categoryId);
+  selectBound: ({ commit, state }, categoryId) => {
+    commit('SELECT_BOUND', categoryId);
   },
   setJustUpdated: ({ commit }, identifier) => {
     commit('SET_JUST_UPDATED', identifier);
@@ -104,11 +101,46 @@ const actions = {
         commit('ADD_EXPENSE', expense);
       })
   },
-  updateBounds: ({ commit }, bounds) => {
-    commit('UPDATE_BOUNDS', bounds);
+  updateBounds: ({ commit, state }, bounds) => {
+
+    if (bounds.length) {
+      const budgetId = bounds[0].budget_id;
+
+      const budgetBounds = state.bounds.filter(b => b.budget_id === budgetId);
+
+      const currentBoundsIds = bounds.map(b => b.id);
+
+      const indexesToRemove = [];
+
+      budgetBounds.forEach((bound, i) => {
+        let index = currentBoundsIds.indexOf(bound.id);
+
+        if (index === -1) {
+          indexesToRemove.push(i);
+        }
+      });
+
+      commit('DELETE_BOUNDS', indexesToRemove);
+
+      const boundsToAdd = bounds.filter(bound => {
+        let boundToAdd = state.bounds.find(b => b.id === bound.id);
+        return !boundToAdd;
+      });
+
+      commit('ADD_BOUNDS', boundsToAdd);
+
+    }
   },
   deleteBounds: ({ commit }, budgetId) => {
-    commit('DELETE_BOUNDS', budgetId);
+    const indexesToRemove = state.bounds.map((b, i) => {
+      if (b.budget_id === budgetId) {
+        return i;
+      }
+      return false;
+    })
+    .filter(i => i);
+
+    commit('DELETE_BOUNDS', indexesToRemove);
   },
   updateCategoryBound: ({ commit }, data) => {
     const bound = state.bounds.find(c => c.id === data.categoryId);
@@ -148,8 +180,8 @@ const actions = {
 
 };
 const mutations = {
-  'SELECT_CATEGORY': (state, categoryId) => {
-    state.selectedCategory = categoryId;
+  'SELECT_BOUND': (state, categoryId) => {
+    state.selectedBound = categoryId;
   },
   'SET_JUST_UPDATED': (state, identifier) => {
     state.justUpdated = identifier;
@@ -183,49 +215,12 @@ const mutations = {
       bound.bound_in_cents = data.value;
     }
   },
-  'UPDATE_BOUNDS': (state, bounds) => {
-
-    // to refactor complex logic in mutations
-    if (bounds.length) {
-
-      const budgetId = bounds[0].budget_id;
-
-      const budgetBounds = state.bounds.filter(b => b.budget_id === budgetId);
-
-      const currentBoundsIds = bounds.map(b => b.id);
-
-      const indexesToRemove = [];
-
-      budgetBounds.forEach(bound => {
-        let index = currentBoundsIds.indexOf(bound.id);
-
-        if (index === -1) {
-          indexesToRemove.push(index);
-        }
-      });
-
-      for (var i = indexesToRemove.length - 1; i >= 0; i--) {
-        state.bounds.splice(indexesToRemove[i], 1);
-      }
-
-      bounds.forEach(bound => {
-        let boundToAdd = state.bounds.find(b => b.id === bound.id);
-        if (!boundToAdd) {
-          state.bounds.push(bound);
-        }
-      });
-    }
+  'ADD_BOUNDS': (state, bounds) => {
+    bounds.forEach(bound => {
+      state.bounds.push(bound);
+    });
   },
-  'DELETE_BOUNDS': (state, budgetId) => {
-
-    const indexesToRemove = state.bounds.map((b, i) => {
-      if (b.budget_id === budgetId) {
-        return i;
-      }
-      return false;
-    })
-      .filter(i => i);
-
+  'DELETE_BOUNDS': (state, indexesToRemove) => {
     for (var i = indexesToRemove.length - 1; i >= 0; i--) {
       state.bounds.splice(indexesToRemove[i], 1);
     }

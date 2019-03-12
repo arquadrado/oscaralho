@@ -28,7 +28,7 @@
               <span>All time</span>
             </div>
           </div>
-          
+
           <div class="menu-options x1">
             <div class="menu-option" @click="changeMenuView('options')">
               <span>Back</span>
@@ -105,7 +105,7 @@ export default {
       allYears: 'getAllTimeYears',
       getCurrentCategoryType: 'getCurrentCategoryType',
 
-      categoriesToEdit: 'getCategoriesToEdit',
+      categoriesToEdit: 'getCategories',
       budgetsToEdit: 'getBudgetsToEdit'
     }),
     menuTriggerLabel() {
