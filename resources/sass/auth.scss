@@ -1,0 +1,72 @@
+@import '_variables';
+
+#login-page,#register-page {
+  color: $dark-font-color;
+  height: 100%;
+  width: 100%;
+  display: inline-block;
+  text-align: center;
+  font-size: 17px;
+  
+  .header {
+    margin: 21px;
+    .image {
+      margin: 21px auto;
+      width: 84px;
+      height: 84px;
+      border-radius: 42px;
+      img {
+        width: 100%;
+        height: auto;
+      }
+    }
+    
+    .title {
+      font-size: 28px;
+      font-weight: 900;
+    }
+  }
+  
+  .form {
+    
+    button {
+      border: 1px solid $dark-font-color;
+      height: 35px;
+      border-radius: 25px;
+      width: 150px;
+      margin: 14px auto;
+      background-color: $body-bg;
+      color: $dark-font-color;
+    }
+
+    .field {
+      margin-bottom: 14px;
+      .label {
+        display: block;
+        margin-bottom: 7px;
+      }
+      
+      .input {
+        border: 1px solid $dark-font-color;
+        height: 35px;
+        border-radius: 25px;
+        font-size: 17px;
+        text-align: center;
+        
+        &.is-invalid {
+          border-color: crimson;
+        }
+        
+        &:focus {
+          outline: 0;
+        }
+      }
+      
+      .error-message {
+        color: crimson;
+      }
+    }
+  }
+  
+
+}

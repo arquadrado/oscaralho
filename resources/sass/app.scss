@@ -4,6 +4,8 @@
 
 // Variables
 @import 'variables';
+@import 'auth';
+@import 'welcome';
 @import './miscellaneous/buttons';
 @import './components/main-container';
 @import './components/menu';
@@ -47,4 +49,6 @@ body {
     justify-content: center;
     align-items: center;
   }
+  
+
 }
