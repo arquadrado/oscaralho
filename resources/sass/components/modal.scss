@@ -9,8 +9,6 @@
   visibility: hidden;
   transition: all 100ms ease-out;
   opacity: 0;
-  display: flex;
-  align-items: center;
   &.show {
     transition: all 100ms ease-in;
     visibility: visible;
@@ -19,16 +17,19 @@
   .overlay {
     width: 100%;
     height: 100%;
-    background-color: #000000;
-    opacity: 0.5;
+    background-color: rgba($color: #000000, $alpha: 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .content {
-    position: absolute;
-    top: 0;
-    margin: 150px 21px;
-    height: calc(100% - 300px);
-    width: calc(100% - 42px);
+    // position: absolute;
+    // top: 0;
+    // height: calc(100% - 42px);
+    // height:100%;
+    // width: calc(100% - 42px);
+    // width: 100%;
     background-color: rgb(243, 243, 243);
   }
   

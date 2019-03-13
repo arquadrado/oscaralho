@@ -1,8 +1,11 @@
 <template>
   <div id="modal" :class="{'show': shouldDisplayModal}">
-    <div class="overlay" @click="toggleModal"></div>
-    <div class="content">
-      <component :is="modalType" v-if="shouldDisplayModal"></component>
+    <div class="overlay">
+
+      <div class="content">
+        <component :is="modalType" v-if="modalType"></component>
+      </div>
+      
     </div>
   </div>
 </template>

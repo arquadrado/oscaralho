@@ -20,7 +20,7 @@
           <div class="expense" v-for="expense in selectedCategory.expenses" :key="expense.id">
             <div class="expense-value">{{ expense.value }}</div>
             <div class="expense-actions">
-              <i class="fa fa-pencil"></i>
+              <!-- <i class="fa fa-pencil"></i> -->
               <i class="fa fa-trash-o" @click="removeExpense(expense)"></i>
             </div>
           </div>
@@ -78,10 +78,12 @@ export default {
       return bound ? bound.bound_in_cents / 100 : 0;
     },
     expensesSum() {
-      return this.selectedCategory.expenses.reduce((sum, expense) => {
-        sum += Number(expense.value);
-        return sum;
-      }, 0);
+      return this.selectedCategory.expenses
+        .reduce((sum, expense) => {
+          sum += Number(expense.value);
+          return sum;
+        }, 0)
+        .toFixed(2);
     }
   },
   methods: {
@@ -96,7 +98,8 @@ export default {
       setModalMessage: 'setModalTitle',
       setModalAccept: 'setModalAccept',
       setModalReject: 'setModalReject',
-      setModalColor: 'setModalColor'
+      setModalColor: 'setModalColor',
+      clearModal: 'clearModal'
     }),
     addExpense() {
       this.setModalColor(this.backgroundColor);
@@ -110,6 +113,7 @@ export default {
           });
         }
         this.toggleModal();
+        this.clearModal();
       });
       this.toggleModal();
     },

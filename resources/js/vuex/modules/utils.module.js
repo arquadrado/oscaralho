@@ -79,7 +79,7 @@ const mutations = {
     state.modal.reject = reject;
   },
   'CLEAR_MODAL': (state) => {
-    state.modal.type = 'confirm-modal';
+    state.modal.type = '';
     state.modal.title = undefined;
     state.modal.message = undefined;
     state.modal.accept = undefined;

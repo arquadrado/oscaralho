@@ -9,7 +9,7 @@
       <span>{{ message }}</span>
     </div>
     
-    <div class="input">
+    <div class="input" v-if="shouldDisplayModal">
       <input v-focus type="number" class="app-input" v-model="inputValue" :style="{'background-color': backgroundColor }">
     </div>
     
@@ -36,18 +36,21 @@ export default {
       message: 'getModalMessage',
       accept: 'getModalAccept',
       reject: 'getModalReject',
-      backgroundColor: 'getModalColor'
+      backgroundColor: 'getModalColor',
+      shouldDisplayModal: 'shouldDisplayModal'
     })
   },
   methods: {
     ...mapActions({
-      toggleModal: 'toggleModal'
+      toggleModal: 'toggleModal',
+      clearModal: 'clearModal'
     }),
     cancel() {
       if (this.reject) {
         this.reject();
       } else {
         this.toggleModal();
+        this.clearModal();
       }
     }
   },
