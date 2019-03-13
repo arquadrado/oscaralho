@@ -30,12 +30,12 @@
     </div>
 
 
-      <div class="add-form">
-        <input v-add-focus type="number" class="add-value" v-model="expenseInput">
-      </div>
+      <!-- <div class="add-form">
+        <input type="number" class="add-value" v-model="expenseInput">
+      </div> -->
 
       <div class="category-actions">
-        <span class="button" :class="{'disabled': !expenseInput}" @click="addExpense"><i class="fa fa-plus"></i></span>
+        <span class="button" @click="addExpense"><i class="fa fa-plus"></i></span>
         <span class="button close-button" @click="close"><i class="fa fa-close"></i></span>
       </div>
     </div>
@@ -45,6 +45,7 @@
 import { mapGetters, mapActions } from 'vuex';
 
 export default {
+  props: ['backgroundColor'],
   mounted() {
     this.newBound = this.selectedCategoryBound;
     setTimeout(() => {
@@ -67,7 +68,9 @@ export default {
       selectedMonth: 'getSelectedMonth'
     }),
     boundCategory() {
-      return this.categories.find(c => c.id === this.selectedCategory.category.id);
+      return this.categories.find(
+        c => c.id === this.selectedCategory.category.id
+      );
     },
     selectedCategoryBound() {
       const bound = this.selectedCategory;
@@ -86,16 +89,29 @@ export default {
       setShowDisplayPanel: 'setShowDisplayPanel',
       saveExpense: 'addExpense',
       updateCategoryBound: 'updateCategoryBound',
-      removeExpense: 'removeExpense'
+      removeExpense: 'removeExpense',
+      toggleModal: 'toggleModal',
+      setModalType: 'setModalType',
+      setModalTitle: 'setModalTitle',
+      setModalMessage: 'setModalTitle',
+      setModalAccept: 'setModalAccept',
+      setModalReject: 'setModalReject',
+      setModalColor: 'setModalColor'
     }),
     addExpense() {
-      if (this.expenseInput > 0) {
-        this.saveExpense({
-          value: this.expenseInput,
-          boundId: this.selectedCategory.id
-        });
-        this.expenseInput = undefined;
-      }
+      this.setModalColor(this.backgroundColor);
+      this.setModalType('input-modal');
+      this.setModalTitle('Add expense');
+      this.setModalAccept(expenseValue => {
+        if (expenseValue > 0) {
+          this.saveExpense({
+            value: expenseValue,
+            boundId: this.selectedCategory.id
+          });
+        }
+        this.toggleModal();
+      });
+      this.toggleModal();
     },
     editBound() {
       this.boundBeingEdited = true;
@@ -120,11 +136,6 @@ export default {
       },
       update: (el, binding, vnode) => {
         el.style.width = el.value.length * 20 + 'px';
-        el.focus();
-      }
-    },
-    'add-focus': {
-      inserted: (el, binding, vnode) => {
         el.focus();
       }
     }

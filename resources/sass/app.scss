@@ -13,6 +13,9 @@
 @import './components/menu-add-category';
 @import './components/grid';
 @import './components/category-detail';
+@import './components/modal';
+@import './components/modal-input';
+@import './components/modal-confirm';
 
 body {
   margin: 0;
@@ -33,6 +36,19 @@ body {
       opacity: 0.5;
     }
   }
+
+  .app-input {
+    height: 35px;
+    border-radius: 18px;
+    border: 1px solid;
+    border-color: $dark-font-color;
+    text-align: center;
+    font-size: 17px;
+    &:focus {
+      outline: 0;
+    }
+  }
+
 
   h1 {
     margin: 0;

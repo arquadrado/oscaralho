@@ -588,6 +588,94 @@
   width: calc(100% - 28px);
 }
 
+#modal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  visibility: hidden;
+  -webkit-transition: all 100ms ease-out;
+  transition: all 100ms ease-out;
+  opacity: 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+#modal.show {
+  -webkit-transition: all 100ms ease-in;
+  transition: all 100ms ease-in;
+  visibility: visible;
+  opacity: 1;
+}
+
+#modal .overlay {
+  width: 100%;
+  height: 100%;
+  background-color: #000000;
+  opacity: 0.5;
+}
+
+#modal .content {
+  position: absolute;
+  top: 0;
+  margin: 150px 21px;
+  height: calc(100% - 300px);
+  width: calc(100% - 42px);
+  background-color: #f3f3f3;
+}
+
+#modal-input {
+  text-align: center;
+  height: 100%;
+  padding: 21px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+#modal-input .title {
+  font-weight: 900;
+  font-size: 28px;
+  margin: 21px;
+}
+
+#modal-input .message {
+  margin: 14px;
+  font-weight: 400;
+  font-size: 17px;
+}
+
+#modal-input .input {
+  margin: 14px;
+}
+
+#modal-input .input .app-input {
+  border-color: #f3f3f3;
+  color: #f3f3f3;
+}
+
+#modal-input .actions {
+  margin: 14px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+
 body {
   margin: 0;
   background-color: #f3f3f3;
@@ -613,6 +701,19 @@ body .button {
 
 body .button.disabled {
   opacity: 0.5;
+}
+
+body .app-input {
+  height: 35px;
+  border-radius: 18px;
+  border: 1px solid;
+  border-color: #4f4f4f;
+  text-align: center;
+  font-size: 17px;
+}
+
+body .app-input:focus {
+  outline: 0;
 }
 
 body h1 {

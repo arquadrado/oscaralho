@@ -8,6 +8,7 @@
     </div>
     <component :is="currentView"></component>
     <app-menu></app-menu>
+    <app-modal></app-modal>
   </div>
 </template>
 
@@ -17,13 +18,15 @@ import GridMonthComponent from './grid-month.component.vue';
 import GridYearComponent from './grid-year.component.vue';
 import GridAllTimeComponent from './grid-all-time.component.vue';
 import MenuComponent from './menu.component.vue';
+import ModalComponent from './modal.component.vue';
 
 export default {
   components: {
     'grid-month': GridMonthComponent,
     'grid-year': GridYearComponent,
     'grid-all-time': GridAllTimeComponent,
-    'app-menu': MenuComponent
+    'app-menu': MenuComponent,
+    'app-modal': ModalComponent
   },
   data() {
     return {};
@@ -33,7 +36,8 @@ export default {
       currentView: 'getCurrentView',
       selectedYear: 'getSelectedYear',
       selectedMonth: 'getSelectedMonth',
-      getCurrentCategoryType: 'getCurrentCategoryType'
+      getCurrentCategoryType: 'getCurrentCategoryType',
+      shouldDisplayModal: 'shouldDisplayModal'
     }),
     currentViewLabel() {
       switch (this.currentView) {

@@ -21,7 +21,7 @@
             You have no categories so this month's budget could not be automatically created.
           </p>
           <p>
-            Use the (<i class="fa fa-bars"></i>) menu's section <strong>Categories</strong> to add new categories and refresh the page to create the current's month budget.
+            Use the (<i class="fa fa-bars"></i>) menu's section <strong>Categories</strong> to add new categories and refresh the page to create the current month's budget.
           </p>
           <p>
             You can also add budgets manually in the menu's section <strong>Budgets</strong>.
@@ -38,7 +38,7 @@
             'left': overCardPosition[1] + 'px'
           }"
         >
-          <component :is="'category-detail'" v-if="shouldDisplayPanel"></component>
+          <component :is="'category-detail'" :backgroundColor="getCellStatusColor(selectedCategoryObject)" v-if="shouldDisplayPanel"></component>
         </div>
     </div>
 </template>
