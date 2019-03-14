@@ -40,10 +40,11 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
+import ModalMixin from '../mixins/modal.mixin.js';
 
 export default {
+  mixins: [ModalMixin],
   mounted() {
-    console.log(this.categoryToEdit);
     if (this.categoryToEdit) {
       this.categoryForm.name = this.categoryToEdit.name;
       this.categoryForm.default_bound =
@@ -87,8 +88,17 @@ export default {
       }
     },
     remove() {
-      this.deleteCategory(this.categoryToEdit);
-      this.$emit('done');
+      this.setModalColor('rgb(79,79,79)');
+      this.setModalType('confirm-modal');
+      this.setModalTitle('Delete category');
+      this.setModalMessage('Are you sure you want to delete this category?');
+      this.setModalAccept(() => {
+        this.deleteCategory(this.categoryToEdit);
+        this.$emit('done');
+        this.toggleModal();
+        this.clearModal();
+      });
+      this.toggleModal();
     }
   }
 };

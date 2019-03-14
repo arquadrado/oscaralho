@@ -41,8 +41,10 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
+import ModalMixin from '../mixins/modal.mixin.js';
 
 export default {
+  mixins: [ModalMixin],
   mounted() {
     if (this.budgetToEdit) {
       this.budgetForm.year = this.budgetToEdit.year;
@@ -106,8 +108,17 @@ export default {
       }
     },
     remove() {
-      this.deleteBudget(this.budgetToEdit);
-      this.$emit('done');
+      this.setModalColor('rgb(79,79,79)');
+      this.setModalType('confirm-modal');
+      this.setModalTitle('Delete budget');
+      this.setModalMessage('Are you sure you want to delete this budget?');
+      this.setModalAccept(() => {
+        this.deleteBudget(this.budgetToEdit);
+        this.$emit('done');
+        this.toggleModal();
+        this.clearModal();
+      });
+      this.toggleModal();
     }
   }
 };

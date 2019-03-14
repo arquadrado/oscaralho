@@ -673,6 +673,44 @@
           justify-content: space-between;
 }
 
+#modal-confirm {
+  text-align: center;
+  height: 100%;
+  padding: 21px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+#modal-confirm .title {
+  font-weight: 900;
+  font-size: 28px;
+  margin: 21px;
+}
+
+#modal-confirm .message {
+  margin: 14px;
+  font-weight: 400;
+  font-size: 17px;
+}
+
+#modal-confirm .actions {
+  margin: 14px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+
 body {
   margin: 0;
   background-color: #f3f3f3;

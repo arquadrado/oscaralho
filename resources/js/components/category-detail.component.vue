@@ -21,18 +21,13 @@
             <div class="expense-value">{{ expense.value }}</div>
             <div class="expense-actions">
               <!-- <i class="fa fa-pencil"></i> -->
-              <i class="fa fa-trash-o" @click="removeExpense(expense)"></i>
+              <i class="fa fa-trash-o" @click="deleteExpense(expense)"></i>
             </div>
           </div>
         </div>
 
       </div>
     </div>
-
-
-      <!-- <div class="add-form">
-        <input type="number" class="add-value" v-model="expenseInput">
-      </div> -->
 
       <div class="category-actions">
         <span class="button" @click="addExpense"><i class="fa fa-plus"></i></span>
@@ -43,8 +38,10 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
+import ModalMixin from '../mixins/modal.mixin.js';
 
 export default {
+  mixins: [ModalMixin],
   props: ['backgroundColor'],
   mounted() {
     this.newBound = this.selectedCategoryBound;
@@ -91,15 +88,7 @@ export default {
       setShowDisplayPanel: 'setShowDisplayPanel',
       saveExpense: 'addExpense',
       updateCategoryBound: 'updateCategoryBound',
-      removeExpense: 'removeExpense',
-      toggleModal: 'toggleModal',
-      setModalType: 'setModalType',
-      setModalTitle: 'setModalTitle',
-      setModalMessage: 'setModalTitle',
-      setModalAccept: 'setModalAccept',
-      setModalReject: 'setModalReject',
-      setModalColor: 'setModalColor',
-      clearModal: 'clearModal'
+      removeExpense: 'removeExpense'
     }),
     addExpense() {
       this.setModalColor(this.backgroundColor);
@@ -112,6 +101,18 @@ export default {
             boundId: this.selectedCategory.id
           });
         }
+        this.toggleModal();
+        this.clearModal();
+      });
+      this.toggleModal();
+    },
+    deleteExpense(expense) {
+      this.setModalColor(this.backgroundColor);
+      this.setModalType('confirm-modal');
+      this.setModalTitle('Delete expense');
+      this.setModalMessage('Are you sure you want to delete this expense?');
+      this.setModalAccept(() => {
+        this.removeExpense(expense);
         this.toggleModal();
         this.clearModal();
       });

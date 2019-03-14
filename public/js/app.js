@@ -51922,6 +51922,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__mixins_modal_mixin_js__ = __webpack_require__(85);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 //
@@ -51962,15 +51963,12 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
-//
-//
-//
-//
-//
+
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+  mixins: [__WEBPACK_IMPORTED_MODULE_1__mixins_modal_mixin_js__["a" /* default */]],
   props: ['backgroundColor'],
   mounted: function mounted() {
     var _this = this;
@@ -52018,15 +52016,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     setShowDisplayPanel: 'setShowDisplayPanel',
     saveExpense: 'addExpense',
     updateCategoryBound: 'updateCategoryBound',
-    removeExpense: 'removeExpense',
-    toggleModal: 'toggleModal',
-    setModalType: 'setModalType',
-    setModalTitle: 'setModalTitle',
-    setModalMessage: 'setModalTitle',
-    setModalAccept: 'setModalAccept',
-    setModalReject: 'setModalReject',
-    setModalColor: 'setModalColor',
-    clearModal: 'clearModal'
+    removeExpense: 'removeExpense'
   }), {
     addExpense: function addExpense() {
       var _this3 = this;
@@ -52043,6 +52033,20 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         }
         _this3.toggleModal();
         _this3.clearModal();
+      });
+      this.toggleModal();
+    },
+    deleteExpense: function deleteExpense(expense) {
+      var _this4 = this;
+
+      this.setModalColor(this.backgroundColor);
+      this.setModalType('confirm-modal');
+      this.setModalTitle('Delete expense');
+      this.setModalMessage('Are you sure you want to delete this expense?');
+      this.setModalAccept(function () {
+        _this4.removeExpense(expense);
+        _this4.toggleModal();
+        _this4.clearModal();
       });
       this.toggleModal();
     },
@@ -52152,7 +52156,7 @@ var render = function() {
                       staticClass: "fa fa-trash-o",
                       on: {
                         click: function($event) {
-                          _vm.removeExpense(expense)
+                          _vm.deleteExpense(expense)
                         }
                       }
                     })
@@ -53159,6 +53163,7 @@ module.exports = Component.exports
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__mixins_modal_mixin_js__ = __webpack_require__(85);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 //
@@ -53204,9 +53209,10 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 
 
+
 /* harmony default export */ __webpack_exports__["default"] = ({
+  mixins: [__WEBPACK_IMPORTED_MODULE_1__mixins_modal_mixin_js__["a" /* default */]],
   mounted: function mounted() {
-    console.log(this.categoryToEdit);
     if (this.categoryToEdit) {
       this.categoryForm.name = this.categoryToEdit.name;
       this.categoryForm.default_bound = this.categoryToEdit.default_bound_in_cents / 100;
@@ -53251,8 +53257,19 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       }
     },
     remove: function remove() {
-      this.deleteCategory(this.categoryToEdit);
-      this.$emit('done');
+      var _this2 = this;
+
+      this.setModalColor('rgb(79,79,79)');
+      this.setModalType('confirm-modal');
+      this.setModalTitle('Delete category');
+      this.setModalMessage('Are you sure you want to delete this category?');
+      this.setModalAccept(function () {
+        _this2.deleteCategory(_this2.categoryToEdit);
+        _this2.$emit('done');
+        _this2.toggleModal();
+        _this2.clearModal();
+      });
+      this.toggleModal();
     }
   })
 });
@@ -53461,6 +53478,7 @@ module.exports = Component.exports
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__mixins_modal_mixin_js__ = __webpack_require__(85);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 //
@@ -53507,7 +53525,9 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 
 
+
 /* harmony default export */ __webpack_exports__["default"] = ({
+  mixins: [__WEBPACK_IMPORTED_MODULE_1__mixins_modal_mixin_js__["a" /* default */]],
   mounted: function mounted() {
     if (this.budgetToEdit) {
       this.budgetForm.year = this.budgetToEdit.year;
@@ -53555,8 +53575,19 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       }
     },
     remove: function remove() {
-      this.deleteBudget(this.budgetToEdit);
-      this.$emit('done');
+      var _this = this;
+
+      this.setModalColor('rgb(79,79,79)');
+      this.setModalType('confirm-modal');
+      this.setModalTitle('Delete budget');
+      this.setModalMessage('Are you sure you want to delete this budget?');
+      this.setModalAccept(function () {
+        _this.deleteBudget(_this.budgetToEdit);
+        _this.$emit('done');
+        _this.toggleModal();
+        _this.clearModal();
+      });
+      this.toggleModal();
     }
   })
 });
@@ -54144,6 +54175,21 @@ module.exports = Component.exports
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(0);
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -54152,7 +54198,34 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 
 
-/* harmony default export */ __webpack_exports__["default"] = ({});
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {};
+  },
+
+  computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])({
+    type: 'getModalType',
+    title: 'getModalTitle',
+    message: 'getModalMessage',
+    accept: 'getModalAccept',
+    reject: 'getModalReject',
+    backgroundColor: 'getModalColor',
+    shouldDisplayModal: 'shouldDisplayModal'
+  })),
+  methods: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({
+    toggleModal: 'toggleModal',
+    clearModal: 'clearModal'
+  }), {
+    cancel: function cancel() {
+      if (this.reject) {
+        this.reject();
+      } else {
+        this.toggleModal();
+        this.clearModal();
+      }
+    }
+  })
+});
 
 /***/ }),
 /* 74 */
@@ -54162,9 +54235,43 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { attrs: { id: "modal-confirm" } }, [
-    _vm._v("\n  confirm-modal\n")
-  ])
+  return _c(
+    "div",
+    {
+      style: { "background-color": _vm.backgroundColor },
+      attrs: { id: "modal-confirm" }
+    },
+    [
+      _c("div", { staticClass: "title" }, [
+        _c("span", [_vm._v(_vm._s(_vm.title))])
+      ]),
+      _vm._v(" "),
+      _vm.message
+        ? _c("div", { staticClass: "message" }, [
+            _c("span", [_vm._v(_vm._s(_vm.message))])
+          ])
+        : _vm._e(),
+      _vm._v(" "),
+      _c("div", { staticClass: "actions" }, [
+        _c(
+          "span",
+          {
+            staticClass: "button",
+            on: {
+              click: function($event) {
+                _vm.accept()
+              }
+            }
+          },
+          [_c("i", { staticClass: "fa fa-check" })]
+        ),
+        _vm._v(" "),
+        _c("span", { staticClass: "button", on: { click: _vm.cancel } }, [
+          _c("i", { staticClass: "fa fa-close" })
+        ])
+      ])
+    ]
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -54464,6 +54571,34 @@ if (false) {
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 81 */,
+/* 82 */,
+/* 83 */,
+/* 84 */,
+/* 85 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(0);
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+  computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])({})),
+  methods: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({
+    toggleModal: 'toggleModal',
+    setModalType: 'setModalType',
+    setModalTitle: 'setModalTitle',
+    setModalMessage: 'setModalMessage',
+    setModalAccept: 'setModalAccept',
+    setModalReject: 'setModalReject',
+    setModalColor: 'setModalColor',
+    clearModal: 'clearModal'
+  }))
+});
 
 /***/ })
 /******/ ]);
