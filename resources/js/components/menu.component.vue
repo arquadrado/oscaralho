@@ -19,14 +19,6 @@
             <div class="menu-option" @click="changeMenuView('budget')">
               <span>Budgets</span>
             </div>
-
-            <div v-if="shouldShowYearViewButton" class="menu-option" @click="showYearView">
-              <span>Year</span>
-            </div>
-
-            <div class="menu-option" @click="showAllTimeView">
-              <span>All time</span>
-            </div>
           </div>
 
           <div class="menu-options x1">
@@ -72,8 +64,18 @@
 
     <div class="menu-trigger">
       <span @click="toggleMenu" class="arrow-button centered-content-hv"><i class="fa fa-bars"></i></span>
-      <span class="arrow-button centered-content-hv" :class="{'disabled': isExpense}" @click="setCurrentCategoryType('expense')"><i class="fa fa-circle-thin"></i></span>
-      <span class="arrow-button centered-content-hv" :class="{'disabled': !isExpense}" @click="setCurrentCategoryType('revenue')"><i class="fa fa-circle-thin"></i></span>
+      
+      <span class="arrow-button centered-content-hv" @click="toggleCategoryType">
+        <i class="fa" :class="{
+        'fa-circle': isExpense,
+        'fa-circle-thin': !isExpense,
+        }"></i>
+      </span>
+
+      <span class="arrow-button centered-content-hv" @click="toggleCategoryViewMode"><i class="fa fa-eye"></i></span>
+
+      <span class="arrow-button centered-content-hv" :class="{'disabled': !canGoUp}" @click="up"><i class="fa fa-angle-up"></i></span>
+      <span class="arrow-button centered-content-hv" :class="{'disabled': !canGoDown}" @click="down"><i class="fa fa-angle-down"></i></span>
       <span class="arrow-button centered-content-hv" :class="{'disabled': !canGoBack}" @click="back"><i class="fa fa-angle-left"></i></span>
       <span class="arrow-button centered-content-hv" :class="{'disabled': !canGoForward}" @click="forward"><i class="fa fa-angle-right"></i></span>
     </div>
@@ -103,6 +105,7 @@ export default {
       selectedMonth: 'getSelectedMonth',
       currentYearMonths: 'getCurrentYearMonths',
       allYears: 'getAllTimeYears',
+      categoryViewMode: 'getCategoryViewMode',
       getCurrentCategoryType: 'getCurrentCategoryType',
 
       categoriesToEdit: 'getCategories',
@@ -120,6 +123,18 @@ export default {
     },
     shouldShowYearViewButton() {
       return this.currentView === 'grid-month';
+    },
+    canGoUp() {
+      return (
+        (this.currentView === 'grid-month' && this.selectedMonth) ||
+        (this.currentView === 'grid-year' && this.selectedYear)
+      );
+    },
+    canGoDown() {
+      return (
+        (this.currentView === 'grid-all-time' && this.selectedYear) ||
+        (this.currentView === 'grid-year' && this.selectedMonth)
+      );
     },
     canGoBack() {
       return (
@@ -165,22 +180,43 @@ export default {
       setCurrentView: 'setCurrentView',
       setCurrentCategoryType: 'setCurrentCategoryType',
       setCategoryToEdit: 'setCategoryToEdit',
-      setBudgetToEdit: 'setBudgetToEdit'
+      setBudgetToEdit: 'setBudgetToEdit',
+      setCategoryViewMode: 'setCategoryViewMode'
     }),
     toggleMenu() {
       this.changeMenuView('options');
       this.menuIsOpen = !this.menuIsOpen;
     },
-    showYearView() {
-      this.setCurrentView('grid-year');
-      this.setMonth();
-      this.toggleMenu();
+    toggleCategoryViewMode() {
+      switch (this.categoryViewMode) {
+        case 'icon':
+          this.setCategoryViewMode('name');
+          break;
+        case 'name':
+          this.setCategoryViewMode('ratio');
+          break;
+        case 'ratio':
+          this.setCategoryViewMode('icon');
+          break;
+      }
     },
-    showAllTimeView() {
-      this.setCurrentView('grid-all-time');
-      this.setMonth();
-      this.setYear();
-      this.toggleMenu();
+    up() {
+      if (this.canGoUp) {
+        if (this.currentView === 'grid-month') {
+          this.setCurrentView('grid-year');
+        } else {
+          this.setCurrentView('grid-all-time');
+        }
+      }
+    },
+    down() {
+      if (this.canGoDown) {
+        if (this.currentView === 'grid-all-time') {
+          this.setCurrentView('grid-year');
+        } else {
+          this.setCurrentView('grid-month');
+        }
+      }
     },
     back() {
       if (this.canGoBack) {
@@ -212,6 +248,12 @@ export default {
           this.setMonth(this.currentYearMonths[0]);
         }
       }
+    },
+    toggleCategoryType() {
+      const current = this.getCurrentCategoryType;
+      this.setCurrentCategoryType(
+        current === 'expense' ? 'revenue' : 'expense'
+      );
     },
     changeMenuView(view) {
       console.log(view);

@@ -11,8 +11,10 @@ const state = {
     color: undefined,
     type: 'confirm-modal',
     backgroundColor: undefined,
+    inputType: 'number',
     title: '',
     message: '',
+    onInit: undefined,
     accept: undefined,
     reject: undefined
   }
@@ -22,9 +24,11 @@ const getters = {
   isMobilePlatform: state => state.mobilePlatform,
   shouldDisplayModal: state => state.modal.show,
   getModalColor: state => state.modal.color,
+  getModalInputType: state => state.modal.inputType,
   getModalType: state => state.modal.type,
   getModalTitle: state => state.modal.title,
   getModalMessage: state => state.modal.message,
+  getModalOnInit: state => state.modal.onInit,
   getModalAccept: state => state.modal.accept,
   getModalReject: state => state.modal.reject
 };
@@ -39,11 +43,17 @@ const actions = {
   setModalColor: ({ commit }, color) => {
     commit('SET_MODAL_COLOR', color);
   },
+  setModalInputType: ({ commit }, inputType) => {
+    commit('SET_MODAL_INPUT_TYPE', inputType);
+  },
   setModalTitle: ({ commit }, title) => {
     commit('SET_MODAL_TITLE', title);
   },
   setModalMessage: ({ commit }, message) => {
     commit('SET_MODAL_MESSAGE', message);
+  },
+  setModalOnInit: ({ commit }, onInit) => {
+    commit('SET_MODAL_ON_INIT', onInit);
   },
   setModalAccept: ({ commit }, accept) => {
     commit('SET_MODAL_ACCEPT', accept);
@@ -63,6 +73,9 @@ const mutations = {
   'SET_MODAL_COLOR': (state, color) => {
     state.modal.color = color;
   },
+  'SET_MODAL_INPUT_TYPE': (state, inputType) => {
+    state.modal.inputType = inputType;
+  },
   'SET_MODAL_TYPE': (state, type) => {
     state.modal.type = type;
   },
@@ -71,6 +84,9 @@ const mutations = {
   },
   'SET_MODAL_MESSAGE': (state, message) => {
     state.modal.message = message;
+  },
+  'SET_MODAL_ON_INIT': (state, onInit) => {
+    state.modal.onInit = onInit;
   },
   'SET_MODAL_ACCEPT': (state, accept) => {
     state.modal.accept = accept;
@@ -82,6 +98,7 @@ const mutations = {
     state.modal.type = '';
     state.modal.title = undefined;
     state.modal.message = undefined;
+    state.modal.onInit = undefined;
     state.modal.accept = undefined;
     state.modal.reject = undefined;
   },

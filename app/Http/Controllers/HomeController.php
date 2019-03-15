@@ -90,11 +90,24 @@ class HomeController extends Controller
     }
 
     public function addExpense() {
-        $expense = Expense::create([
-            'bound_id' => request()->get('boundId'),
-            'value'       => request()->get('value'),
-        ]);
+        if (is_null(request()->get('id'))) {
+
+          $expense = Expense::create([
+              'bound_id' => request()->get('boundId'),
+              'value'       => request()->get('value'),
+          ]);
+          
+          return response()->json(['expense' => $expense], 200);
+        }
         
+        $expense = Expense::find(request()->get('id'));
+
+        if (is_null($expense)) {
+          return response()->json(['error' => 'no expense to update'], 404);
+        }
+
+        $expense->update(request()->all());
+
         return response()->json(['expense' => $expense], 200);
     }
 

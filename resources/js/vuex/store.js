@@ -11,6 +11,7 @@ const bounds = handover && handover.bounds ? handover.bounds : [];
 const state = {
   currentView: 'grid-month',
   currentCategoryType: 'expense',
+  categoryViewMode: 'icon',
   user: user,
   bounds: bounds,
   selectedBound: undefined,
@@ -21,6 +22,7 @@ const state = {
 };
 const getters = {
   getUser: state => state.user,
+  getCategoryViewMode: state => state.categoryViewMode,
   getBounds: state => state.bounds,
   getBoundsByMonth: state => state.bounds.filter((bound) => {
     if (state.currentCategoryType === 'expense') {
@@ -67,6 +69,9 @@ const getters = {
   isJustUpdated: state => state.justUpdated,
 };
 const actions = {
+  setCategoryViewMode: ({ commit }, mode) => {
+    commit('SET_CATEGORY_VIEW_MODE', mode);
+  },
   selectBound: ({ commit, state }, categoryId) => {
     commit('SELECT_BOUND', categoryId);
   },
@@ -173,6 +178,9 @@ const actions = {
 
 };
 const mutations = {
+  'SET_CATEGORY_VIEW_MODE': (state, mode) => {
+    state.categoryViewMode = mode;
+  },
   'SELECT_BOUND': (state, categoryId) => {
     state.selectedBound = categoryId;
   },
@@ -185,10 +193,15 @@ const mutations = {
   'ADD_EXPENSE': (state, data) => {
     const bound = state.bounds.find(c => c.id === data.bound_id);
     if (bound) {
-      bound.expenses = [
-        ...(bound.expenses ? bound.expenses : []),
-        data
-      ]
+      const expenseExists = bound.expenses.find(e => e.id === data.id);
+      if (expenseExists) {
+        Object.keys(data).forEach((key) => {
+          Vue.set(expenseExists, key, data[key]);
+        });
+      } else {
+        bound.expenses.push(data);
+      }
+
     }
   },
   'REMOVE_EXPENSE': (state, exp) => {

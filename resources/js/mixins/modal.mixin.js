@@ -10,8 +10,10 @@ export default {
     ...mapActions({
       toggleModal: 'toggleModal',
       setModalType: 'setModalType',
+      setModalInputType: 'setModalInputType',
       setModalTitle: 'setModalTitle',
       setModalMessage: 'setModalMessage',
+      setModalOnInit: 'setModalOnInit',
       setModalAccept: 'setModalAccept',
       setModalReject: 'setModalReject',
       setModalColor: 'setModalColor',

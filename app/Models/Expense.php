@@ -15,7 +15,7 @@ class Expense extends Model
      *
      * @var array
      */
-    protected $fillable = ['bound_id', 'value'];
+    protected $fillable = ['bound_id', 'value', 'notes'];
 
     /**
      * The attributes that should be hidden for arrays.

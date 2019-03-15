@@ -20,7 +20,9 @@
           <div class="expense" v-for="expense in selectedCategory.expenses" :key="expense.id">
             <div class="expense-value">{{ expense.value }}</div>
             <div class="expense-actions">
-              <!-- <i class="fa fa-pencil"></i> -->
+              <i class="fa" :class="[hasNotes(expense)]"
+                @click="addCommentToExpense(expense)"
+                ></i>
               <i class="fa fa-trash-o" @click="deleteExpense(expense)"></i>
             </div>
           </div>
@@ -90,8 +92,12 @@ export default {
       updateCategoryBound: 'updateCategoryBound',
       removeExpense: 'removeExpense'
     }),
+    hasNotes(expense) {
+      return expense.notes ? 'fa-comment' : 'fa-comment-o';
+    },
     addExpense() {
       this.setModalColor(this.backgroundColor);
+      this.setModalInputType('number');
       this.setModalType('input-modal');
       this.setModalTitle('Add expense');
       this.setModalAccept(expenseValue => {
@@ -113,6 +119,24 @@ export default {
       this.setModalMessage('Are you sure you want to delete this expense?');
       this.setModalAccept(() => {
         this.removeExpense(expense);
+        this.toggleModal();
+        this.clearModal();
+      });
+      this.toggleModal();
+    },
+    addCommentToExpense(expense) {
+      this.setModalColor(this.backgroundColor);
+      this.setModalType('input-modal');
+      this.setModalInputType('text');
+      this.setModalTitle('Add comment');
+      this.setModalOnInit(function() {
+        this.inputValue = expense.notes;
+      });
+      this.setModalAccept(comment => {
+        this.saveExpense({
+          ...expense,
+          notes: comment
+        });
         this.toggleModal();
         this.clearModal();
       });

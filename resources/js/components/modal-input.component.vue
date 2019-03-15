@@ -10,7 +10,7 @@
     </div>
     
     <div class="input" v-if="shouldDisplayModal">
-      <input v-focus type="number" class="app-input" v-model="inputValue" :style="{'background-color': backgroundColor }">
+      <input v-focus :type="inputType" class="app-input" v-model="inputValue" :style="{'background-color': backgroundColor }">
     </div>
     
     <div class="actions">
@@ -24,6 +24,11 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
 export default {
+  mounted() {
+    if (this.onInit) {
+      this.onInit.call(this);
+    }
+  },
   data() {
     return {
       inputValue: ''
@@ -32,8 +37,10 @@ export default {
   computed: {
     ...mapGetters({
       type: 'getModalType',
+      inputType: 'getModalInputType',
       title: 'getModalTitle',
       message: 'getModalMessage',
+      onInit: 'getModalOnInit',
       accept: 'getModalAccept',
       reject: 'getModalReject',
       backgroundColor: 'getModalColor',
@@ -57,7 +64,6 @@ export default {
   directives: {
     focus: {
       inserted: (el, binding, vnode) => {
-        console.log('então');
         el.focus();
 
         setTimeout(() => {
