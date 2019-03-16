@@ -6,7 +6,7 @@
           :class="{
             'move-left': isMenuBudgets || isMenuEditBudget,
             'move-right': isMenuCategories || isMenuEditCategory,
-            'move-down': isMenuEditCategory || isMenuEditBudget
+            'move-down': isMenuEditCategory || isMenuEditBudget || isStats
             }"
         >
 
@@ -18,6 +18,18 @@
 
             <div class="menu-option" @click="changeMenuView('budget')">
               <span>Budgets</span>
+            </div>
+
+            <div class="menu-option" @click="changeMenuView('stats')">
+              <span>Stats</span>
+            </div>
+
+          </div>
+          
+          <div class="menu-options x0 y1">
+            <menu-stats></menu-stats>
+            <div class="menu-option" @click="changeMenuView('options')">
+              <span>Back</span>
             </div>
           </div>
 
@@ -86,11 +98,13 @@
 import { mapGetters, mapActions } from 'vuex';
 import MenuAddCategoryComponent from './menu-add-category.component.vue';
 import MenuAddBudgetComponent from './menu-add-budget.component.vue';
+import MenuStats from './menu-stats.component.vue';
 
 export default {
   components: {
     'menu-add-category': MenuAddCategoryComponent,
-    'menu-add-budget': MenuAddBudgetComponent
+    'menu-add-budget': MenuAddBudgetComponent,
+    'menu-stats': MenuStats
   },
   data() {
     return {
@@ -171,6 +185,9 @@ export default {
     },
     isMenuEditBudget() {
       return this.menuDisplay === 'budget-edit';
+    },
+    isStats() {
+      return this.menuDisplay === 'stats';
     }
   },
   methods: {
@@ -190,9 +207,6 @@ export default {
     toggleCategoryViewMode() {
       switch (this.categoryViewMode) {
         case 'icon':
-          this.setCategoryViewMode('name');
-          break;
-        case 'name':
           this.setCategoryViewMode('ratio');
           break;
         case 'ratio':

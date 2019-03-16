@@ -11,7 +11,8 @@
         class="category"
         :style="{'background-color': getCellStatusColor(month)}"
       >
-        <i>{{ month }}</i>
+        <i v-if="categoryViewMode === 'icon'">{{ month }}</i>
+        <span v-if="categoryViewMode === 'ratio'">{{ getMonthRatio(month) }}</span>
       </div>
     
     </div>
@@ -45,6 +46,11 @@ export default {
     clickMonth(month) {
       this.setCurrentView('grid-month');
       this.setMonth(month);
+    },
+    getMonthRatio(month) {
+      const expenseSum = this.getExpensesSum(month);
+      const monthBound = this.getBoundsSum(month);
+      return `${monthBound}/${expenseSum.toFixed(2)}`;
     },
     getExpensesSum(month) {
       return this.bounds

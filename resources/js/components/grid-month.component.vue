@@ -13,7 +13,6 @@
             :style="{'background-color': getCellStatusColor(item)}"
           >
             <i :class="[getBoundCategory(item).icon]" v-if="categoryViewMode === 'icon'"></i>
-            <span v-if="categoryViewMode === 'name'">{{ getBoundCategory(item).name }}</span>
             <span v-if="categoryViewMode === 'ratio'">{{ getBoundCategoryRatio(item) }}</span>
           </div>
         </div>
@@ -65,8 +64,7 @@ export default {
       selectedCategoryObject: 'getSelectedBound',
       shouldDisplayPanel: 'shouldDisplayPanel',
       selectedYear: 'getSelectedYear',
-      selectedMonth: 'getSelectedMonth',
-      categoryViewMode: 'getCategoryViewMode'
+      selectedMonth: 'getSelectedMonth'
     })
   },
   methods: {
@@ -79,7 +77,7 @@ export default {
     },
     getBoundCategoryRatio(bound) {
       const expenseSum = this.getExpensesSum(bound);
-      return `${bound.bound_in_cents / 100}/${expenseSum}`;
+      return `${bound.bound_in_cents / 100}/${expenseSum.toFixed(2)}`;
     },
     clickBound(boundId) {
       if (this.justUpdated === boundId) {

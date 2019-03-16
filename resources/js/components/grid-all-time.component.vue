@@ -11,7 +11,8 @@
         class="category"
         :style="{'background-color': getCellStatusColor(year)}"
       >
-        <i>{{ year }}</i>
+        <i v-if="categoryViewMode === 'icon'">{{ year }}</i>
+        <span v-if="categoryViewMode === 'ratio'">{{ getYearRatio(year) }}</span>
       </div>
     </div>
   </div>
@@ -40,6 +41,11 @@ export default {
     clickYear(year) {
       this.setCurrentView('grid-year');
       this.setYear(year);
+    },
+    getYearRatio(year) {
+      const expenseSum = this.getExpensesSum(year);
+      const yearBound = this.getBoundsSum(year);
+      return `${yearBound}/${expenseSum.toFixed(2)}`;
     },
     getExpensesSum(year) {
       return this.bounds

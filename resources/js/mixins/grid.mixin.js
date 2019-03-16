@@ -15,7 +15,8 @@ export default {
   computed: {
     ...mapGetters({
       justUpdated: 'isJustUpdated',
-      currentCategoryType: 'getCurrentCategoryType'
+      currentCategoryType: 'getCurrentCategoryType',
+      categoryViewMode: 'getCategoryViewMode'
     }),
     cellWidth() {
       if (this.gridSize) {

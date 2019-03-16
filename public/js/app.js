@@ -12622,7 +12622,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
   computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])({
     justUpdated: 'isJustUpdated',
-    currentCategoryType: 'getCurrentCategoryType'
+    currentCategoryType: 'getCurrentCategoryType',
+    categoryViewMode: 'getCategoryViewMode'
   }), {
     cellWidth: function cellWidth() {
       if (this.gridSize) {
@@ -51931,7 +51932,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
-//
 
 
 
@@ -51952,8 +51952,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     selectedCategoryObject: 'getSelectedBound',
     shouldDisplayPanel: 'shouldDisplayPanel',
     selectedYear: 'getSelectedYear',
-    selectedMonth: 'getSelectedMonth',
-    categoryViewMode: 'getCategoryViewMode'
+    selectedMonth: 'getSelectedMonth'
   })),
   methods: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({
     selectBound: 'selectBound',
@@ -51966,7 +51965,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     },
     getBoundCategoryRatio: function getBoundCategoryRatio(bound) {
       var expenseSum = this.getExpensesSum(bound);
-      return bound.bound_in_cents / 100 + '/' + expenseSum;
+      return bound.bound_in_cents / 100 + '/' + expenseSum.toFixed(2);
     },
     clickBound: function clickBound(boundId) {
       if (this.justUpdated === boundId) {
@@ -52355,12 +52354,6 @@ var render = function() {
                   ? _c("i", { class: [_vm.getBoundCategory(item).icon] })
                   : _vm._e(),
                 _vm._v(" "),
-                _vm.categoryViewMode === "name"
-                  ? _c("span", [
-                      _vm._v(_vm._s(_vm.getBoundCategory(item).name))
-                    ])
-                  : _vm._e(),
-                _vm._v(" "),
                 _vm.categoryViewMode === "ratio"
                   ? _c("span", [
                       _vm._v(_vm._s(_vm.getBoundCategoryRatio(item)))
@@ -52659,6 +52652,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
 
 
 
@@ -52684,6 +52678,11 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     clickMonth: function clickMonth(month) {
       this.setCurrentView('grid-month');
       this.setMonth(month);
+    },
+    getMonthRatio: function getMonthRatio(month) {
+      var expenseSum = this.getExpensesSum(month);
+      var monthBound = this.getBoundsSum(month);
+      return monthBound + '/' + expenseSum.toFixed(2);
     },
     getExpensesSum: function getExpensesSum(month) {
       var _this = this;
@@ -52759,7 +52758,15 @@ var render = function() {
               staticClass: "category",
               style: { "background-color": _vm.getCellStatusColor(month) }
             },
-            [_c("i", [_vm._v(_vm._s(month))])]
+            [
+              _vm.categoryViewMode === "icon"
+                ? _c("i", [_vm._v(_vm._s(month))])
+                : _vm._e(),
+              _vm._v(" "),
+              _vm.categoryViewMode === "ratio"
+                ? _c("span", [_vm._v(_vm._s(_vm.getMonthRatio(month)))])
+                : _vm._e()
+            ]
           )
         ]
       )
@@ -52854,6 +52861,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
 
 
 
@@ -52875,6 +52883,11 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     clickYear: function clickYear(year) {
       this.setCurrentView('grid-year');
       this.setYear(year);
+    },
+    getYearRatio: function getYearRatio(year) {
+      var expenseSum = this.getExpensesSum(year);
+      var yearBound = this.getBoundsSum(year);
+      return yearBound + '/' + expenseSum.toFixed(2);
     },
     getExpensesSum: function getExpensesSum(year) {
       var _this = this;
@@ -52945,7 +52958,15 @@ var render = function() {
               staticClass: "category",
               style: { "background-color": _vm.getCellStatusColor(year) }
             },
-            [_c("i", [_vm._v(_vm._s(year))])]
+            [
+              _vm.categoryViewMode === "icon"
+                ? _c("i", [_vm._v(_vm._s(year))])
+                : _vm._e(),
+              _vm._v(" "),
+              _vm.categoryViewMode === "ratio"
+                ? _c("span", [_vm._v(_vm._s(_vm.getYearRatio(year)))])
+                : _vm._e()
+            ]
           )
         ]
       )
@@ -53020,6 +53041,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__menu_add_category_component_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__menu_add_category_component_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__menu_add_budget_component_vue__ = __webpack_require__(67);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__menu_add_budget_component_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__menu_add_budget_component_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__menu_stats_component_vue__ = __webpack_require__(86);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__menu_stats_component_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__menu_stats_component_vue__);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 //
@@ -53106,6 +53129,19 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 
 
 
@@ -53114,7 +53150,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
     'menu-add-category': __WEBPACK_IMPORTED_MODULE_1__menu_add_category_component_vue___default.a,
-    'menu-add-budget': __WEBPACK_IMPORTED_MODULE_2__menu_add_budget_component_vue___default.a
+    'menu-add-budget': __WEBPACK_IMPORTED_MODULE_2__menu_add_budget_component_vue___default.a,
+    'menu-stats': __WEBPACK_IMPORTED_MODULE_3__menu_stats_component_vue___default.a
   },
   data: function data() {
     return {
@@ -53180,6 +53217,9 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     },
     isMenuEditBudget: function isMenuEditBudget() {
       return this.menuDisplay === 'budget-edit';
+    },
+    isStats: function isStats() {
+      return this.menuDisplay === 'stats';
     }
   }),
   methods: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({
@@ -53198,9 +53238,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     toggleCategoryViewMode: function toggleCategoryViewMode() {
       switch (this.categoryViewMode) {
         case 'icon':
-          this.setCategoryViewMode('name');
-          break;
-        case 'name':
           this.setCategoryViewMode('ratio');
           break;
         case 'ratio':
@@ -53903,7 +53940,8 @@ var render = function() {
               class: {
                 "move-left": _vm.isMenuBudgets || _vm.isMenuEditBudget,
                 "move-right": _vm.isMenuCategories || _vm.isMenuEditCategory,
-                "move-down": _vm.isMenuEditCategory || _vm.isMenuEditBudget
+                "move-down":
+                  _vm.isMenuEditCategory || _vm.isMenuEditBudget || _vm.isStats
               }
             },
             [
@@ -53932,8 +53970,43 @@ var render = function() {
                     }
                   },
                   [_c("span", [_vm._v("Budgets")])]
+                ),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  {
+                    staticClass: "menu-option",
+                    on: {
+                      click: function($event) {
+                        _vm.changeMenuView("stats")
+                      }
+                    }
+                  },
+                  [_c("span", [_vm._v("Stats")])]
                 )
               ]),
+              _vm._v(" "),
+              _c(
+                "div",
+                { staticClass: "menu-options x0 y1" },
+                [
+                  _c("menu-stats"),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    {
+                      staticClass: "menu-option",
+                      on: {
+                        click: function($event) {
+                          _vm.changeMenuView("options")
+                        }
+                      }
+                    },
+                    [_c("span", [_vm._v("Back")])]
+                  )
+                ],
+                1
+              ),
               _vm._v(" "),
               _c(
                 "div",
@@ -54799,6 +54872,205 @@ if (false) {
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 82 */,
+/* 83 */,
+/* 84 */,
+/* 85 */,
+/* 86 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(2)
+/* script */
+var __vue_script__ = __webpack_require__(87)
+/* template */
+var __vue_template__ = __webpack_require__(88)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/menu-stats.component.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-6723fecb", Component.options)
+  } else {
+    hotAPI.reload("data-v-6723fecb", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 87 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(0);
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  mounted: function mounted() {},
+  data: function data() {
+    return {};
+  },
+
+  computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])({
+    bounds: 'getBounds'
+  }), {
+    boundsSum: function boundsSum() {
+      return Number(this.bounds.reduce(function (sum, bound) {
+        sum += bound.bound_in_cents / 100;
+        return sum;
+      }, 0));
+    },
+    expensesSum: function expensesSum() {
+      return Number(this.bounds.reduce(function (sum, bound) {
+        sum += bound.expenses.reduce(function (expenseSum, expense) {
+          expenseSum += expense.value;
+          return expenseSum;
+        }, 0);
+        return sum;
+      }, 0)).toFixed(2);
+    },
+    allTimeRatio: function allTimeRatio() {
+      return (this.boundsSum / this.expensesSum).toFixed(2);
+    }
+  }),
+  methods: {}
+});
+
+/***/ }),
+/* 88 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "stats" }, [
+    _vm._m(0),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c("span", [_vm._v(_vm._s(_vm.expensesSum))]),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _vm._m(1),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c("span", [_vm._v(_vm._s(_vm.boundsSum))]),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _vm._m(2),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c("span", [_vm._v(_vm._s(_vm.allTimeRatio))]),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c("br")
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", [_c("strong", [_vm._v("Total expenses")])])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", [_c("strong", [_vm._v("Total expections")])])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", [_c("strong", [_vm._v("Expenses - Expectation ratio")])])
+  }
+]
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-6723fecb", module.exports)
+  }
+}
 
 /***/ })
 /******/ ]);
