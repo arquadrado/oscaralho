@@ -54066,6 +54066,54 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -54077,7 +54125,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
   computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])({
     budgets: 'getBudgets',
-    bounds: 'getBounds'
+    bounds: 'getBounds',
+    years: 'getAllTimeYears'
   }), {
     boundsSum: function boundsSum() {
       return Number(this.bounds.filter(function (b) {
@@ -54182,21 +54231,85 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       }
 
       return 'No data available';
-    }
+    },
+    averageProfitPerYear: function averageProfitPerYear() {
+      return (Number(this.totalProfit) / this.years.length).toFixed(2);
+    },
+    highestProfitYear: function highestProfitYear() {
+      var _this6 = this;
+
+      var yearsProfit = this.years.reduce(function (reduced, year) {
+        var yearProfit = _this6.getYearProfit(year);
+        if (yearProfit) {
+          reduced[year] = yearProfit;
+        }
+        return reduced;
+      }, {});
+
+      if (yearsProfit) {
+        var highestProfitYear = Object.keys(yearsProfit).reduce(function (reduced, year) {
+          if (!reduced || yearsProfit[year] > yearsProfit[reduced]) {
+            reduced = year;
+          }
+
+          return reduced;
+        });
+
+        return highestProfitYear ? highestProfitYear : 'No data available';
+      }
+      return 'No data available';
+    },
+    lowestProfitYear: function lowestProfitYear() {
+      var _this7 = this;
+
+      var yearsProfit = this.years.reduce(function (reduced, year) {
+        var yearProfit = _this7.getYearProfit(year);
+        if (yearProfit) {
+          reduced[year] = yearProfit;
+        }
+        return reduced;
+      }, {});
+
+      console.log(yearsProfit, 'asdsa');
+
+      if (yearsProfit) {
+        var highestProfitYear = Object.keys(yearsProfit).reduce(function (reduced, year) {
+          if (!reduced || yearsProfit[year] < yearsProfit[reduced]) {
+            reduced = year;
+          }
+
+          return reduced;
+        });
+
+        return highestProfitYear ? highestProfitYear : 'No data available';
+      }
+      return 'No data available';
+    },
+    mostExpensiveCategory: function mostExpensiveCategory() {}
   }),
   methods: {
     getBudgetProfit: function getBudgetProfit(budget) {
-      var _this6 = this;
+      var _this8 = this;
 
       return this.bounds.filter(function (b) {
         return b.budget_id === budget.id;
       }).reduce(function (profit, bound) {
         if (bound.category.expense) {
-          profit -= _this6.getBoundExpensesSum(bound);
+          profit -= _this8.getBoundExpensesSum(bound);
         } else {
-          profit += _this6.getBoundExpensesSum(bound);
+          profit += _this8.getBoundExpensesSum(bound);
         }
         return profit;
+      }, 0);
+    },
+    getYearProfit: function getYearProfit(year) {
+      var _this9 = this;
+
+      return this.budgets.filter(function (b) {
+        return b.year === year;
+      }).reduce(function (sum, budget) {
+        sum += _this9.getBudgetProfit(budget);
+        return sum;
       }, 0);
     },
     getBoundExpensesSum: function getBoundExpensesSum(bound) {
@@ -54335,6 +54448,42 @@ var render = function() {
     _vm._v(" "),
     _c("br"),
     _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _vm._m(10),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c("span", [_vm._v(_vm._s(_vm.averageProfitPerYear))]),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _vm._m(11),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c("span", [_vm._v(_vm._s(_vm.highestProfitYear))]),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _vm._m(12),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c("span", [_vm._v(_vm._s(_vm.lowestProfitYear))]),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
     _c("br")
   ])
 }
@@ -54385,7 +54534,7 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("span", [_c("strong", [_vm._v("Average profit")])])
+    return _c("span", [_c("strong", [_vm._v("Average profit per month")])])
   },
   function() {
     var _vm = this
@@ -54398,6 +54547,24 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("span", [_c("strong", [_vm._v("Highest profit month")])])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", [_c("strong", [_vm._v("Average profit per year")])])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", [_c("strong", [_vm._v("Highest profit year")])])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", [_c("strong", [_vm._v("Lowest profit year")])])
   }
 ]
 render._withStripped = true

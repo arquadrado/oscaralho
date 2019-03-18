@@ -1,7 +1,8 @@
 <template>
   <div class="stats">
-
-    <span><strong>Total expenses</strong></span>
+    <span>
+      <strong>Total expenses</strong>
+    </span>
     <br>
     <br>
 
@@ -9,7 +10,9 @@
     <br>
     <br>
 
-    <span><strong>Expected expenses</strong></span>
+    <span>
+      <strong>Expected expenses</strong>
+    </span>
     <br>
     <br>
 
@@ -17,7 +20,9 @@
     <br>
     <br>
 
-    <span><strong>Expenses ratio</strong></span>
+    <span>
+      <strong>Expenses ratio</strong>
+    </span>
     <br>
     <br>
 
@@ -25,7 +30,9 @@
     <br>
     <br>
 
-    <span><strong>Total revenues</strong></span>
+    <span>
+      <strong>Total revenues</strong>
+    </span>
     <br>
     <br>
 
@@ -33,7 +40,9 @@
     <br>
     <br>
 
-    <span><strong>Expected revenues</strong></span>
+    <span>
+      <strong>Expected revenues</strong>
+    </span>
     <br>
     <br>
 
@@ -41,7 +50,9 @@
     <br>
     <br>
 
-    <span><strong>Revenue ratio</strong></span>
+    <span>
+      <strong>Revenue ratio</strong>
+    </span>
     <br>
     <br>
 
@@ -49,7 +60,9 @@
     <br>
     <br>
 
-    <span><strong>Total profit</strong></span>
+    <span>
+      <strong>Total profit</strong>
+    </span>
     <br>
     <br>
 
@@ -57,7 +70,9 @@
     <br>
     <br>
 
-    <span><strong>Average profit</strong></span>
+    <span>
+      <strong>Average profit per month</strong>
+    </span>
     <br>
     <br>
 
@@ -65,7 +80,9 @@
     <br>
     <br>
 
-    <span><strong>Lowest profit month</strong></span>
+    <span>
+      <strong>Lowest profit month</strong>
+    </span>
     <br>
     <br>
 
@@ -73,7 +90,9 @@
     <br>
     <br>
 
-    <span><strong>Highest profit month</strong></span>
+    <span>
+      <strong>Highest profit month</strong>
+    </span>
     <br>
     <br>
 
@@ -81,6 +100,35 @@
     <br>
     <br>
 
+    <span>
+      <strong>Average profit per year</strong>
+    </span>
+    <br>
+    <br>
+
+    <span>{{ averageProfitPerYear }}</span>
+    <br>
+    <br>
+
+    <span>
+      <strong>Highest profit year</strong>
+    </span>
+    <br>
+    <br>
+
+    <span>{{ highestProfitYear }}</span>
+    <br>
+    <br>
+
+    <span>
+      <strong>Lowest profit year</strong>
+    </span>
+    <br>
+    <br>
+
+    <span>{{ lowestProfitYear }}</span>
+    <br>
+    <br>
   </div>
 </template>
 
@@ -95,14 +143,17 @@ export default {
   computed: {
     ...mapGetters({
       budgets: 'getBudgets',
-      bounds: 'getBounds'
+      bounds: 'getBounds',
+      years: 'getAllTimeYears'
     }),
     boundsSum() {
       return Number(
-        this.bounds.filter(b => b.category.expense).reduce((sum, bound) => {
-          sum += Number(bound.bound_in_cents) / 100;
-          return sum;
-        }, 0)
+        this.bounds
+          .filter(b => b.category.expense)
+          .reduce((sum, bound) => {
+            sum += Number(bound.bound_in_cents) / 100;
+            return sum;
+          }, 0)
       );
     },
     expensesSum() {
@@ -118,10 +169,12 @@ export default {
     },
     revenueBoundsSum() {
       return Number(
-        this.bounds.filter(b => !b.category.expense).reduce((sum, bound) => {
-          sum += Number(bound.bound_in_cents) / 100;
-          return sum;
-        }, 0)
+        this.bounds
+          .filter(b => !b.category.expense)
+          .reduce((sum, bound) => {
+            sum += Number(bound.bound_in_cents) / 100;
+            return sum;
+          }, 0)
       );
     },
     revenuesSum() {
@@ -149,14 +202,16 @@ export default {
     },
     totalProfit() {
       return Number(
-        this.bounds.reduce((profit, bound) => {
-          if (bound.category.expense) {
-            profit -= this.getBoundExpensesSum(bound)
-          } else {
-            profit += this.getBoundExpensesSum(bound);
-          }
-          return profit;
-        }, 0).toFixed(2)
+        this.bounds
+          .reduce((profit, bound) => {
+            if (bound.category.expense) {
+              profit -= this.getBoundExpensesSum(bound);
+            } else {
+              profit += this.getBoundExpensesSum(bound);
+            }
+            return profit;
+          }, 0)
+          .toFixed(2)
       );
     },
 
@@ -203,10 +258,68 @@ export default {
       return 'No data available';
     },
 
+    averageProfitPerYear() {
+      return (Number(this.totalProfit) / this.years.length).toFixed(2);
+    },
+
+    highestProfitYear() {
+      const yearsProfit = this.years.reduce((reduced, year) => {
+        const yearProfit = this.getYearProfit(year);
+        if (yearProfit) {
+          reduced[year] = yearProfit;
+        }
+        return reduced;
+      }, {});
+
+      if (yearsProfit) {
+        const highestProfitYear = Object.keys(yearsProfit).reduce(
+          (reduced, year) => {
+            if (!reduced || yearsProfit[year] > yearsProfit[reduced]) {
+              reduced = year;
+            }
+
+            return reduced;
+          }
+        );
+
+        return highestProfitYear ? highestProfitYear : 'No data available';
+      }
+      return 'No data available';
+    },
+
+    lowestProfitYear() {
+      const yearsProfit = this.years.reduce((reduced, year) => {
+        const yearProfit = this.getYearProfit(year);
+        if (yearProfit) {
+          reduced[year] = yearProfit;
+        }
+        return reduced;
+      }, {});
+
+      console.log(yearsProfit, 'asdsa');
+
+      if (yearsProfit) {
+        const highestProfitYear = Object.keys(yearsProfit).reduce(
+          (reduced, year) => {
+            if (!reduced || yearsProfit[year] < yearsProfit[reduced]) {
+              reduced = year;
+            }
+
+            return reduced;
+          }
+        );
+
+        return highestProfitYear ? highestProfitYear : 'No data available';
+      }
+      return 'No data available';
+    },
+
+    mostExpensiveCategory() {}
   },
   methods: {
     getBudgetProfit(budget) {
-      return this.bounds.filter(b => b.budget_id === budget.id)
+      return this.bounds
+        .filter(b => b.budget_id === budget.id)
         .reduce((profit, bound) => {
           if (bound.category.expense) {
             profit -= this.getBoundExpensesSum(bound);
@@ -216,11 +329,19 @@ export default {
           return profit;
         }, 0);
     },
+    getYearProfit(year) {
+      return this.budgets
+        .filter(b => b.year === year)
+        .reduce((sum, budget) => {
+          sum += this.getBudgetProfit(budget);
+          return sum;
+        }, 0);
+    },
     getBoundExpensesSum(bound) {
       return bound.expenses.reduce((expenseSum, expense) => {
-              expenseSum += Number(expense.value);
-              return expenseSum;
-            }, 0);
+        expenseSum += Number(expense.value);
+        return expenseSum;
+      }, 0);
     }
   }
 };
