@@ -48931,6 +48931,9 @@ var state = {
   selectedBudgetToEdit: undefined
 };
 var getters = {
+  getBudgets: function getBudgets(state) {
+    return state.budgets;
+  },
   getBudgetsToEdit: function getBudgetsToEdit(state) {
     return state.budgets.sort(function (a, b) {
       return a.year + '-' + a.month < b.year + '-' + b.month;
@@ -53294,7 +53297,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       this.setCurrentCategoryType(current === 'expense' ? 'revenue' : 'expense');
     },
     changeMenuView: function changeMenuView(view) {
-      console.log(view);
       this.menuDisplay = view;
     },
     editCategory: function editCategory(category) {
@@ -54032,6 +54034,38 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -54042,26 +54076,24 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
   },
 
   computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])({
+    budgets: 'getBudgets',
     bounds: 'getBounds'
   }), {
     boundsSum: function boundsSum() {
       return Number(this.bounds.filter(function (b) {
         return b.category.expense;
       }).reduce(function (sum, bound) {
-        console.log(bound.bound_in_cents, 'bound');
         sum += Number(bound.bound_in_cents) / 100;
         return sum;
       }, 0));
     },
     expensesSum: function expensesSum() {
+      var _this = this;
+
       return Number(this.bounds.filter(function (b) {
         return b.category.expense;
       }).reduce(function (sum, bound) {
-        sum += bound.expenses.reduce(function (expenseSum, expense) {
-          console.log(expense.value, 'expense');
-          expenseSum += Number(expense.value);
-          return expenseSum;
-        }, 0);
+        sum += _this.getBoundExpensesSum(bound);
         return sum;
       }, 0).toFixed(2));
     },
@@ -54069,20 +54101,17 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       return Number(this.bounds.filter(function (b) {
         return !b.category.expense;
       }).reduce(function (sum, bound) {
-        console.log(bound.bound_in_cents, 'bound');
         sum += Number(bound.bound_in_cents) / 100;
         return sum;
       }, 0));
     },
     revenuesSum: function revenuesSum() {
+      var _this2 = this;
+
       return Number(this.bounds.filter(function (b) {
         return !b.category.expense;
       }).reduce(function (sum, bound) {
-        sum += bound.expenses.reduce(function (expenseSum, expense) {
-          console.log(expense.value, 'expense');
-          expenseSum += Number(expense.value);
-          return expenseSum;
-        }, 0);
+        sum += _this2.getBoundExpensesSum(bound);
         return sum;
       }, 0).toFixed(2));
     },
@@ -54093,14 +54122,90 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       return (this.boundsSum / this.expensesSum).toFixed(2);
     },
     revenueAllTimeRatio: function revenueAllTimeRatio() {
-      console.log(this.revenueBoundsSum, this.revenuesSum, 'what');
       if (!this.revenuesSum) {
         return 'No data available';
       }
-      return (this.revenueBoundsSum / this.revenuesSum).toFixed(2);
+      return (this.revenuesSum / this.revenueBoundsSum).toFixed(2);
+    },
+    totalProfit: function totalProfit() {
+      var _this3 = this;
+
+      return Number(this.bounds.reduce(function (profit, bound) {
+        if (bound.category.expense) {
+          profit -= _this3.getBoundExpensesSum(bound);
+        } else {
+          profit += _this3.getBoundExpensesSum(bound);
+        }
+        return profit;
+      }, 0).toFixed(2));
+    },
+    averageProfitPerMonth: function averageProfitPerMonth() {
+      return (Number(this.totalProfit) / this.budgets.length).toFixed(2);
+    },
+    lowestProfitMonth: function lowestProfitMonth() {
+      var _this4 = this;
+
+      var lowestProfitBudget = this.budgets.reduce(function (reduced, budget) {
+        if (!reduced) {
+          return reduced;
+        }
+
+        if (_this4.getBudgetProfit(budget) < _this4.getBudgetProfit(reduced)) {
+          reduced = budget;
+        }
+
+        return reduced;
+      });
+
+      if (lowestProfitBudget) {
+        return lowestProfitBudget.year + ' - ' + lowestProfitBudget.month;
+      }
+
+      return 'No data available';
+    },
+    highestProfitMonth: function highestProfitMonth() {
+      var _this5 = this;
+
+      var highestProfitBudget = this.budgets.reduce(function (reduced, budget) {
+        if (!reduced) {
+          return reduced;
+        }
+        if (_this5.getBudgetProfit(budget) > _this5.getBudgetProfit(reduced)) {
+          reduced = budget;
+        }
+
+        return reduced;
+      });
+
+      if (highestProfitBudget) {
+        return highestProfitBudget.year + ' - ' + highestProfitBudget.month;
+      }
+
+      return 'No data available';
     }
   }),
-  methods: {}
+  methods: {
+    getBudgetProfit: function getBudgetProfit(budget) {
+      var _this6 = this;
+
+      return this.bounds.filter(function (b) {
+        return b.budget_id === budget.id;
+      }).reduce(function (profit, bound) {
+        if (bound.category.expense) {
+          profit -= _this6.getBoundExpensesSum(bound);
+        } else {
+          profit += _this6.getBoundExpensesSum(bound);
+        }
+        return profit;
+      }, 0);
+    },
+    getBoundExpensesSum: function getBoundExpensesSum(bound) {
+      return bound.expenses.reduce(function (expenseSum, expense) {
+        expenseSum += Number(expense.value);
+        return expenseSum;
+      }, 0);
+    }
+  }
 });
 
 /***/ }),
@@ -54182,6 +54287,54 @@ var render = function() {
     _vm._v(" "),
     _c("br"),
     _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _vm._m(6),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c("span", [_vm._v(_vm._s(_vm.totalProfit))]),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _vm._m(7),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c("span", [_vm._v(_vm._s(_vm.averageProfitPerMonth))]),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _vm._m(8),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c("span", [_vm._v(_vm._s(_vm.lowestProfitMonth))]),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _vm._m(9),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c("span", [_vm._v(_vm._s(_vm.highestProfitMonth))]),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
     _c("br")
   ])
 }
@@ -54221,6 +54374,30 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("span", [_c("strong", [_vm._v("Revenue ratio")])])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", [_c("strong", [_vm._v("Total profit")])])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", [_c("strong", [_vm._v("Average profit")])])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", [_c("strong", [_vm._v("Lowest profit month")])])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", [_c("strong", [_vm._v("Highest profit month")])])
   }
 ]
 render._withStripped = true
@@ -54500,6 +54677,7 @@ var render = function() {
         "span",
         {
           staticClass: "arrow-button centered-content-hv",
+          class: { disabled: _vm.menuIsOpen },
           on: { click: _vm.toggleCategoryType }
         },
         [
@@ -54517,6 +54695,7 @@ var render = function() {
         "span",
         {
           staticClass: "arrow-button centered-content-hv",
+          class: { disabled: _vm.menuIsOpen },
           on: { click: _vm.toggleCategoryViewMode }
         },
         [_c("i", { staticClass: "fa fa-eye" })]
@@ -54526,7 +54705,7 @@ var render = function() {
         "span",
         {
           staticClass: "arrow-button centered-content-hv",
-          class: { disabled: !_vm.canGoUp },
+          class: { disabled: !_vm.canGoUp || _vm.menuIsOpen },
           on: { click: _vm.up }
         },
         [_c("i", { staticClass: "fa fa-angle-up" })]
@@ -54536,7 +54715,7 @@ var render = function() {
         "span",
         {
           staticClass: "arrow-button centered-content-hv",
-          class: { disabled: !_vm.canGoDown },
+          class: { disabled: !_vm.canGoDown || _vm.menuIsOpen },
           on: { click: _vm.down }
         },
         [_c("i", { staticClass: "fa fa-angle-down" })]
@@ -54546,7 +54725,7 @@ var render = function() {
         "span",
         {
           staticClass: "arrow-button centered-content-hv",
-          class: { disabled: !_vm.canGoBack },
+          class: { disabled: !_vm.canGoBack || _vm.menuIsOpen },
           on: { click: _vm.back }
         },
         [_c("i", { staticClass: "fa fa-angle-left" })]
@@ -54556,7 +54735,7 @@ var render = function() {
         "span",
         {
           staticClass: "arrow-button centered-content-hv",
-          class: { disabled: !_vm.canGoForward },
+          class: { disabled: !_vm.canGoForward || _vm.menuIsOpen },
           on: { click: _vm.forward }
         },
         [_c("i", { staticClass: "fa fa-angle-right" })]

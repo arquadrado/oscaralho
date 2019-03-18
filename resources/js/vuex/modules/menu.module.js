@@ -8,6 +8,7 @@ const state = {
   selectedBudgetToEdit: undefined,
 };
 const getters = {
+  getBudgets: state => state.budgets,
   getBudgetsToEdit: state => state.budgets.sort((a, b) => {
     return `${a.year}-${a.month}` < `${b.year}-${b.month}`
   }),

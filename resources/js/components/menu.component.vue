@@ -25,7 +25,7 @@
             </div>
 
           </div>
-          
+
           <div class="menu-options x0 y1">
             <menu-stats></menu-stats>
             <div class="menu-option" @click="changeMenuView('options')">
@@ -76,20 +76,20 @@
 
     <div class="menu-trigger">
       <span @click="toggleMenu" class="arrow-button centered-content-hv"><i class="fa fa-bars"></i></span>
-      
-      <span class="arrow-button centered-content-hv" @click="toggleCategoryType">
+
+      <span class="arrow-button centered-content-hv" :class="{'disabled': menuIsOpen}" @click="toggleCategoryType">
         <i class="fa" :class="{
         'fa-circle': isExpense,
         'fa-circle-thin': !isExpense,
         }"></i>
       </span>
 
-      <span class="arrow-button centered-content-hv" @click="toggleCategoryViewMode"><i class="fa fa-eye"></i></span>
+      <span class="arrow-button centered-content-hv" :class="{'disabled': menuIsOpen}" @click="toggleCategoryViewMode"><i class="fa fa-eye"></i></span>
 
-      <span class="arrow-button centered-content-hv" :class="{'disabled': !canGoUp}" @click="up"><i class="fa fa-angle-up"></i></span>
-      <span class="arrow-button centered-content-hv" :class="{'disabled': !canGoDown}" @click="down"><i class="fa fa-angle-down"></i></span>
-      <span class="arrow-button centered-content-hv" :class="{'disabled': !canGoBack}" @click="back"><i class="fa fa-angle-left"></i></span>
-      <span class="arrow-button centered-content-hv" :class="{'disabled': !canGoForward}" @click="forward"><i class="fa fa-angle-right"></i></span>
+      <span class="arrow-button centered-content-hv" :class="{'disabled': !canGoUp || menuIsOpen}" @click="up"><i class="fa fa-angle-up"></i></span>
+      <span class="arrow-button centered-content-hv" :class="{'disabled': !canGoDown || menuIsOpen}" @click="down"><i class="fa fa-angle-down"></i></span>
+      <span class="arrow-button centered-content-hv" :class="{'disabled': !canGoBack || menuIsOpen}" @click="back"><i class="fa fa-angle-left"></i></span>
+      <span class="arrow-button centered-content-hv" :class="{'disabled': !canGoForward || menuIsOpen}" @click="forward"><i class="fa fa-angle-right"></i></span>
     </div>
   </div>
 </template>
@@ -270,7 +270,6 @@ export default {
       );
     },
     changeMenuView(view) {
-      console.log(view);
       this.menuDisplay = view;
     },
     editCategory(category) {
