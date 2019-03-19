@@ -129,6 +129,27 @@
     <span>{{ lowestProfitYear }}</span>
     <br>
     <br>
+
+    <span>
+      <strong>Most expensive category</strong>
+    </span>
+    <br>
+    <br>
+
+    <span>{{ mostExpensiveCategory }}</span>
+    <br>
+    <br>
+
+    <span>
+      <strong>Cheapest category</strong>
+    </span>
+    <br>
+    <br>
+
+    <span>{{ cheapestCategory }}</span>
+    <br>
+    <br>
+
   </div>
 </template>
 
@@ -296,8 +317,6 @@ export default {
         return reduced;
       }, {});
 
-      console.log(yearsProfit, 'asdsa');
-
       if (yearsProfit) {
         const highestProfitYear = Object.keys(yearsProfit).reduce(
           (reduced, year) => {
@@ -314,7 +333,58 @@ export default {
       return 'No data available';
     },
 
-    mostExpensiveCategory() {}
+    mostExpensiveCategory() {
+      const boundsByCategory = this.bounds.reduce((reduced, bound) => {
+        if (!reduced.hasOwnProperty(bound.category.name)) {
+          reduced[bound.category.name] = [];
+        }
+
+        reduced[bound.category.name].push(bound);
+
+        return reduced;
+      }, {})
+
+      Object.keys(boundsByCategory).forEach(category => {
+        boundsByCategory[category] = boundsByCategory[category].reduce((sum, bound) => {
+            sum += this.getBoundExpensesSum(bound);
+            return sum;
+          }, 0);
+      });
+
+      return Object.keys(boundsByCategory).reduce((selected, category) => {
+        if (!selected || boundsByCategory[category] > boundsByCategory[selected]) {
+          selected = category;
+        }
+
+        return selected;
+      })
+    },
+    cheapestCategory() {
+      const boundsByCategory = this.bounds.reduce((reduced, bound) => {
+        if (!reduced.hasOwnProperty(bound.category.name)) {
+          reduced[bound.category.name] = [];
+        }
+
+        reduced[bound.category.name].push(bound);
+
+        return reduced;
+      }, {})
+
+      Object.keys(boundsByCategory).forEach(category => {
+        boundsByCategory[category] = boundsByCategory[category].reduce((sum, bound) => {
+            sum += this.getBoundExpensesSum(bound);
+            return sum;
+          }, 0);
+      });
+
+      return Object.keys(boundsByCategory).reduce((selected, category) => {
+        if (!selected || boundsByCategory[category] < boundsByCategory[selected]) {
+          selected = category;
+        }
+
+        return selected;
+      })
+    }
   },
   methods: {
     getBudgetProfit(budget) {

@@ -54114,6 +54114,27 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -54270,8 +54291,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         return reduced;
       }, {});
 
-      console.log(yearsProfit, 'asdsa');
-
       if (yearsProfit) {
         var highestProfitYear = Object.keys(yearsProfit).reduce(function (reduced, year) {
           if (!reduced || yearsProfit[year] < yearsProfit[reduced]) {
@@ -54285,30 +54304,85 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       }
       return 'No data available';
     },
-    mostExpensiveCategory: function mostExpensiveCategory() {}
+    mostExpensiveCategory: function mostExpensiveCategory() {
+      var _this8 = this;
+
+      var boundsByCategory = this.bounds.reduce(function (reduced, bound) {
+        if (!reduced.hasOwnProperty(bound.category.name)) {
+          reduced[bound.category.name] = [];
+        }
+
+        reduced[bound.category.name].push(bound);
+
+        return reduced;
+      }, {});
+
+      Object.keys(boundsByCategory).forEach(function (category) {
+        boundsByCategory[category] = boundsByCategory[category].reduce(function (sum, bound) {
+          sum += _this8.getBoundExpensesSum(bound);
+          return sum;
+        }, 0);
+      });
+
+      return Object.keys(boundsByCategory).reduce(function (selected, category) {
+        if (!selected || boundsByCategory[category] > boundsByCategory[selected]) {
+          selected = category;
+        }
+
+        return selected;
+      });
+    },
+    cheapestCategory: function cheapestCategory() {
+      var _this9 = this;
+
+      var boundsByCategory = this.bounds.reduce(function (reduced, bound) {
+        if (!reduced.hasOwnProperty(bound.category.name)) {
+          reduced[bound.category.name] = [];
+        }
+
+        reduced[bound.category.name].push(bound);
+
+        return reduced;
+      }, {});
+
+      Object.keys(boundsByCategory).forEach(function (category) {
+        boundsByCategory[category] = boundsByCategory[category].reduce(function (sum, bound) {
+          sum += _this9.getBoundExpensesSum(bound);
+          return sum;
+        }, 0);
+      });
+
+      return Object.keys(boundsByCategory).reduce(function (selected, category) {
+        if (!selected || boundsByCategory[category] < boundsByCategory[selected]) {
+          selected = category;
+        }
+
+        return selected;
+      });
+    }
   }),
   methods: {
     getBudgetProfit: function getBudgetProfit(budget) {
-      var _this8 = this;
+      var _this10 = this;
 
       return this.bounds.filter(function (b) {
         return b.budget_id === budget.id;
       }).reduce(function (profit, bound) {
         if (bound.category.expense) {
-          profit -= _this8.getBoundExpensesSum(bound);
+          profit -= _this10.getBoundExpensesSum(bound);
         } else {
-          profit += _this8.getBoundExpensesSum(bound);
+          profit += _this10.getBoundExpensesSum(bound);
         }
         return profit;
       }, 0);
     },
     getYearProfit: function getYearProfit(year) {
-      var _this9 = this;
+      var _this11 = this;
 
       return this.budgets.filter(function (b) {
         return b.year === year;
       }).reduce(function (sum, budget) {
-        sum += _this9.getBudgetProfit(budget);
+        sum += _this11.getBudgetProfit(budget);
         return sum;
       }, 0);
     },
@@ -54484,6 +54558,30 @@ var render = function() {
     _vm._v(" "),
     _c("br"),
     _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _vm._m(13),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c("span", [_vm._v(_vm._s(_vm.mostExpensiveCategory))]),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _vm._m(14),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c("span", [_vm._v(_vm._s(_vm.cheapestCategory))]),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
     _c("br")
   ])
 }
@@ -54565,6 +54663,18 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("span", [_c("strong", [_vm._v("Lowest profit year")])])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", [_c("strong", [_vm._v("Most expensive category")])])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", [_c("strong", [_vm._v("Cheapest category")])])
   }
 ]
 render._withStripped = true
