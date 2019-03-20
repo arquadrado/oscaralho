@@ -54407,7 +54407,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       if (Object.keys(boundsByCategory).length) {
 
         return Object.keys(boundsByCategory).reduce(function (selected, category) {
-          if (!selected || boundsByCategory[category] < boundsByCategory[selected]) {
+          if (!selected || boundsByCategory[category] > boundsByCategory[selected]) {
             selected = category;
           }
 
@@ -54439,7 +54439,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       if (Object.keys(boundsByCategory).length) {
 
         return Object.keys(boundsByCategory).reduce(function (selected, category) {
-          if (!selected || boundsByCategory[category] > boundsByCategory[selected]) {
+          if (!selected || boundsByCategory[category] < boundsByCategory[selected]) {
             selected = category;
           }
 

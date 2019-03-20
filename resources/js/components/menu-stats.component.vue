@@ -423,7 +423,7 @@ export default {
       if (Object.keys(boundsByCategory).length) {
 
         return Object.keys(boundsByCategory).reduce((selected, category) => {
-          if (!selected || boundsByCategory[category] < boundsByCategory[selected]) {
+          if (!selected || boundsByCategory[category] > boundsByCategory[selected]) {
             selected = category;
           }
   
@@ -455,7 +455,7 @@ export default {
       if (Object.keys(boundsByCategory).length) {
 
         return Object.keys(boundsByCategory).reduce((selected, category) => {
-          if (!selected || boundsByCategory[category] > boundsByCategory[selected]) {
+          if (!selected || boundsByCategory[category] < boundsByCategory[selected]) {
             selected = category;
           }
   
