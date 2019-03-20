@@ -54278,7 +54278,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       return 'No data available';
     },
     averageProfitPerYear: function averageProfitPerYear() {
-      return (Number(this.totalProfit) * 12 / this.bounds.length).toFixed(2);
+      return (Number(this.totalProfit) * 12 / this.budgets.length).toFixed(2);
     },
     highestProfitYear: function highestProfitYear() {
       var _this6 = this;

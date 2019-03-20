@@ -300,7 +300,7 @@ export default {
     },
 
     averageProfitPerYear() {
-      return (Number(this.totalProfit) * 12 / this.bounds.length).toFixed(2);
+      return (Number(this.totalProfit) * 12 / this.budgets.length).toFixed(2);
     },
 
     highestProfitYear() {
