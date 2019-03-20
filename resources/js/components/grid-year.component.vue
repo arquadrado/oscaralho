@@ -50,7 +50,7 @@ export default {
     getMonthRatio(month) {
       const expenseSum = this.getExpensesSum(month);
       const monthBound = this.getBoundsSum(month);
-      return `${monthBound}/${expenseSum.toFixed(2)}`;
+      return `${expenseSum.toFixed(2)}/${monthBound}`;
     },
     getExpensesSum(month) {
       return this.bounds

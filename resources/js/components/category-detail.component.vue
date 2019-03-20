@@ -7,7 +7,7 @@
       <div class="balance">
 
         <!-- <span v-if="!boundBeingEdited">{{ selectedCategoryBound }}/{{ expensesSum }}</span> -->
-        <span><input v-focus :disabled="!boundBeingEdited" type="number" v-model="newBound">/{{ expensesSum }}</span>
+        <span>{{ expensesSum }}/<input v-focus :disabled="!boundBeingEdited" type="number" v-model="newBound"></span>
       </div>
       <span class="unit">euros</span>
       <div class="balance-action">
@@ -33,7 +33,7 @@
 
       <div class="category-actions">
         <span class="button" @click="addExpense"><i class="fa fa-plus"></i></span>
-        <span class="button close-button" @click="close"><i class="fa fa-close"></i></span>
+        <span class="button close-button" @click="close"><i class="fa fa-arrow-right"></i></span>
       </div>
     </div>
 </template>

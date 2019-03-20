@@ -15,7 +15,7 @@
     
     <div class="actions">
       <span class="button" @click="accept(inputValue)"><i class="fa fa-plus"></i></span>
-      <span class="button" @click="cancel"><i class="fa fa-close"></i></span>
+      <span class="button" @click="cancel"><i class="fa fa-arrow-right"></i></span>
     </div>
     
   </div>

@@ -45,7 +45,7 @@ export default {
     getYearRatio(year) {
       const expenseSum = this.getExpensesSum(year);
       const yearBound = this.getBoundsSum(year);
-      return `${yearBound}/${expenseSum.toFixed(2)}`;
+      return `${expenseSum.toFixed(2)}/${yearBound}`;
     },
     getExpensesSum(year) {
       return this.bounds

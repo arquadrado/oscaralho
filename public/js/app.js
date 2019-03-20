@@ -51968,7 +51968,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     },
     getBoundCategoryRatio: function getBoundCategoryRatio(bound) {
       var expenseSum = this.getExpensesSum(bound);
-      return bound.bound_in_cents / 100 + '/' + expenseSum.toFixed(2);
+      return expenseSum.toFixed(2) + '/' + bound.bound_in_cents / 100;
     },
     clickBound: function clickBound(boundId) {
       if (this.justUpdated === boundId) {
@@ -52200,6 +52200,7 @@ var render = function() {
           _vm._v(" "),
           _c("div", { staticClass: "balance" }, [
             _c("span", [
+              _vm._v(_vm._s(_vm.expensesSum) + "/"),
               _c("input", {
                 directives: [
                   { name: "focus", rawName: "v-focus" },
@@ -52220,8 +52221,7 @@ var render = function() {
                     _vm.newBound = $event.target.value
                   }
                 }
-              }),
-              _vm._v("/" + _vm._s(_vm.expensesSum))
+              })
             ])
           ]),
           _vm._v(" "),
@@ -52289,7 +52289,7 @@ var render = function() {
           _c(
             "span",
             { staticClass: "button close-button", on: { click: _vm.close } },
-            [_c("i", { staticClass: "fa fa-close" })]
+            [_c("i", { staticClass: "fa fa-arrow-right" })]
           )
         ])
       ])
@@ -52685,7 +52685,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     getMonthRatio: function getMonthRatio(month) {
       var expenseSum = this.getExpensesSum(month);
       var monthBound = this.getBoundsSum(month);
-      return monthBound + '/' + expenseSum.toFixed(2);
+      return expenseSum.toFixed(2) + '/' + monthBound;
     },
     getExpensesSum: function getExpensesSum(month) {
       var _this = this;
@@ -52890,7 +52890,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     getYearRatio: function getYearRatio(year) {
       var expenseSum = this.getExpensesSum(year);
       var yearBound = this.getBoundsSum(year);
-      return yearBound + '/' + expenseSum.toFixed(2);
+      return expenseSum.toFixed(2) + '/' + yearBound;
     },
     getExpensesSum: function getExpensesSum(year) {
       var _this = this;
@@ -55358,7 +55358,7 @@ var render = function() {
         ),
         _vm._v(" "),
         _c("span", { staticClass: "button", on: { click: _vm.cancel } }, [
-          _c("i", { staticClass: "fa fa-close" })
+          _c("i", { staticClass: "fa fa-arrow-right" })
         ])
       ])
     ]
@@ -55634,7 +55634,7 @@ var render = function() {
         ),
         _vm._v(" "),
         _c("span", { staticClass: "button", on: { click: _vm.cancel } }, [
-          _c("i", { staticClass: "fa fa-close" })
+          _c("i", { staticClass: "fa fa-arrow-right" })
         ])
       ])
     ]

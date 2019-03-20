@@ -11,7 +11,7 @@
     
     <div class="actions">
       <span class="button" @click="accept()"><i class="fa fa-check"></i></span>
-      <span class="button" @click="cancel"><i class="fa fa-close"></i></span>
+      <span class="button" @click="cancel"><i class="fa fa-arrow-right"></i></span>
     </div>
     
   </div>

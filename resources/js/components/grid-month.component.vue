@@ -77,7 +77,7 @@ export default {
     },
     getBoundCategoryRatio(bound) {
       const expenseSum = this.getExpensesSum(bound);
-      return `${bound.bound_in_cents / 100}/${expenseSum.toFixed(2)}`;
+      return `${expenseSum.toFixed(2)}/${bound.bound_in_cents / 100}`;
     },
     clickBound(boundId) {
       if (this.justUpdated === boundId) {
