@@ -131,22 +131,42 @@
     <br>
 
     <span>
-      <strong>Most expensive category</strong>
+      <strong>Highest expense</strong>
     </span>
     <br>
     <br>
 
-    <span>{{ mostExpensiveCategory }}</span>
+    <span>{{ highestExpense }}</span>
     <br>
     <br>
 
     <span>
-      <strong>Cheapest category</strong>
+      <strong>Lowest expense</strong>
     </span>
     <br>
     <br>
 
-    <span>{{ cheapestCategory }}</span>
+    <span>{{ lowestExpense }}</span>
+    <br>
+    <br>
+
+    <span>
+      <strong>Highest revenue</strong>
+    </span>
+    <br>
+    <br>
+
+    <span>{{ highestRevenue }}</span>
+    <br>
+    <br>
+
+    <span>
+      <strong>Lowest revenue</strong>
+    </span>
+    <br>
+    <br>
+
+    <span>{{ lowestRevenue }}</span>
     <br>
     <br>
 
@@ -280,7 +300,7 @@ export default {
     },
 
     averageProfitPerYear() {
-      return (Number(this.totalProfit) / this.years.length).toFixed(2);
+      return (Number(this.totalProfit) * 12 / this.bounds.length).toFixed(2);
     },
 
     highestProfitYear() {
@@ -333,57 +353,25 @@ export default {
       return 'No data available';
     },
 
-    mostExpensiveCategory() {
-      const boundsByCategory = this.bounds.reduce((reduced, bound) => {
-        if (!reduced.hasOwnProperty(bound.category.name)) {
-          reduced[bound.category.name] = [];
-        }
-
-        reduced[bound.category.name].push(bound);
-
-        return reduced;
-      }, {})
-
-      Object.keys(boundsByCategory).forEach(category => {
-        boundsByCategory[category] = boundsByCategory[category].reduce((sum, bound) => {
-            sum += this.getBoundExpensesSum(bound);
-            return sum;
-          }, 0);
-      });
-
-      return Object.keys(boundsByCategory).reduce((selected, category) => {
-        if (!selected || boundsByCategory[category] > boundsByCategory[selected]) {
-          selected = category;
-        }
-
-        return selected;
-      })
+    highestExpense() {
+      const bounds = this.bounds
+      .filter(b => b.category.expense)
+      return this.getHighestExpense(bounds);
     },
-    cheapestCategory() {
-      const boundsByCategory = this.bounds.reduce((reduced, bound) => {
-        if (!reduced.hasOwnProperty(bound.category.name)) {
-          reduced[bound.category.name] = [];
-        }
-
-        reduced[bound.category.name].push(bound);
-
-        return reduced;
-      }, {})
-
-      Object.keys(boundsByCategory).forEach(category => {
-        boundsByCategory[category] = boundsByCategory[category].reduce((sum, bound) => {
-            sum += this.getBoundExpensesSum(bound);
-            return sum;
-          }, 0);
-      });
-
-      return Object.keys(boundsByCategory).reduce((selected, category) => {
-        if (!selected || boundsByCategory[category] < boundsByCategory[selected]) {
-          selected = category;
-        }
-
-        return selected;
-      })
+    lowestExpense() {
+      const bounds = this.bounds
+      .filter(b => b.category.expense)
+      return this.getLowestExpense(bounds);
+    },
+    highestRevenue() {
+      const bounds = this.bounds
+      .filter(b => !b.category.expense)
+      return this.getHighestExpense(bounds);
+    },
+    lowestRevenue() {
+      const bounds = this.bounds
+      .filter(b => !b.category.expense)
+      return this.getLowestExpense(bounds);
     }
   },
   methods: {
@@ -412,6 +400,69 @@ export default {
         expenseSum += Number(expense.value);
         return expenseSum;
       }, 0);
+    },
+    getHighestExpense(bounds) {
+       const boundsByCategory = bounds
+      .reduce((reduced, bound) => {
+        if (!reduced.hasOwnProperty(bound.category.name)) {
+          reduced[bound.category.name] = [];
+        }
+
+        reduced[bound.category.name].push(bound);
+
+        return reduced;
+      }, {})
+
+      Object.keys(boundsByCategory).forEach(category => {
+        boundsByCategory[category] = boundsByCategory[category].reduce((sum, bound) => {
+            sum += this.getBoundExpensesSum(bound);
+            return sum;
+          }, 0);
+      });
+      
+      if (Object.keys(boundsByCategory).length) {
+
+        return Object.keys(boundsByCategory).reduce((selected, category) => {
+          if (!selected || boundsByCategory[category] < boundsByCategory[selected]) {
+            selected = category;
+          }
+  
+          return selected;
+        }, null);
+      }
+      return 'No data available';
+
+    },
+    getLowestExpense(bounds) {
+       const boundsByCategory = bounds
+      .reduce((reduced, bound) => {
+        if (!reduced.hasOwnProperty(bound.category.name)) {
+          reduced[bound.category.name] = [];
+        }
+
+        reduced[bound.category.name].push(bound);
+
+        return reduced;
+      }, {})
+
+      Object.keys(boundsByCategory).forEach(category => {
+        boundsByCategory[category] = boundsByCategory[category].reduce((sum, bound) => {
+            sum += this.getBoundExpensesSum(bound);
+            return sum;
+          }, 0);
+      });
+
+      if (Object.keys(boundsByCategory).length) {
+
+        return Object.keys(boundsByCategory).reduce((selected, category) => {
+          if (!selected || boundsByCategory[category] > boundsByCategory[selected]) {
+            selected = category;
+          }
+  
+          return selected;
+        }, null);
+      }
+      return 'No data available';
     }
   }
 };

@@ -139,26 +139,26 @@ export default {
       return this.currentView === 'grid-month';
     },
     canGoUp() {
-      return (
+      return !this.menuIsOpen && (
         (this.currentView === 'grid-month' && this.selectedMonth) ||
         (this.currentView === 'grid-year' && this.selectedYear)
       );
     },
     canGoDown() {
-      return (
+      return !this.menuIsOpen && (
         (this.currentView === 'grid-all-time' && this.selectedYear) ||
         (this.currentView === 'grid-year' && this.selectedMonth)
       );
     },
     canGoBack() {
-      return (
+      return !this.menuIsOpen && (
         (this.currentYearMonths.indexOf(this.selectedMonth) > 0 &&
           this.currentView === 'grid-month') ||
         this.allYears.indexOf(this.selectedYear) > 0
       );
     },
     canGoForward() {
-      return (
+      return !this.menuIsOpen && (
         (this.currentYearMonths.indexOf(this.selectedMonth) <
           this.currentYearMonths.length - 1 &&
           this.currentView === 'grid-month') ||
@@ -205,13 +205,15 @@ export default {
       this.menuIsOpen = !this.menuIsOpen;
     },
     toggleCategoryViewMode() {
-      switch (this.categoryViewMode) {
-        case 'icon':
-          this.setCategoryViewMode('ratio');
-          break;
-        case 'ratio':
-          this.setCategoryViewMode('icon');
-          break;
+      if (!this.menuIsOpen) {
+        switch (this.categoryViewMode) {
+          case 'icon':
+            this.setCategoryViewMode('ratio');
+            break;
+          case 'ratio':
+            this.setCategoryViewMode('icon');
+            break;
+        }
       }
     },
     up() {
@@ -264,10 +266,12 @@ export default {
       }
     },
     toggleCategoryType() {
-      const current = this.getCurrentCategoryType;
-      this.setCurrentCategoryType(
-        current === 'expense' ? 'revenue' : 'expense'
-      );
+      if (!this.menuIsOpen) {
+        const current = this.getCurrentCategoryType;
+        this.setCurrentCategoryType(
+          current === 'expense' ? 'revenue' : 'expense'
+        );
+      }
     },
     changeMenuView(view) {
       this.menuDisplay = view;
