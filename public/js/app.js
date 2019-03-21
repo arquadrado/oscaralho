@@ -48709,7 +48709,7 @@ var actions = {
   addExpense: function addExpense(_ref5, expenseData) {
     var commit = _ref5.commit;
 
-    axios.post('/add-expense', expenseData).then(function (response) {
+    axios.post('/expense', expenseData).then(function (response) {
       commit('ADD_EXPENSE', response.data.expense);
     }).catch(function (error) {
       console.log(error);
@@ -48780,7 +48780,7 @@ var actions = {
     var commit = _ref9.commit;
 
     var bound = state.bounds.find(function (c) {
-      return c.id === data.categoryId;
+      return c.id === data.boundId;
     });
 
     if (bound) {
@@ -48872,7 +48872,7 @@ var mutations = {
   },
   'UPDATE_BOUND': function UPDATE_BOUND(state, data) {
     var bound = state.bounds.find(function (c) {
-      return c.id === data.categoryId;
+      return c.id === data.boundId;
     });
 
     if (bound) {
@@ -52054,7 +52054,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
   mounted: function mounted() {
     var _this = this;
 
-    this.newBound = this.selectedCategoryBound;
+    this.newBound = this.selectedBoundValue;
     setTimeout(function () {
       _this.showContent = true;
     }, 100);
@@ -52063,14 +52063,14 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     return {
       showContent: false,
       expenseInput: undefined,
-      newBound: this.selectedCategoryBound,
+      newBound: this.selectedBoundValue,
       boundBeingEdited: false
     };
   },
 
   computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])({
     categories: 'getCategories',
-    selectedCategory: 'getSelectedBound',
+    selectedBound: 'getSelectedBound',
     selectedYear: 'getSelectedYear',
     selectedMonth: 'getSelectedMonth'
   }), {
@@ -52078,16 +52078,16 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       var _this2 = this;
 
       return this.categories.find(function (c) {
-        return c.id === _this2.selectedCategory.category.id;
+        return c.id === _this2.selectedBound.category.id;
       });
     },
-    selectedCategoryBound: function selectedCategoryBound() {
-      var bound = this.selectedCategory;
+    selectedBoundValue: function selectedBoundValue() {
+      var bound = this.selectedBound;
 
       return bound ? bound.bound_in_cents / 100 : 0;
     },
     expensesSum: function expensesSum() {
-      return this.selectedCategory.expenses.reduce(function (sum, expense) {
+      return this.selectedBound.expenses.reduce(function (sum, expense) {
         sum += Number(expense.value);
         return sum;
       }, 0).toFixed(2);
@@ -52113,7 +52113,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         if (expenseValue > 0) {
           _this3.saveExpense({
             value: expenseValue,
-            boundId: _this3.selectedCategory.id
+            boundId: _this3.selectedBound.id
           });
         }
         _this3.toggleModal();
@@ -52160,7 +52160,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     saveNewBound: function saveNewBound() {
       this.boundBeingEdited = false;
       this.updateCategoryBound({
-        categoryId: this.selectedCategory.id,
+        boundId: this.selectedBound.id,
         year: this.selectedYear,
         month: '' + this.selectedMonth,
         value: this.newBound * 100
@@ -52249,7 +52249,7 @@ var render = function() {
             _c(
               "div",
               { staticClass: "expenses" },
-              _vm._l(_vm.selectedCategory.expenses, function(expense) {
+              _vm._l(_vm.selectedBound.expenses, function(expense) {
                 return _c("div", { key: expense.id, staticClass: "expense" }, [
                   _c("div", { staticClass: "expense-value" }, [
                     _vm._v(_vm._s(expense.value))

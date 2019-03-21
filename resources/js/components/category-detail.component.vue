@@ -6,7 +6,7 @@
       <h2>{{ boundCategory.name }}</h2>
       <div class="balance">
 
-        <!-- <span v-if="!boundBeingEdited">{{ selectedCategoryBound }}/{{ expensesSum }}</span> -->
+        <!-- <span v-if="!boundBeingEdited">{{ selectedBoundValue }}/{{ expensesSum }}</span> -->
         <span>{{ expensesSum }}/<input v-focus :disabled="!boundBeingEdited" type="number" v-model="newBound"></span>
       </div>
       <span class="unit">euros</span>
@@ -17,7 +17,7 @@
 
       <div class="content">
         <div class="expenses">
-          <div class="expense" v-for="expense in selectedCategory.expenses" :key="expense.id">
+          <div class="expense" v-for="expense in selectedBound.expenses" :key="expense.id">
             <div class="expense-value">{{ expense.value }}</div>
             <div class="expense-actions">
               <i class="fa" :class="[hasNotes(expense)]"
@@ -46,7 +46,7 @@ export default {
   mixins: [ModalMixin],
   props: ['backgroundColor'],
   mounted() {
-    this.newBound = this.selectedCategoryBound;
+    this.newBound = this.selectedBoundValue;
     setTimeout(() => {
       this.showContent = true;
     }, 100);
@@ -55,29 +55,29 @@ export default {
     return {
       showContent: false,
       expenseInput: undefined,
-      newBound: this.selectedCategoryBound,
+      newBound: this.selectedBoundValue,
       boundBeingEdited: false
     };
   },
   computed: {
     ...mapGetters({
       categories: 'getCategories',
-      selectedCategory: 'getSelectedBound',
+      selectedBound: 'getSelectedBound',
       selectedYear: 'getSelectedYear',
       selectedMonth: 'getSelectedMonth'
     }),
     boundCategory() {
       return this.categories.find(
-        c => c.id === this.selectedCategory.category.id
+        c => c.id === this.selectedBound.category.id
       );
     },
-    selectedCategoryBound() {
-      const bound = this.selectedCategory;
+    selectedBoundValue() {
+      const bound = this.selectedBound;
 
       return bound ? bound.bound_in_cents / 100 : 0;
     },
     expensesSum() {
-      return this.selectedCategory.expenses
+      return this.selectedBound.expenses
         .reduce((sum, expense) => {
           sum += Number(expense.value);
           return sum;
@@ -104,7 +104,7 @@ export default {
         if (expenseValue > 0) {
           this.saveExpense({
             value: expenseValue,
-            boundId: this.selectedCategory.id
+            boundId: this.selectedBound.id
           });
         }
         this.toggleModal();
@@ -148,7 +148,7 @@ export default {
     saveNewBound() {
       this.boundBeingEdited = false;
       this.updateCategoryBound({
-        categoryId: this.selectedCategory.id,
+        boundId: this.selectedBound.id,
         year: this.selectedYear,
         month: `${this.selectedMonth}`,
         value: this.newBound * 100

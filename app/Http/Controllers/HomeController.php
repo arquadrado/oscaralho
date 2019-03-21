@@ -70,7 +70,6 @@ class HomeController extends Controller
       }
       
       $budgets = Budget::where('user_id', $user->id)->get();
-      // $bounds = CategoryBound::all();
       $bounds = collect();
 
       foreach($budgets as $budget) {
@@ -89,50 +88,6 @@ class HomeController extends Controller
       ]);
     }
 
-    public function addExpense() {
-        if (is_null(request()->get('id'))) {
-
-          $expense = Expense::create([
-              'bound_id' => request()->get('boundId'),
-              'value'       => request()->get('value'),
-          ]);
-          
-          return response()->json(['expense' => $expense], 200);
-        }
-        
-        $expense = Expense::find(request()->get('id'));
-
-        if (is_null($expense)) {
-          return response()->json(['error' => 'no expense to update'], 404);
-        }
-
-        $expense->update(request()->all());
-
-        return response()->json(['expense' => $expense], 200);
-    }
-
-    public function deleteExpense() {
-        $expense = Expense::find(request()->get('id'));
-        $expense->delete();
-        
-        return response()->json(['message' => 'Expense was deleted'], 200);
-    }
-
-    public function updateBound() {
-        $bound = CategoryBound::find(request()->get('categoryId'));
-
-        if (is_null($bound)) {
-
-            return response()->json(['error' => 'no bound to update'], 404);
-        }
-
-        $bound->bound_in_cents = request()->get('value');
-        $bound->save();
-
-        return response()->json(['bound' => $bound], 200);
-        
-      }
-      
   public function saveCategory() {
     $category = Category::find(request()->get('id'));
     $requestData = request()->all();
@@ -153,96 +108,5 @@ class HomeController extends Controller
     $category->delete();
     
     return response()->json(['message' => 'Category was deleted'], 200);
-  }
-
-  public function saveBudget() {
-    $budget = Budget::find(request()->get('id'));
-    $requestData = [
-      'month' => request()->get('month'),
-      'year' => request()->get('year')
-    ];
-
-    $categoriesIds = request()->get('categories');
-    
-    if (is_null($budget)) {
-      
-      $budget = Budget::where('year', $requestData['year'])
-        ->where('month', $requestData['month'])
-        ->first();
-                      
-      if (is_null($budget)) {
-
-        $budget = Budget::create(array_merge(['user_id' => Auth::user()->id], $requestData));
-  
-        $budget->categories()->sync($categoriesIds);
-        $budget->bounds->each(function($bound) use ($categoriesIds) {
-          if (!in_array($bound->category_id, $categoriesIds)) {
-            $bound->delete();
-          }
-        });
-        
-        foreach($categoriesIds as $categoryId) {
-          $bound = $budget->bounds()->where('category_id', $categoryId)->first();
-          if (is_null($bound)) {
-            $category = Category::find($categoryId);
-            $bound = CategoryBound::create([
-              'category_id' => $category->id,
-              'budget_id' => $budget->id,
-              'bound_in_cents' => $category->default_bound_in_cents
-              ]);
-            }
-          }
-          
-        foreach($budget->categories as $category) {
-          $bound = CategoryBound::where('budget_id', $budget->id)
-          ->where('category_id', $category->id)
-          ->first();
-          if (is_null($bound)) {
-            $bound = CategoryBound::create([
-              'category_id' => $category->id,
-              'budget_id' => $budget->id,
-              'bound_in_cents' => $category->default_bound_in_cents
-            ]);
-          }
-        }
-        $budget->load('bounds');
-        return response()->json(['budget' => $budget, 'bounds' => $budget->bounds], 200);
-      }
-
-      return response()->json(['error' => 'Budget for the same period already exist'], 400);
-    }
-        
-    $budget->update($requestData);
-    $budget->categories()->sync($categoriesIds);
-    
-    $budget->bounds->each(function($bound) use ($categoriesIds) {
-      if (!in_array($bound->category_id, $categoriesIds)) {
-        $bound->delete();
-      }
-    });
-    
-    foreach($categoriesIds as $categoryId) {
-      $bound = $budget->bounds()->where('category_id', $categoryId)->first();
-      if (is_null($bound)) {
-        $category = Category::find($categoryId);
-        $bound = CategoryBound::create([
-          'category_id' => $category->id,
-          'budget_id' => $budget->id,
-          'bound_in_cents' => $category->default_bound_in_cents
-          ]);
-          
-      }
-    }
-
-    $budget->load('bounds');
-
-    return response()->json(['budget' => $budget, 'bounds' => $budget->bounds], 200);
-  }
-    
-  public function deleteBudget() {
-    $budget = Budget::find(request()->get('id'));
-    $budget->delete();
-    
-    return response()->json(['message' => 'Budget was deleted'], 200);
   }
 }

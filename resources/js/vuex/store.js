@@ -82,7 +82,7 @@ const actions = {
     commit('SET_SHOW_DISPLAY_PANEL', value);
   },
   addExpense: ({ commit }, expenseData) => {
-    axios.post('/add-expense', expenseData)
+    axios.post('/expense', expenseData)
       .then((response) => {
         commit('ADD_EXPENSE', response.data.expense);
       })
@@ -141,7 +141,7 @@ const actions = {
     commit('DELETE_BOUNDS', indexesToRemove);
   },
   updateCategoryBound: ({ commit }, data) => {
-    const bound = state.bounds.find(c => c.id === data.categoryId);
+    const bound = state.bounds.find(c => c.id === data.boundId);
 
     if (bound) {
 
@@ -215,7 +215,7 @@ const mutations = {
     }
   },
   'UPDATE_BOUND': (state, data) => {
-    const bound = state.bounds.find(c => c.id === data.categoryId);
+    const bound = state.bounds.find(c => c.id === data.boundId);
 
     if (bound) {
       bound.bound_in_cents = data.value;

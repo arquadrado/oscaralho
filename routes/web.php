@@ -18,10 +18,11 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
-Route::post('/add-expense', 'HomeController@addExpense')->name('add-expense');
-Route::delete('/expense', 'HomeController@deleteExpense')->name('delete-expense');
-Route::post('/update-bound', 'HomeController@updateBound')->name('update-bound');
-Route::post('/category', 'HomeController@saveCategory')->name('save-category');
-Route::delete('/category', 'HomeController@deleteCategory')->name('delete-category');
+
 Route::post('/budget', 'BudgetController@save')->name('save-budget');
 Route::delete('/budget', 'BudgetController@delete')->name('delete-budget');
+Route::post('/expense', 'BudgetController@addExpense')->name('add-expense');
+Route::delete('/expense', 'BudgetController@deleteExpense')->name('delete-expense');
+Route::post('/update-bound', 'BudgetController@updateBound')->name('update-bound');
+Route::post('/category', 'HomeController@saveCategory')->name('save-category');
+Route::delete('/category', 'HomeController@deleteCategory')->name('delete-category');

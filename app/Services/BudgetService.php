@@ -97,12 +97,35 @@ class BudgetService
   }
   
   public function delete($data) {
-    if (isset($data['id'])) {
-      $budget = Budget::find($data['id']);
-      $budget->delete();
-      return;
-    }
-    
-    abort(400, 'Could not delete budget');
+    $budget = Budget::find($data['id']);
+    $budget->delete();
   }
+
+  public function addExpense($data) {
+    $expense = Expense::create([
+      'bound_id' => $data['boundId'],
+      'value'       => $data['value'],
+    ]);
+    
+    return $expense;
+  }
+
+  public function deleteExpense($data) {
+    $expense = Expense::find($data['id']);
+    $expense->delete();
+  }
+
+  public function updateBound($data) {
+    $bound = CategoryBound::find($data['boundId']);
+
+    if (is_null($bound)) {
+      abort(404, 'No bound to update');
+    }
+
+    $bound->bound_in_cents = $data['value'];
+    $bound->save();
+
+    return $bound;    
+  }
+
 }
