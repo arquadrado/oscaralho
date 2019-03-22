@@ -11,6 +11,68 @@ use Carbon\Carbon;
 
 class BudgetService
 {
+  private $categoryService;
+
+  public function __construct(CategoryService $categoryService)
+  { 
+      $this->categoryService = $categoryService;
+  }
+
+  public function initializeCurrentMonthBudget() {
+    $user = Auth::user();
+    $categories = $this->categoryService->getUserCategories();
+    $budget = Budget::where('user_id', $user->id)
+                    ->where('year', Carbon::now()->format('Y'))
+                    ->where('month', Carbon::now()->format('m'))
+                    ->first();
+
+    if (is_null($budget) && !$categories->isEmpty()) {
+      $budget = Budget::create([
+        'user_id' => $user->id,
+        'year' => Carbon::now()->format('Y'),
+        'month' => Carbon::now()->format('m'),
+      ]);
+
+      $categoriesIds = $categories->map(function($category) {
+        return $category->id;
+      })->toArray();
+      
+      $budget->categories()->sync($categoriesIds);
+      
+      foreach($budget->categories as $category) {
+          $bound = CategoryBound::where('budget_id', $budget->id)
+                              ->where('category_id', $category->id)
+                              ->first();
+          if (is_null($bound)) {
+              $bound = CategoryBound::create([
+                  'category_id' => $category->id,
+                  'budget_id' => $budget->id,
+                  'bound_in_cents' => $category->default_bound_in_cents
+              ]);
+          }
+      }
+    }
+    return $budget;
+  }
+
+  public function getUserBudgets() {
+    $user = Auth::user();
+    return Budget::where('user_id', $user->id)->get();
+  }
+
+  public function getUserBudgetsBounds() {
+    $budgets = $this->getUserBudgets();
+    $bounds = collect();
+
+    foreach($budgets as $budget) {
+      $bs = CategoryBound::where('budget_id', $budget->id)->get();
+      
+      $bounds = $bounds->merge($bs);
+    }
+
+    return $bounds;
+  }
+
   public function save($data) {
     
     $requestData = [

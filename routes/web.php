@@ -24,5 +24,5 @@ Route::delete('/budget', 'BudgetController@delete')->name('delete-budget');
 Route::post('/expense', 'BudgetController@addExpense')->name('add-expense');
 Route::delete('/expense', 'BudgetController@deleteExpense')->name('delete-expense');
 Route::post('/update-bound', 'BudgetController@updateBound')->name('update-bound');
-Route::post('/category', 'HomeController@saveCategory')->name('save-category');
-Route::delete('/category', 'HomeController@deleteCategory')->name('delete-category');
+Route::post('/category', 'CategoryController@save')->name('save-category');
+Route::delete('/category', 'CategoryController@delete')->name('delete-category');
