@@ -48740,17 +48740,17 @@ var actions = {
         return b.id;
       });
 
-      var indexesToRemove = [];
+      var idsToRemove = [];
 
       budgetBounds.forEach(function (bound, i) {
         var index = currentBoundsIds.indexOf(bound.id);
 
         if (index === -1) {
-          indexesToRemove.push(i);
+          idsToRemove.push(bound.id);
         }
       });
 
-      commit('DELETE_BOUNDS', indexesToRemove);
+      commit('DELETE_BOUNDS', idsToRemove);
 
       var boundsToAdd = bounds.filter(function (bound) {
         var boundToAdd = state.bounds.find(function (b) {
@@ -48765,16 +48765,13 @@ var actions = {
   deleteBounds: function deleteBounds(_ref8, budgetId) {
     var commit = _ref8.commit;
 
-    var indexesToRemove = state.bounds.map(function (b, i) {
-      if (b.budget_id === budgetId) {
-        return i;
-      }
-      return false;
-    }).filter(function (i) {
-      return i;
+    var idsToRemove = state.bounds.filter(function (b) {
+      return b.budget_id === budgetId;
+    }).map(function (b) {
+      return b.id;
     });
 
-    commit('DELETE_BOUNDS', indexesToRemove);
+    commit('DELETE_BOUNDS', idsToRemove);
   },
   updateCategoryBound: function updateCategoryBound(_ref9, data) {
     var commit = _ref9.commit;
@@ -48884,7 +48881,14 @@ var mutations = {
       state.bounds.push(bound);
     });
   },
-  'DELETE_BOUNDS': function DELETE_BOUNDS(state, indexesToRemove) {
+  'DELETE_BOUNDS': function DELETE_BOUNDS(state, idsToRemove) {
+    var indexesToRemove = state.bounds.reduce(function (reduced, b, i) {
+      if (idsToRemove.indexOf(b.id) > -1) {
+        reduced.push(i);
+      }
+      return reduced;
+    }, []);
+
     for (var i = indexesToRemove.length - 1; i >= 0; i--) {
       state.bounds.splice(indexesToRemove[i], 1);
     }

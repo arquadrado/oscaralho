@@ -108,17 +108,17 @@ const actions = {
 
       const currentBoundsIds = bounds.map(b => b.id);
 
-      const indexesToRemove = [];
-
+      const idsToRemove = [];
+      
       budgetBounds.forEach((bound, i) => {
         let index = currentBoundsIds.indexOf(bound.id);
-
+        
         if (index === -1) {
-          indexesToRemove.push(i);
+          idsToRemove.push(bound.id);
         }
       });
-
-      commit('DELETE_BOUNDS', indexesToRemove);
+      
+      commit('DELETE_BOUNDS', idsToRemove);
 
       const boundsToAdd = bounds.filter(bound => {
         let boundToAdd = state.bounds.find(b => b.id === bound.id);
@@ -130,15 +130,12 @@ const actions = {
     }
   },
   deleteBounds: ({ commit }, budgetId) => {
-    const indexesToRemove = state.bounds.map((b, i) => {
-      if (b.budget_id === budgetId) {
-        return i;
-      }
-      return false;
+    const idsToRemove = state.bounds.filter((b) => {
+      return b.budget_id === budgetId;
     })
-      .filter(i => i);
+    .map(b => b.id);
 
-    commit('DELETE_BOUNDS', indexesToRemove);
+    commit('DELETE_BOUNDS', idsToRemove);
   },
   updateCategoryBound: ({ commit }, data) => {
     const bound = state.bounds.find(c => c.id === data.boundId);
@@ -226,7 +223,14 @@ const mutations = {
       state.bounds.push(bound);
     });
   },
-  'DELETE_BOUNDS': (state, indexesToRemove) => {
+  'DELETE_BOUNDS': (state, idsToRemove) => {
+    const indexesToRemove = state.bounds.reduce((reduced, b, i) => {
+      if (idsToRemove.indexOf(b.id) > -1) {
+        reduced.push(i);
+      }
+      return reduced;
+    }, []);
+
     for (var i = indexesToRemove.length - 1; i >= 0; i--) {
       state.bounds.splice(indexesToRemove[i], 1);
     }
