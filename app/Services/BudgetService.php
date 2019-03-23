@@ -74,7 +74,7 @@ class BudgetService
   }
 
   public function save($data) {
-    
+    $user = Auth::user();
     $requestData = [
       'month' => $data['month'],
       'year' => $data['year']
@@ -86,6 +86,7 @@ class BudgetService
       
       $budget = Budget::where('year', $requestData['year'])
         ->where('month', $requestData['month'])
+        ->where('user_id', $user->id)
         ->first();
                       
       if (is_null($budget)) {
