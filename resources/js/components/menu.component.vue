@@ -24,6 +24,18 @@
               <span>Stats</span>
             </div>
 
+            <a :href="exportCurrentViewPath" target="_blank">
+              <div class="menu-option">
+                <span>Export current</span>
+              </div>
+            </a>
+
+            <a :href="exportAllPath" target="_blank">
+              <div class="menu-option">
+                <span>Export all</span>
+              </div>
+            </a>
+
           </div>
 
           <div class="menu-options x0 y1">
@@ -188,7 +200,13 @@ export default {
     },
     isStats() {
       return this.menuDisplay === 'stats';
-    }
+    },
+    exportCurrentViewPath() {
+      return `/export/${this.selectedYear}/${this.selectedMonth}`;
+    },
+    exportAllPath() {
+      return '/export';
+    },
   },
   methods: {
     ...mapActions({
@@ -283,7 +301,8 @@ export default {
     editBudget(budget) {
       this.setBudgetToEdit(budget);
       this.changeMenuView('budget-edit');
-    }
+    },
+    
   }
 };
 </script>

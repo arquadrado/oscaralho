@@ -26,3 +26,4 @@ Route::delete('/expense', 'BudgetController@deleteExpense')->name('delete-expens
 Route::post('/update-bound', 'BudgetController@updateBound')->name('update-bound');
 Route::post('/category', 'CategoryController@save')->name('save-category');
 Route::delete('/category', 'CategoryController@delete')->name('delete-category');
+Route::get('/export/{year?}/{month?}', 'ExportController@export')->name('export');

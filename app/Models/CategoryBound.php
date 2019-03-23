@@ -23,7 +23,7 @@ class CategoryBound extends Model
      * @var array
      */
     protected $hidden = [];
-    protected $appends = ['year', 'month'];
+    protected $appends = ['year', 'month', 'display_bound', 'expenses_sum'];
 
     protected $with = ['category', 'expenses'];
 
@@ -47,6 +47,25 @@ class CategoryBound extends Model
 
     public function getMonthAttribute() {
       return $this->budget->month;
+    }
+
+    public function getDisplayBoundAttribute() {
+      return $this->bound_in_cents / 100;
+    }
+
+    public function getExpensesSumAttribute() {
+      return $this->expenses->sum('value') / 100;
+    }
+
+    public function getRatioAttribute() {
+      if ($this->display_bound && $this->expenses_sum) {
+        return $this->display_bound / $this->expenses_sum;
+      }
+      return null;
+    }
+
+    public function getCategoryNameAttribute() {
+      return $this->category->name;
     }
 
 }

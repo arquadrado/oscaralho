@@ -22,8 +22,7 @@ class Budget extends Model
      *
      * @var array
      */
-    protected $hidden = [
-    ];
+    protected $hidden = [];
 
     protected $with = [];
     protected $appends = ['categoriesIds'];
