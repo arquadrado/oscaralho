@@ -24,8 +24,10 @@ class AddExpense extends FormRequest
     public function rules()
     {
         return [
-            'boundId' => 'required',
+            'id' => '',
+            'bound_id' => 'required',
             'value' => 'required',
+            'notes' => '',
         ];
     }
 }

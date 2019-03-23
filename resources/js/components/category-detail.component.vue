@@ -104,7 +104,7 @@ export default {
         if (expenseValue > 0) {
           this.saveExpense({
             value: expenseValue,
-            boundId: this.selectedBound.id
+            bound_id: this.selectedBound.id
           });
         }
         this.toggleModal();

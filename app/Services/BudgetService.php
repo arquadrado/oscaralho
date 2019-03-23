@@ -165,8 +165,19 @@ class BudgetService
   }
 
   public function addExpense($data) {
+    if (isset($data['id'])) {
+      $expense = Expense::find($data['id']);
+
+      if (is_null($expense)) {
+        abort(404, 'Could not find expense');
+      }
+
+      $expense->update($data);
+      return $expense;
+    }
+
     $expense = Expense::create([
-      'bound_id' => $data['boundId'],
+      'bound_id' => $data['bound_id'],
       'value'       => $data['value'],
     ]);
     

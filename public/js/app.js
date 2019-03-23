@@ -52117,7 +52117,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         if (expenseValue > 0) {
           _this3.saveExpense({
             value: expenseValue,
-            boundId: _this3.selectedBound.id
+            bound_id: _this3.selectedBound.id
           });
         }
         _this3.toggleModal();
