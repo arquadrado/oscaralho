@@ -54,7 +54,7 @@ class CategoryBound extends Model
     }
 
     public function getExpensesSumAttribute() {
-      return $this->expenses->sum('value') / 100;
+      return $this->expenses->sum('value');
     }
 
     public function getRatioAttribute() {
