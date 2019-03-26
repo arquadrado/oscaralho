@@ -48685,48 +48685,60 @@ var getters = {
   }
 };
 var actions = {
-  setCategoryViewMode: function setCategoryViewMode(_ref, mode) {
-    var commit = _ref.commit;
+  showErrorModal: function showErrorModal(_ref, error) {
+    var dispatch = _ref.dispatch;
+
+    dispatch('setModalColor', 'rgb(79,79,79)');
+    dispatch('setModalType', 'confirm-modal');
+    dispatch('setModalTitle', 'Error');
+    dispatch('setModalMessage', error + '. Please try again');
+    dispatch('toggleModal');
+  },
+
+  setCategoryViewMode: function setCategoryViewMode(_ref2, mode) {
+    var commit = _ref2.commit;
 
     commit('SET_CATEGORY_VIEW_MODE', mode);
   },
-  selectBound: function selectBound(_ref2, categoryId) {
-    var commit = _ref2.commit,
-        state = _ref2.state;
+  selectBound: function selectBound(_ref3, categoryId) {
+    var commit = _ref3.commit,
+        state = _ref3.state;
 
     commit('SELECT_BOUND', categoryId);
   },
-  setJustUpdated: function setJustUpdated(_ref3, identifier) {
-    var commit = _ref3.commit;
+  setJustUpdated: function setJustUpdated(_ref4, identifier) {
+    var commit = _ref4.commit;
 
     commit('SET_JUST_UPDATED', identifier);
   },
-  setShowDisplayPanel: function setShowDisplayPanel(_ref4, value) {
-    var commit = _ref4.commit;
+  setShowDisplayPanel: function setShowDisplayPanel(_ref5, value) {
+    var commit = _ref5.commit;
 
     commit('SET_SHOW_DISPLAY_PANEL', value);
   },
-  addExpense: function addExpense(_ref5, expenseData) {
-    var commit = _ref5.commit;
+  addExpense: function addExpense(_ref6, expenseData) {
+    var commit = _ref6.commit,
+        dispatch = _ref6.dispatch;
 
     axios.post('/expense', expenseData).then(function (response) {
       commit('ADD_EXPENSE', response.data.expense);
     }).catch(function (error) {
-      console.log(error);
+      dispatch('showErrorModal', error);
     });
   },
-  removeExpense: function removeExpense(_ref6, expense) {
-    var commit = _ref6.commit;
+  removeExpense: function removeExpense(_ref7, expense) {
+    var commit = _ref7.commit;
 
     commit('REMOVE_EXPENSE', expense);
 
     axios.delete('/expense', { data: expense }).then().catch(function () {
       commit('ADD_EXPENSE', expense);
+      dispatch('showErrorModal', error);
     });
   },
-  updateBounds: function updateBounds(_ref7, bounds) {
-    var commit = _ref7.commit,
-        state = _ref7.state;
+  updateBounds: function updateBounds(_ref8, bounds) {
+    var commit = _ref8.commit,
+        state = _ref8.state;
 
 
     if (bounds.length) {
@@ -48762,8 +48774,8 @@ var actions = {
       commit('ADD_BOUNDS', boundsToAdd);
     }
   },
-  deleteBounds: function deleteBounds(_ref8, budgetId) {
-    var commit = _ref8.commit;
+  deleteBounds: function deleteBounds(_ref9, budgetId) {
+    var commit = _ref9.commit;
 
     var idsToRemove = state.bounds.filter(function (b) {
       return b.budget_id === budgetId;
@@ -48773,8 +48785,8 @@ var actions = {
 
     commit('DELETE_BOUNDS', idsToRemove);
   },
-  updateCategoryBound: function updateCategoryBound(_ref9, data) {
-    var commit = _ref9.commit;
+  updateCategoryBound: function updateCategoryBound(_ref10, data) {
+    var commit = _ref10.commit;
 
     var bound = state.bounds.find(function (c) {
       return c.id === data.boundId;
@@ -48787,36 +48799,36 @@ var actions = {
       axios.post('/update-bound', _extends({}, data, { boundId: bound.id })).then(function (response) {
         if (response && response.data) {}
       }).catch(function (error) {
-        console.log(error);
         commit('UPDATE_BOUND', _extends({}, data, { value: boundPreviousValue }));
+        dispatch('showErrorModal', error);
       });
     }
   },
 
-  setMonth: function setMonth(_ref10, month) {
-    var commit = _ref10.commit,
-        dispatch = _ref10.dispatch;
-
-    dispatch('setShowDisplayPanel', false);
-    commit('SET_MONTH', month);
-  },
-  setYear: function setYear(_ref11, year) {
+  setMonth: function setMonth(_ref11, month) {
     var commit = _ref11.commit,
         dispatch = _ref11.dispatch;
 
     dispatch('setShowDisplayPanel', false);
-    commit('SET_YEAR', year);
+    commit('SET_MONTH', month);
   },
-  setCurrentView: function setCurrentView(_ref12, view) {
+  setYear: function setYear(_ref12, year) {
     var commit = _ref12.commit,
         dispatch = _ref12.dispatch;
 
     dispatch('setShowDisplayPanel', false);
-    commit('SET_CURRENT_VIEW', view);
+    commit('SET_YEAR', year);
   },
-  setCurrentCategoryType: function setCurrentCategoryType(_ref13, type) {
+  setCurrentView: function setCurrentView(_ref13, view) {
     var commit = _ref13.commit,
         dispatch = _ref13.dispatch;
+
+    dispatch('setShowDisplayPanel', false);
+    commit('SET_CURRENT_VIEW', view);
+  },
+  setCurrentCategoryType: function setCurrentCategoryType(_ref14, type) {
+    var commit = _ref14.commit,
+        dispatch = _ref14.dispatch;
 
     dispatch('setShowDisplayPanel', false);
     commit('SET_CURRENT_CATEGORY_TYPE', type);
@@ -48970,7 +48982,7 @@ var actions = {
     axios.post('/category', data).then(function (response) {
       commit('ADD_CATEGORY', response.data.category);
     }).catch(function (error) {
-      console.log(error);
+      dispatch('showErrorModal', error);
     });
   },
   deleteCategory: function deleteCategory(_ref4, data) {
@@ -48979,7 +48991,7 @@ var actions = {
     commit('REMOVE_CATEGORY', data);
     axios.delete('/category', { data: data }).then(function (response) {}).catch(function (error) {
       commit('ADD_CATEGORY', data);
-      console.log(error);
+      dispatch('showErrorModal', error);
     });
   },
   saveBudget: function saveBudget(_ref5, data) {
@@ -48990,7 +49002,7 @@ var actions = {
       commit('ADD_BUDGET', response.data.budget);
       dispatch('updateBounds', response.data.bounds);
     }).catch(function (error) {
-      console.log(error);
+      dispatch('showErrorModal', error);
     });
   },
   deleteBudget: function deleteBudget(_ref6, data) {
@@ -49002,7 +49014,7 @@ var actions = {
       dispatch('deleteBounds', data.id);
     }).catch(function (error) {
       commit('ADD_BUDGET', data);
-      console.log(error);
+      dispatch('showErrorModal', error);
     });
   }
 };
@@ -55340,6 +55352,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -55348,17 +55362,17 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
   },
 
   computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])({
-    type: 'getModalType',
-    title: 'getModalTitle',
-    message: 'getModalMessage',
-    accept: 'getModalAccept',
-    reject: 'getModalReject',
-    backgroundColor: 'getModalColor',
-    shouldDisplayModal: 'shouldDisplayModal'
+    type: "getModalType",
+    title: "getModalTitle",
+    message: "getModalMessage",
+    accept: "getModalAccept",
+    reject: "getModalReject",
+    backgroundColor: "getModalColor",
+    shouldDisplayModal: "shouldDisplayModal"
   })),
   methods: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({
-    toggleModal: 'toggleModal',
-    clearModal: 'clearModal'
+    toggleModal: "toggleModal",
+    clearModal: "clearModal"
   }), {
     cancel: function cancel() {
       if (this.reject) {
@@ -55397,22 +55411,24 @@ var render = function() {
         : _vm._e(),
       _vm._v(" "),
       _c("div", { staticClass: "actions" }, [
-        _c(
-          "span",
-          {
-            staticClass: "button",
-            on: {
-              click: function($event) {
-                _vm.accept()
-              }
-            }
-          },
-          [_c("i", { staticClass: "fa fa-check" })]
-        ),
-        _vm._v(" "),
         _c("span", { staticClass: "button", on: { click: _vm.cancel } }, [
           _c("i", { staticClass: "fa fa-arrow-right" })
-        ])
+        ]),
+        _vm._v(" "),
+        _vm.accept
+          ? _c(
+              "span",
+              {
+                staticClass: "button",
+                on: {
+                  click: function($event) {
+                    _vm.accept()
+                  }
+                }
+              },
+              [_c("i", { staticClass: "fa fa-check" })]
+            )
+          : _vm._e()
       ])
     ]
   )

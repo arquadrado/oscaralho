@@ -29,7 +29,7 @@ const actions = {
         commit('ADD_CATEGORY', response.data.category);
       })
       .catch(function (error) {
-        console.log(error);
+        dispatch('showErrorModal', error);
       });
   },
   deleteCategory: ({ commit }, data) => {
@@ -39,7 +39,7 @@ const actions = {
       })
       .catch(function (error) {
         commit('ADD_CATEGORY', data);
-        console.log(error);
+        dispatch('showErrorModal', error);
       });
   },
   saveBudget: ({ commit, dispatch }, data) => {
@@ -49,7 +49,7 @@ const actions = {
         dispatch('updateBounds', response.data.bounds);
       })
       .catch(function (error) {
-        console.log(error);
+        dispatch('showErrorModal', error);
       });
   },
   deleteBudget: ({ commit, dispatch }, data) => {
@@ -60,7 +60,7 @@ const actions = {
       })
       .catch(function (error) {
         commit('ADD_BUDGET', data);
-        console.log(error);
+        dispatch('showErrorModal', error);
       });
   }
 };

@@ -1,15 +1,15 @@
 @import '../_variables';
 
 #modal-confirm {
-  
+
     text-align: center;
     height: 100%;
     padding: 21px;
-    
+
     display: flex;
     justify-content: space-between;
     flex-direction: column;
-    
+
     .title {
       font-weight: 900;
       font-size: 28px;
@@ -21,10 +21,11 @@
       font-weight: 400;
       font-size: 17px;
     }
-    
+
     .actions {
       margin: 14px;
       display: flex;
       justify-content: space-between;
+      flex-direction: row-reverse
     }
 }

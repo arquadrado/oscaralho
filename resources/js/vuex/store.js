@@ -69,6 +69,13 @@ const getters = {
   isJustUpdated: state => state.justUpdated,
 };
 const actions = {
+  showErrorModal({ dispatch }, error) {
+    dispatch('setModalColor', 'rgb(79,79,79)');
+    dispatch('setModalType', 'confirm-modal');
+    dispatch('setModalTitle', 'Error');
+    dispatch('setModalMessage', `${error}. Please try again`);
+    dispatch('toggleModal');
+  },
   setCategoryViewMode: ({ commit }, mode) => {
     commit('SET_CATEGORY_VIEW_MODE', mode);
   },
@@ -81,13 +88,13 @@ const actions = {
   setShowDisplayPanel: ({ commit }, value) => {
     commit('SET_SHOW_DISPLAY_PANEL', value);
   },
-  addExpense: ({ commit }, expenseData) => {
+  addExpense: ({ commit, dispatch }, expenseData) => {
     axios.post('/expense', expenseData)
       .then((response) => {
         commit('ADD_EXPENSE', response.data.expense);
       })
       .catch(function (error) {
-        console.log(error);
+        dispatch('showErrorModal', error);
       });
   },
   removeExpense: ({ commit }, expense) => {
@@ -97,6 +104,7 @@ const actions = {
       .then()
       .catch(() => {
         commit('ADD_EXPENSE', expense);
+        dispatch('showErrorModal', error);
       })
   },
   updateBounds: ({ commit, state }, bounds) => {
@@ -109,15 +117,15 @@ const actions = {
       const currentBoundsIds = bounds.map(b => b.id);
 
       const idsToRemove = [];
-      
+
       budgetBounds.forEach((bound, i) => {
         let index = currentBoundsIds.indexOf(bound.id);
-        
+
         if (index === -1) {
           idsToRemove.push(bound.id);
         }
       });
-      
+
       commit('DELETE_BOUNDS', idsToRemove);
 
       const boundsToAdd = bounds.filter(bound => {
@@ -133,7 +141,7 @@ const actions = {
     const idsToRemove = state.bounds.filter((b) => {
       return b.budget_id === budgetId;
     })
-    .map(b => b.id);
+      .map(b => b.id);
 
     commit('DELETE_BOUNDS', idsToRemove);
   },
@@ -150,8 +158,8 @@ const actions = {
           }
         })
         .catch(function (error) {
-          console.log(error);
           commit('UPDATE_BOUND', { ...data, value: boundPreviousValue });
+          dispatch('showErrorModal', error);
         });
     }
   },
