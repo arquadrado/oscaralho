@@ -53172,6 +53172,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
+//
 
 
 
@@ -54877,16 +54879,8 @@ var render = function() {
                 _vm._v(" "),
                 _c(
                   "a",
-                  {
-                    attrs: { href: _vm.exportCurrentViewPath, target: "_blank" }
-                  },
-                  [_vm._m(0)]
-                ),
-                _vm._v(" "),
-                _c(
-                  "a",
                   { attrs: { href: _vm.exportAllPath, target: "_blank" } },
-                  [_vm._m(1)]
+                  [_vm._m(0)]
                 )
               ]),
               _vm._v(" "),
@@ -54954,7 +54948,17 @@ var render = function() {
                           }
                         }
                       },
-                      [_c("span", [_vm._v(_vm._s(category.name))])]
+                      [
+                        category.expense
+                          ? _c("span", { staticClass: "icon" }, [
+                              _c("i", { staticClass: "fa fa-minus" })
+                            ])
+                          : _c("span", { staticClass: "icon" }, [
+                              _c("i", { staticClass: "fa fa-money" })
+                            ]),
+                        _vm._v(" "),
+                        _c("span", [_vm._v(_vm._s(category.name))])
+                      ]
                     )
                   })
                 ],
@@ -55161,14 +55165,6 @@ var render = function() {
   ])
 }
 var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "menu-option" }, [
-      _c("span", [_vm._v("Export current")])
-    ])
-  },
   function() {
     var _vm = this
     var _h = _vm.$createElement

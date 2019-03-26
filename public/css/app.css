@@ -208,6 +208,11 @@
   top: -100%;
 }
 
+#menu .opened-menu-content .slidable-panel a {
+  text-decoration: none;
+  color: inherit;
+}
+
 #menu .opened-menu-content .slidable-panel .menu-options {
   position: absolute;
   width: 33.33%;
@@ -229,6 +234,11 @@
           align-items: center;
   margin: 14px;
   border-radius: 30px;
+}
+
+#menu .opened-menu-content .slidable-panel .menu-options .menu-option .icon {
+  position: absolute;
+  left: 35px;
 }
 
 #menu .opened-menu-content .slidable-panel .x-1 {

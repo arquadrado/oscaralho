@@ -41,6 +41,10 @@
         top: -100%;
       }
 
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
       .menu-options {
         position: absolute;
         width: 33.33%;
@@ -54,6 +58,11 @@
           align-items: center;
           margin: 14px;
           border-radius: 30px;
+          
+          .icon {
+            position: absolute;
+            left: 35px;
+          }
         }
       }
       

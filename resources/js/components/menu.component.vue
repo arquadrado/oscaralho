@@ -23,12 +23,12 @@
             <div class="menu-option" @click="changeMenuView('stats')">
               <span>Stats</span>
             </div>
-
+<!-- 
             <a :href="exportCurrentViewPath" target="_blank">
               <div class="menu-option">
                 <span>Export current</span>
               </div>
-            </a>
+            </a> -->
 
             <a :href="exportAllPath" target="_blank">
               <div class="menu-option">
@@ -53,6 +53,8 @@
               <span>New category</span>
             </div>
             <div class="menu-option" v-for="category in categoriesToEdit" :key="category.id" @click="editCategory(category)">
+              <span v-if="category.expense" class="icon"><i class="fa fa-minus"> </i></span>
+              <span v-else class="icon"><i class="fa fa-money"> </i></span>
               <span>{{ category.name }}</span>
             </div>
           </div>
