@@ -1,6 +1,7 @@
 <template>
   <div id="data-visualisation">
-    <polar-area-chart :chart-data="dataCollections.category.collection"></polar-area-chart>
+    <h2>Expenses by category</h2>
+    <polar-area-chart :chart-data="dataCollections.category.collection" :options="dataCollections.category.options"></polar-area-chart>
     <select v-model="dataCollections.category.filters.type">
       <option :value="'expense'">Expense</option>
       <option :value="'revenue'">Revenue</option>
@@ -8,6 +9,21 @@
 
     <br>
     <hr>
+
+    <h2>Category expense evolution</h2>
+    <line-chart :chart-data="dataCollections.categoryEvo.collection" :options="dataCollections.categoryEvo.options"></line-chart>
+    <select v-model="dataCollections.categoryEvo.filters.category">
+      <option v-for="name in categoriesNames" :key="name" :value="name">{{ name }}</option>
+    </select>
+    <select v-model="dataCollections.categoryEvo.filters.type">
+      <option :value="'expense'">Expense</option>
+      <option :value="'revenue'">Revenue</option>
+    </select>
+
+    <br>
+    <hr>
+
+    <h2>Absolute profit</h2>
     <polar-area-chart :chart-data="dataCollections.profit.collection"></polar-area-chart>
     <select v-model="dataCollections.profit.filters.by">
       <option :value="'all-time'">All time</option>
@@ -15,11 +31,10 @@
       <option :value="'month'">Month</option>
     </select>
 
+    <br>
+    <hr>
+    <h2>Average profit per year</h2>
     <polar-area-chart :chart-data="dataCollections.avgProfit.collection"></polar-area-chart>
-    <select v-model="dataCollections.avgProfit.filters.by">
-      <option :value="'all-time'">All time</option>
-      <option :value="'year'">Year</option>
-    </select>
 
   </div>
 </template>
@@ -38,17 +53,29 @@ export default {
   },
   data() {
     return {
+      categoriesNames: [],
       dataCollections: {
         category: {
           collection: {},
           filters: {
             type: 'expense'
+          },
+          options: {
+            legend: {
+              display: true
+            }
           }
         },
         categoryEvo: {
           collection: {},
           filters: {
-            category: undefined
+            category: undefined,
+            type: 'expense'
+          },
+          options: {
+            legend: {
+              display: false
+            }
           }
         },
         profit: {
@@ -77,13 +104,13 @@ export default {
   },
   methods: {
     fillCategoryEvoData() {
-      this.dataCollections.category.collection = {
+      this.dataCollections.categoryEvo.collection = {
         labels: [],
         datasets: []
       };
       const boundsByCategory = this.bounds
         .filter(bound => {
-          if (this.dataCollections.category.filters.type === 'expense') {
+          if (this.dataCollections.categoryEvo.filters.type === 'expense') {
             return bound.category.expense;
           }
           return !bound.category.expense;
@@ -95,6 +122,22 @@ export default {
           reduced[bound.category.name].push(bound);
           return reduced;
         }, {});
+
+        this.categoriesNames = Object.keys(boundsByCategory);
+
+        const category = this.dataCollections.categoryEvo.filters.category;
+        if (category) {
+          const dataset = { backgroundColor: [], data: [] };
+
+          boundsByCategory[category]
+          .reverse() 
+          .forEach((bound) => {
+            this.dataCollections.categoryEvo.collection.labels.push(`${bound.year} - ${bound.month}`);
+            dataset.backgroundColor.push(this.getRandomColor());
+            dataset.data.push(this.getBoundExpensesSum(bound));
+          });
+          this.dataCollections.categoryEvo.collection.datasets.push(dataset);
+        }
     },
     fillCategoryData() {
       this.dataCollections.category.collection = {
@@ -140,7 +183,6 @@ export default {
       let organizedBudgets;
       if (this.dataCollections.profit.filters.by === 'year') {
           organizedBudgets = this.budgets.reduce((reduced, budget) => {
-            // let label = `${budget.year} - ${budget.month}`;
             let label = budget.year;
             if (!reduced[label]) {
               reduced[label] = [];
@@ -208,12 +250,6 @@ export default {
           }, {})
         }
 
-        if (this.dataCollections.avgProfit.filters.by === 'all-time') {
-          organizedBudgets = {
-            'all-time': this.budgets
-          }
-        }
-
         if (organizedBudgets) {
           const labels = Object.keys(organizedBudgets);
           if (labels.length) {
@@ -225,7 +261,7 @@ export default {
                 organizedBudgets[label].reduce((sum, budget) => {
                   sum += this.getBudgetProfit(budget);
                   return sum;
-                }, 0) / organizedBudgets[label].length
+                }, 0) / organizedBudgets[label].length * 12
               );
             });
             this.dataCollections.avgProfit.collection.datasets.push(dataset);
@@ -249,6 +285,13 @@ export default {
     },
     'dataCollections.avgProfit.filters.by': function() {
       this.fillAvgProfitData();
+    },
+    'dataCollections.categoryEvo.filters.category': function() {
+      this.fillCategoryEvoData();
+    },
+    'dataCollections.categoryEvo.filters.type': function() {
+      console.log('waht');
+      this.fillCategoryEvoData();
     }
   }
 };
