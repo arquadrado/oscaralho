@@ -70824,473 +70824,188 @@ module.exports = Component.exports
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(1);
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__mixins_stats_mixins_js__ = __webpack_require__(226);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  mounted: function mounted() {},
-  data: function data() {
-    return {};
-  },
-
-  computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])({
-    budgets: 'getBudgets',
-    bounds: 'getBounds',
-    years: 'getAllTimeYears'
-  }), {
-    boundsSum: function boundsSum() {
-      return Number(this.bounds.filter(function (b) {
-        return b.category.expense;
-      }).reduce(function (sum, bound) {
-        sum += Number(bound.bound_in_cents) / 100;
-        return sum;
-      }, 0));
-    },
-    expensesSum: function expensesSum() {
-      var _this = this;
-
-      return Number(this.bounds.filter(function (b) {
-        return b.category.expense;
-      }).reduce(function (sum, bound) {
-        sum += _this.getBoundExpensesSum(bound);
-        return sum;
-      }, 0).toFixed(2));
-    },
-    revenueBoundsSum: function revenueBoundsSum() {
-      return Number(this.bounds.filter(function (b) {
-        return !b.category.expense;
-      }).reduce(function (sum, bound) {
-        sum += Number(bound.bound_in_cents) / 100;
-        return sum;
-      }, 0));
-    },
-    revenuesSum: function revenuesSum() {
-      var _this2 = this;
-
-      return Number(this.bounds.filter(function (b) {
-        return !b.category.expense;
-      }).reduce(function (sum, bound) {
-        sum += _this2.getBoundExpensesSum(bound);
-        return sum;
-      }, 0).toFixed(2));
-    },
-    allTimeRatio: function allTimeRatio() {
-      if (!this.expensesSum) {
-        return 'No data available';
-      }
-      return (this.boundsSum / this.expensesSum).toFixed(2);
-    },
-    revenueAllTimeRatio: function revenueAllTimeRatio() {
-      if (!this.revenuesSum) {
-        return 'No data available';
-      }
-      return (this.revenuesSum / this.revenueBoundsSum).toFixed(2);
-    },
-    totalProfit: function totalProfit() {
-      var _this3 = this;
-
-      return Number(this.bounds.reduce(function (profit, bound) {
-        if (bound.category.expense) {
-          profit -= _this3.getBoundExpensesSum(bound);
-        } else {
-          profit += _this3.getBoundExpensesSum(bound);
-        }
-        return profit;
-      }, 0).toFixed(2));
-    },
-    averageProfitPerMonth: function averageProfitPerMonth() {
-      return (Number(this.totalProfit) / this.budgets.length).toFixed(2);
-    },
-    lowestProfitMonth: function lowestProfitMonth() {
-      var _this4 = this;
-
-      var lowestProfitBudget = this.budgets.reduce(function (reduced, budget) {
-        if (!reduced) {
-          return reduced;
-        }
-
-        if (_this4.getBudgetProfit(budget) < _this4.getBudgetProfit(reduced)) {
-          reduced = budget;
-        }
-
-        return reduced;
-      });
-
-      if (lowestProfitBudget) {
-        return lowestProfitBudget.year + ' - ' + lowestProfitBudget.month;
-      }
-
-      return 'No data available';
-    },
-    highestProfitMonth: function highestProfitMonth() {
-      var _this5 = this;
-
-      var highestProfitBudget = this.budgets.reduce(function (reduced, budget) {
-        if (!reduced) {
-          return reduced;
-        }
-        if (_this5.getBudgetProfit(budget) > _this5.getBudgetProfit(reduced)) {
-          reduced = budget;
-        }
-
-        return reduced;
-      });
-
-      if (highestProfitBudget) {
-        return highestProfitBudget.year + ' - ' + highestProfitBudget.month;
-      }
-
-      return 'No data available';
-    },
-    averageProfitPerYear: function averageProfitPerYear() {
-      return (Number(this.totalProfit) * 12 / this.budgets.length).toFixed(2);
-    },
-    highestProfitYear: function highestProfitYear() {
-      var _this6 = this;
-
-      var yearsProfit = this.years.reduce(function (reduced, year) {
-        var yearProfit = _this6.getYearProfit(year);
-        if (yearProfit) {
-          reduced[year] = yearProfit;
-        }
-        return reduced;
-      }, {});
-
-      if (yearsProfit) {
-        var highestProfitYear = Object.keys(yearsProfit).reduce(function (reduced, year) {
-          if (!reduced || yearsProfit[year] > yearsProfit[reduced]) {
-            reduced = year;
-          }
-
-          return reduced;
-        });
-
-        return highestProfitYear ? highestProfitYear : 'No data available';
-      }
-      return 'No data available';
-    },
-    lowestProfitYear: function lowestProfitYear() {
-      var _this7 = this;
-
-      var yearsProfit = this.years.reduce(function (reduced, year) {
-        var yearProfit = _this7.getYearProfit(year);
-        if (yearProfit) {
-          reduced[year] = yearProfit;
-        }
-        return reduced;
-      }, {});
-
-      if (yearsProfit) {
-        var highestProfitYear = Object.keys(yearsProfit).reduce(function (reduced, year) {
-          if (!reduced || yearsProfit[year] < yearsProfit[reduced]) {
-            reduced = year;
-          }
-
-          return reduced;
-        });
-
-        return highestProfitYear ? highestProfitYear : 'No data available';
-      }
-      return 'No data available';
-    },
-    highestExpense: function highestExpense() {
-      var bounds = this.bounds.filter(function (b) {
-        return b.category.expense;
-      });
-      return this.getHighestExpense(bounds);
-    },
-    lowestExpense: function lowestExpense() {
-      var bounds = this.bounds.filter(function (b) {
-        return b.category.expense;
-      });
-      return this.getLowestExpense(bounds);
-    },
-    highestRevenue: function highestRevenue() {
-      var bounds = this.bounds.filter(function (b) {
-        return !b.category.expense;
-      });
-      return this.getHighestExpense(bounds);
-    },
-    lowestRevenue: function lowestRevenue() {
-      var bounds = this.bounds.filter(function (b) {
-        return !b.category.expense;
-      });
-      return this.getLowestExpense(bounds);
-    }
-  }),
-  methods: {
-    getBudgetProfit: function getBudgetProfit(budget) {
-      var _this8 = this;
-
-      return this.bounds.filter(function (b) {
-        return b.budget_id === budget.id;
-      }).reduce(function (profit, bound) {
-        if (bound.category.expense) {
-          profit -= _this8.getBoundExpensesSum(bound);
-        } else {
-          profit += _this8.getBoundExpensesSum(bound);
-        }
-        return profit;
-      }, 0);
-    },
-    getYearProfit: function getYearProfit(year) {
-      var _this9 = this;
-
-      return this.budgets.filter(function (b) {
-        return b.year === year;
-      }).reduce(function (sum, budget) {
-        sum += _this9.getBudgetProfit(budget);
-        return sum;
-      }, 0);
-    },
-    getBoundExpensesSum: function getBoundExpensesSum(bound) {
-      return bound.expenses.reduce(function (expenseSum, expense) {
-        expenseSum += Number(expense.value);
-        return expenseSum;
-      }, 0);
-    },
-    getHighestExpense: function getHighestExpense(bounds) {
-      var _this10 = this;
-
-      var boundsByCategory = bounds.reduce(function (reduced, bound) {
-        if (!reduced.hasOwnProperty(bound.category.name)) {
-          reduced[bound.category.name] = [];
-        }
-
-        reduced[bound.category.name].push(bound);
-
-        return reduced;
-      }, {});
-
-      Object.keys(boundsByCategory).forEach(function (category) {
-        boundsByCategory[category] = boundsByCategory[category].reduce(function (sum, bound) {
-          sum += _this10.getBoundExpensesSum(bound);
-          return sum;
-        }, 0);
-      });
-
-      if (Object.keys(boundsByCategory).length) {
-
-        return Object.keys(boundsByCategory).reduce(function (selected, category) {
-          if (!selected || boundsByCategory[category] > boundsByCategory[selected]) {
-            selected = category;
-          }
-
-          return selected;
-        }, null);
-      }
-      return 'No data available';
-    },
-    getLowestExpense: function getLowestExpense(bounds) {
-      var _this11 = this;
-
-      var boundsByCategory = bounds.reduce(function (reduced, bound) {
-        if (!reduced.hasOwnProperty(bound.category.name)) {
-          reduced[bound.category.name] = [];
-        }
-
-        reduced[bound.category.name].push(bound);
-
-        return reduced;
-      }, {});
-
-      Object.keys(boundsByCategory).forEach(function (category) {
-        boundsByCategory[category] = boundsByCategory[category].reduce(function (sum, bound) {
-          sum += _this11.getBoundExpensesSum(bound);
-          return sum;
-        }, 0);
-      });
-
-      if (Object.keys(boundsByCategory).length) {
-
-        return Object.keys(boundsByCategory).reduce(function (selected, category) {
-          if (!selected || boundsByCategory[category] < boundsByCategory[selected]) {
-            selected = category;
-          }
-
-          return selected;
-        }, null);
-      }
-      return 'No data available';
-    }
-  }
+  mixins: [__WEBPACK_IMPORTED_MODULE_1__mixins_stats_mixins_js__["a" /* default */]]
 });
 
 /***/ }),
@@ -72650,7 +72365,9 @@ module.exports = Component.exports
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__charts_polar_area_chart_js__ = __webpack_require__(214);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vuex__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__charts_line_chart_js__ = __webpack_require__(227);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__mixins_stats_mixins_js__ = __webpack_require__(226);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_vuex__ = __webpack_require__(1);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 //
@@ -72663,38 +72380,102 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+  mixins: [__WEBPACK_IMPORTED_MODULE_2__mixins_stats_mixins_js__["a" /* default */]],
   components: {
-    PolarAreaChart: __WEBPACK_IMPORTED_MODULE_0__charts_polar_area_chart_js__["a" /* default */]
+    PolarAreaChart: __WEBPACK_IMPORTED_MODULE_0__charts_polar_area_chart_js__["a" /* default */],
+    LineChart: __WEBPACK_IMPORTED_MODULE_1__charts_line_chart_js__["a" /* default */]
   },
   data: function data() {
     return {
-      datacollection: {},
-      expenseFilter: "expense"
+      dataCollections: {
+        category: {
+          collection: {},
+          filters: {
+            type: 'expense'
+          }
+        },
+        categoryEvo: {
+          collection: {},
+          filters: {
+            category: undefined
+          }
+        },
+        profit: {
+          collection: {},
+          filters: {
+            by: 'year'
+          }
+        },
+        avgProfit: {
+          collection: {},
+          filters: {
+            by: 'year'
+          }
+        }
+      }
     };
   },
   mounted: function mounted() {
-    this.fillData();
+    this.fillCategoryData();
+    this.fillCategoryEvoData();
+    this.fillProfitData();
+    this.fillAvgProfitData();
   },
 
-  computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_1_vuex__["c" /* mapGetters */])({
-    budgets: "getBudgets",
-    bounds: "getBounds",
-    years: "getAllTimeYears"
-  })),
+  computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_3_vuex__["c" /* mapGetters */])({})),
   methods: {
-    fillData: function fillData() {
+    fillCategoryEvoData: function fillCategoryEvoData() {
       var _this = this;
 
-      this.datacollection = {
+      this.dataCollections.category.collection = {
         labels: [],
         datasets: []
       };
       var boundsByCategory = this.bounds.filter(function (bound) {
-        if (_this.expenseFilter === "expense") {
+        if (_this.dataCollections.category.filters.type === 'expense') {
+          return bound.category.expense;
+        }
+        return !bound.category.expense;
+      }).reduce(function (reduced, bound) {
+        if (!reduced[bound.category.name]) {
+          reduced[bound.category.name] = [];
+        }
+        reduced[bound.category.name].push(bound);
+        return reduced;
+      }, {});
+    },
+    fillCategoryData: function fillCategoryData() {
+      var _this2 = this;
+
+      this.dataCollections.category.collection = {
+        labels: [],
+        datasets: []
+      };
+      var boundsByCategory = this.bounds.filter(function (bound) {
+        if (_this2.dataCollections.category.filters.type === 'expense') {
           return bound.category.expense;
         }
         return !bound.category.expense;
@@ -72709,20 +72490,132 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       var dataset = { backgroundColor: [], data: [] };
 
       Object.keys(boundsByCategory).forEach(function (category) {
-        _this.datacollection.labels.push(category);
-        dataset.backgroundColor.push("rgba(77,55,99, 0.5)");
+        _this2.dataCollections.category.collection.labels.push(category);
+        dataset.backgroundColor.push(_this2.getRandomColor());
         dataset.data.push(boundsByCategory[category].reduce(function (sum, bound) {
           sum += bound.expenses_sum;
           return sum;
         }, 0));
       });
 
-      this.datacollection.datasets.push(dataset);
+      this.dataCollections.category.collection.datasets.push(dataset);
+    },
+    fillProfitData: function fillProfitData() {
+      var _this3 = this;
+
+      this.dataCollections.profit.collection = {
+        labels: [],
+        datasets: []
+      };
+
+      var organizedBudgets = void 0;
+      if (this.dataCollections.profit.filters.by === 'year') {
+        organizedBudgets = this.budgets.reduce(function (reduced, budget) {
+          // let label = `${budget.year} - ${budget.month}`;
+          var label = budget.year;
+          if (!reduced[label]) {
+            reduced[label] = [];
+          }
+
+          reduced[label].push(budget);
+          return reduced;
+        }, {});
+      }
+
+      if (this.dataCollections.profit.filters.by === 'month') {
+        organizedBudgets = this.budgets.reduce(function (reduced, budget) {
+          var label = budget.year + ' - ' + budget.month;
+          if (!reduced[label]) {
+            reduced[label] = [];
+          }
+
+          reduced[label].push(budget);
+          return reduced;
+        }, {});
+      }
+
+      if (this.dataCollections.profit.filters.by === 'all-time') {
+        organizedBudgets = {
+          'all-time': this.budgets
+        };
+      }
+
+      if (organizedBudgets) {
+        var labels = Object.keys(organizedBudgets);
+        if (labels.length) {
+          var dataset = { backgroundColor: [], data: [] };
+          labels.forEach(function (label) {
+            _this3.dataCollections.profit.collection.labels.push(label);
+            dataset.backgroundColor.push(_this3.getRandomColor());
+            dataset.data.push(organizedBudgets[label].reduce(function (sum, budget) {
+              sum += _this3.getBudgetProfit(budget);
+              return sum;
+            }, 0));
+          });
+          this.dataCollections.profit.collection.datasets.push(dataset);
+        }
+      }
+    },
+    fillAvgProfitData: function fillAvgProfitData() {
+      var _this4 = this;
+
+      this.dataCollections.avgProfit.collection = {
+        labels: [],
+        datasets: []
+      };
+
+      var organizedBudgets = void 0;
+      if (this.dataCollections.avgProfit.filters.by === 'year') {
+        organizedBudgets = this.budgets.reduce(function (reduced, budget) {
+          var label = budget.year;
+          if (!reduced[label]) {
+            reduced[label] = [];
+          }
+
+          reduced[label].push(budget);
+          return reduced;
+        }, {});
+      }
+
+      if (this.dataCollections.avgProfit.filters.by === 'all-time') {
+        organizedBudgets = {
+          'all-time': this.budgets
+        };
+      }
+
+      if (organizedBudgets) {
+        var labels = Object.keys(organizedBudgets);
+        if (labels.length) {
+          var dataset = { backgroundColor: [], data: [] };
+          labels.forEach(function (label) {
+            _this4.dataCollections.avgProfit.collection.labels.push(label);
+            dataset.backgroundColor.push(_this4.getRandomColor());
+            dataset.data.push(organizedBudgets[label].reduce(function (sum, budget) {
+              sum += _this4.getBudgetProfit(budget);
+              return sum;
+            }, 0) / organizedBudgets[label].length);
+          });
+          this.dataCollections.avgProfit.collection.datasets.push(dataset);
+        }
+      }
+    },
+    getRandomColor: function getRandomColor() {
+      var r = Math.floor(Math.random() * 256);
+      var g = Math.floor(Math.random() * 256);
+      var b = Math.floor(Math.random() * 256);
+      var rgb = 'rgb(' + r + ',' + g + ',' + b + ',0.5)';
+      return rgb;
     }
   },
   watch: {
-    expenseFilter: function expenseFilter() {
-      this.fillData();
+    'dataCollections.category.filters.type': function dataCollectionsCategoryFiltersType() {
+      this.fillCategoryData();
+    },
+    'dataCollections.profit.filters.by': function dataCollectionsProfitFiltersBy() {
+      this.fillProfitData();
+    },
+    'dataCollections.avgProfit.filters.by': function dataCollectionsAvgProfitFiltersBy() {
+      this.fillAvgProfitData();
     }
   }
 });
@@ -72734,11 +72627,11 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_chartjs__ = __webpack_require__(215);
 
-var reactiveProp = __WEBPACK_IMPORTED_MODULE_0_vue_chartjs__["b" /* mixins */].reactiveProp;
+var reactiveProp = __WEBPACK_IMPORTED_MODULE_0_vue_chartjs__["c" /* mixins */].reactiveProp;
 
 
 /* harmony default export */ __webpack_exports__["a"] = ({
-  extends: __WEBPACK_IMPORTED_MODULE_0_vue_chartjs__["a" /* PolarArea */],
+  extends: __WEBPACK_IMPORTED_MODULE_0_vue_chartjs__["b" /* PolarArea */],
   mixins: [reactiveProp],
   props: ['options'],
   mounted: function mounted() {
@@ -72759,13 +72652,13 @@ var reactiveProp = __WEBPACK_IMPORTED_MODULE_0_vue_chartjs__["b" /* mixins */].r
 /* unused harmony reexport Bar */
 /* unused harmony reexport HorizontalBar */
 /* unused harmony reexport Doughnut */
-/* unused harmony reexport Line */
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return __WEBPACK_IMPORTED_MODULE_1__BaseCharts__["e"]; });
 /* unused harmony reexport Pie */
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return __WEBPACK_IMPORTED_MODULE_1__BaseCharts__["g"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return __WEBPACK_IMPORTED_MODULE_1__BaseCharts__["g"]; });
 /* unused harmony reexport Radar */
 /* unused harmony reexport Bubble */
 /* unused harmony reexport Scatter */
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return __WEBPACK_IMPORTED_MODULE_0__mixins_index_js__["a"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return __WEBPACK_IMPORTED_MODULE_0__mixins_index_js__["a"]; });
 /* unused harmony reexport generateChart */
 
 
@@ -87977,7 +87870,9 @@ var render = function() {
     "div",
     { attrs: { id: "data-visualisation" } },
     [
-      _c("polar-area-chart", { attrs: { "chart-data": _vm.datacollection } }),
+      _c("polar-area-chart", {
+        attrs: { "chart-data": _vm.dataCollections.category.collection }
+      }),
       _vm._v(" "),
       _c(
         "select",
@@ -87986,8 +87881,8 @@ var render = function() {
             {
               name: "model",
               rawName: "v-model",
-              value: _vm.expenseFilter,
-              expression: "expenseFilter"
+              value: _vm.dataCollections.category.filters.type,
+              expression: "dataCollections.category.filters.type"
             }
           ],
           on: {
@@ -88000,9 +87895,11 @@ var render = function() {
                   var val = "_value" in o ? o._value : o.value
                   return val
                 })
-              _vm.expenseFilter = $event.target.multiple
-                ? $$selectedVal
-                : $$selectedVal[0]
+              _vm.$set(
+                _vm.dataCollections.category.filters,
+                "type",
+                $event.target.multiple ? $$selectedVal : $$selectedVal[0]
+              )
             }
           }
         },
@@ -88010,6 +87907,96 @@ var render = function() {
           _c("option", { domProps: { value: "expense" } }, [_vm._v("Expense")]),
           _vm._v(" "),
           _c("option", { domProps: { value: "revenue" } }, [_vm._v("Revenue")])
+        ]
+      ),
+      _vm._v(" "),
+      _c("br"),
+      _vm._v(" "),
+      _c("hr"),
+      _vm._v(" "),
+      _c("polar-area-chart", {
+        attrs: { "chart-data": _vm.dataCollections.profit.collection }
+      }),
+      _vm._v(" "),
+      _c(
+        "select",
+        {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.dataCollections.profit.filters.by,
+              expression: "dataCollections.profit.filters.by"
+            }
+          ],
+          on: {
+            change: function($event) {
+              var $$selectedVal = Array.prototype.filter
+                .call($event.target.options, function(o) {
+                  return o.selected
+                })
+                .map(function(o) {
+                  var val = "_value" in o ? o._value : o.value
+                  return val
+                })
+              _vm.$set(
+                _vm.dataCollections.profit.filters,
+                "by",
+                $event.target.multiple ? $$selectedVal : $$selectedVal[0]
+              )
+            }
+          }
+        },
+        [
+          _c("option", { domProps: { value: "all-time" } }, [
+            _vm._v("All time")
+          ]),
+          _vm._v(" "),
+          _c("option", { domProps: { value: "year" } }, [_vm._v("Year")]),
+          _vm._v(" "),
+          _c("option", { domProps: { value: "month" } }, [_vm._v("Month")])
+        ]
+      ),
+      _vm._v(" "),
+      _c("polar-area-chart", {
+        attrs: { "chart-data": _vm.dataCollections.avgProfit.collection }
+      }),
+      _vm._v(" "),
+      _c(
+        "select",
+        {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.dataCollections.avgProfit.filters.by,
+              expression: "dataCollections.avgProfit.filters.by"
+            }
+          ],
+          on: {
+            change: function($event) {
+              var $$selectedVal = Array.prototype.filter
+                .call($event.target.options, function(o) {
+                  return o.selected
+                })
+                .map(function(o) {
+                  var val = "_value" in o ? o._value : o.value
+                  return val
+                })
+              _vm.$set(
+                _vm.dataCollections.avgProfit.filters,
+                "by",
+                $event.target.multiple ? $$selectedVal : $$selectedVal[0]
+              )
+            }
+          }
+        },
+        [
+          _c("option", { domProps: { value: "all-time" } }, [
+            _vm._v("All time")
+          ]),
+          _vm._v(" "),
+          _c("option", { domProps: { value: "year" } }, [_vm._v("Year")])
         ]
       )
     ],
@@ -88031,6 +88018,329 @@ if (false) {
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 222 */,
+/* 223 */,
+/* 224 */,
+/* 225 */,
+/* 226 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(1);
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+  data: function data() {
+    return {};
+  },
+
+  computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])({
+    budgets: 'getBudgets',
+    bounds: 'getBounds',
+    years: 'getAllTimeYears'
+  }), {
+    boundsSum: function boundsSum() {
+      return Number(this.bounds.filter(function (b) {
+        return b.category.expense;
+      }).reduce(function (sum, bound) {
+        sum += Number(bound.bound_in_cents) / 100;
+        return sum;
+      }, 0));
+    },
+    expensesSum: function expensesSum() {
+      var _this = this;
+
+      return Number(this.bounds.filter(function (b) {
+        return b.category.expense;
+      }).reduce(function (sum, bound) {
+        sum += _this.getBoundExpensesSum(bound);
+        return sum;
+      }, 0).toFixed(2));
+    },
+    revenueBoundsSum: function revenueBoundsSum() {
+      return Number(this.bounds.filter(function (b) {
+        return !b.category.expense;
+      }).reduce(function (sum, bound) {
+        sum += Number(bound.bound_in_cents) / 100;
+        return sum;
+      }, 0));
+    },
+    revenuesSum: function revenuesSum() {
+      var _this2 = this;
+
+      return Number(this.bounds.filter(function (b) {
+        return !b.category.expense;
+      }).reduce(function (sum, bound) {
+        sum += _this2.getBoundExpensesSum(bound);
+        return sum;
+      }, 0).toFixed(2));
+    },
+    allTimeRatio: function allTimeRatio() {
+      if (!this.expensesSum) {
+        return 'No data available';
+      }
+      return (this.boundsSum / this.expensesSum).toFixed(2);
+    },
+    revenueAllTimeRatio: function revenueAllTimeRatio() {
+      if (!this.revenuesSum) {
+        return 'No data available';
+      }
+      return (this.revenuesSum / this.revenueBoundsSum).toFixed(2);
+    },
+    totalProfit: function totalProfit() {
+      var _this3 = this;
+
+      return Number(this.bounds.reduce(function (profit, bound) {
+        if (bound.category.expense) {
+          profit -= _this3.getBoundExpensesSum(bound);
+        } else {
+          profit += _this3.getBoundExpensesSum(bound);
+        }
+        return profit;
+      }, 0).toFixed(2));
+    },
+    averageProfitPerMonth: function averageProfitPerMonth() {
+      return (Number(this.totalProfit) / this.budgets.length).toFixed(2);
+    },
+    lowestProfitMonth: function lowestProfitMonth() {
+      var _this4 = this;
+
+      var lowestProfitBudget = this.budgets.reduce(function (reduced, budget) {
+        if (!reduced) {
+          return reduced;
+        }
+
+        if (_this4.getBudgetProfit(budget) < _this4.getBudgetProfit(reduced)) {
+          reduced = budget;
+        }
+
+        return reduced;
+      });
+
+      if (lowestProfitBudget) {
+        return lowestProfitBudget.year + ' - ' + lowestProfitBudget.month;
+      }
+
+      return 'No data available';
+    },
+    highestProfitMonth: function highestProfitMonth() {
+      var _this5 = this;
+
+      var highestProfitBudget = this.budgets.reduce(function (reduced, budget) {
+        if (!reduced) {
+          return reduced;
+        }
+        if (_this5.getBudgetProfit(budget) > _this5.getBudgetProfit(reduced)) {
+          reduced = budget;
+        }
+
+        return reduced;
+      });
+
+      if (highestProfitBudget) {
+        return highestProfitBudget.year + ' - ' + highestProfitBudget.month;
+      }
+
+      return 'No data available';
+    },
+    averageProfitPerYear: function averageProfitPerYear() {
+      return (Number(this.totalProfit) * 12 / this.budgets.length).toFixed(2);
+    },
+    highestProfitYear: function highestProfitYear() {
+      var _this6 = this;
+
+      var yearsProfit = this.years.reduce(function (reduced, year) {
+        var yearProfit = _this6.getYearProfit(year);
+        if (yearProfit) {
+          reduced[year] = yearProfit;
+        }
+        return reduced;
+      }, {});
+
+      if (yearsProfit) {
+        var highestProfitYear = Object.keys(yearsProfit).reduce(function (reduced, year) {
+          if (!reduced || yearsProfit[year] > yearsProfit[reduced]) {
+            reduced = year;
+          }
+
+          return reduced;
+        });
+
+        return highestProfitYear ? highestProfitYear : 'No data available';
+      }
+      return 'No data available';
+    },
+    lowestProfitYear: function lowestProfitYear() {
+      var _this7 = this;
+
+      var yearsProfit = this.years.reduce(function (reduced, year) {
+        var yearProfit = _this7.getYearProfit(year);
+        if (yearProfit) {
+          reduced[year] = yearProfit;
+        }
+        return reduced;
+      }, {});
+
+      if (yearsProfit) {
+        var highestProfitYear = Object.keys(yearsProfit).reduce(function (reduced, year) {
+          if (!reduced || yearsProfit[year] < yearsProfit[reduced]) {
+            reduced = year;
+          }
+
+          return reduced;
+        });
+
+        return highestProfitYear ? highestProfitYear : 'No data available';
+      }
+      return 'No data available';
+    },
+    highestExpense: function highestExpense() {
+      var bounds = this.bounds.filter(function (b) {
+        return b.category.expense;
+      });
+      return this.getHighestExpense(bounds);
+    },
+    lowestExpense: function lowestExpense() {
+      var bounds = this.bounds.filter(function (b) {
+        return b.category.expense;
+      });
+      return this.getLowestExpense(bounds);
+    },
+    highestRevenue: function highestRevenue() {
+      var bounds = this.bounds.filter(function (b) {
+        return !b.category.expense;
+      });
+      return this.getHighestExpense(bounds);
+    },
+    lowestRevenue: function lowestRevenue() {
+      var bounds = this.bounds.filter(function (b) {
+        return !b.category.expense;
+      });
+      return this.getLowestExpense(bounds);
+    }
+  }),
+  methods: {
+    getBudgetProfit: function getBudgetProfit(budget) {
+      var _this8 = this;
+
+      return this.bounds.filter(function (b) {
+        return b.budget_id === budget.id;
+      }).reduce(function (profit, bound) {
+        if (bound.category.expense) {
+          profit -= _this8.getBoundExpensesSum(bound);
+        } else {
+          profit += _this8.getBoundExpensesSum(bound);
+        }
+        return profit;
+      }, 0);
+    },
+    getYearProfit: function getYearProfit(year) {
+      var _this9 = this;
+
+      return this.budgets.filter(function (b) {
+        return b.year === year;
+      }).reduce(function (sum, budget) {
+        sum += _this9.getBudgetProfit(budget);
+        return sum;
+      }, 0);
+    },
+    getBoundExpensesSum: function getBoundExpensesSum(bound) {
+      return bound.expenses.reduce(function (expenseSum, expense) {
+        expenseSum += Number(expense.value);
+        return expenseSum;
+      }, 0);
+    },
+    getHighestExpense: function getHighestExpense(bounds) {
+      var _this10 = this;
+
+      var boundsByCategory = bounds.reduce(function (reduced, bound) {
+        if (!reduced.hasOwnProperty(bound.category.name)) {
+          reduced[bound.category.name] = [];
+        }
+
+        reduced[bound.category.name].push(bound);
+
+        return reduced;
+      }, {});
+
+      Object.keys(boundsByCategory).forEach(function (category) {
+        boundsByCategory[category] = boundsByCategory[category].reduce(function (sum, bound) {
+          sum += _this10.getBoundExpensesSum(bound);
+          return sum;
+        }, 0);
+      });
+
+      if (Object.keys(boundsByCategory).length) {
+
+        return Object.keys(boundsByCategory).reduce(function (selected, category) {
+          if (!selected || boundsByCategory[category] > boundsByCategory[selected]) {
+            selected = category;
+          }
+
+          return selected;
+        }, null);
+      }
+      return 'No data available';
+    },
+    getLowestExpense: function getLowestExpense(bounds) {
+      var _this11 = this;
+
+      var boundsByCategory = bounds.reduce(function (reduced, bound) {
+        if (!reduced.hasOwnProperty(bound.category.name)) {
+          reduced[bound.category.name] = [];
+        }
+
+        reduced[bound.category.name].push(bound);
+
+        return reduced;
+      }, {});
+
+      Object.keys(boundsByCategory).forEach(function (category) {
+        boundsByCategory[category] = boundsByCategory[category].reduce(function (sum, bound) {
+          sum += _this11.getBoundExpensesSum(bound);
+          return sum;
+        }, 0);
+      });
+
+      if (Object.keys(boundsByCategory).length) {
+
+        return Object.keys(boundsByCategory).reduce(function (selected, category) {
+          if (!selected || boundsByCategory[category] < boundsByCategory[selected]) {
+            selected = category;
+          }
+
+          return selected;
+        }, null);
+      }
+      return 'No data available';
+    }
+  }
+});
+
+/***/ }),
+/* 227 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_chartjs__ = __webpack_require__(215);
+
+var reactiveProp = __WEBPACK_IMPORTED_MODULE_0_vue_chartjs__["c" /* mixins */].reactiveProp;
+
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+  extends: __WEBPACK_IMPORTED_MODULE_0_vue_chartjs__["a" /* Line */],
+  mixins: [reactiveProp],
+  props: ['options'],
+  mounted: function mounted() {
+    // this.chartData is created in the mixin.
+    // If you want to pass options please create a local options object
+    this.renderChart(this.chartData, this.options);
+  }
+});
 
 /***/ })
 /******/ ]);
