@@ -2,7 +2,8 @@
 
 @section('content')
         <!-- <home></home> -->
-        <main-container></main-container>
+        <!-- <main-container></main-container> -->
+        <router-view></router-view>
 @endsection
 
 @section('handover')

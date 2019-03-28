@@ -16,12 +16,13 @@
 @import './components/modal';
 @import './components/modal-input';
 @import './components/modal-confirm';
+@import './components/data-visualisation';
 
 body {
   margin: 0;
   background-color: rgb(243, 243, 243);
   font-family: Arial, Helvetica, sans-serif;
-  
+
   .button {
     display: flex;
     justify-content: center;
@@ -31,7 +32,7 @@ body {
     font-size: 17px;
     width: 40px;
     height: 40px;
-    
+
     &.disabled {
       opacity: 0.5;
     }
@@ -53,18 +54,18 @@ body {
   h1 {
     margin: 0;
   }
-  
+
   #app {
     width: 100vw;
     height: 100vh;
     position: relative;
   }
-  
+
   .centered-content-hv {
     display: flex;
     justify-content: center;
     align-items: center;
   }
-  
+
 
 }
