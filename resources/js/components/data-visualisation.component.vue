@@ -80,7 +80,7 @@ export default {
           collection: {},
           filters: {
             category: '',
-            type: 'expense'
+            type: 'revenue'
           },
           options: {
             legend: {
@@ -145,7 +145,8 @@ export default {
         const boundsDataset = { label: 'Limit',backgroundColor: 'rgba(0,0,255,0.5)', data: [] };
 
         if (!category) {
-          const flatBounds = this.bounds
+          const flatBounds = JSON.parse(JSON.stringify(this.bounds))
+          .reverse()
           .filter(bound => {
             if (this.dataCollections.categoryEvo.filters.type === 'expense') {
               return bound.category.expense;
@@ -345,7 +346,7 @@ export default {
       this.fillCategoryEvoData();
     },
     'dataCollections.categoryEvo.filters.type': function() {
-      this.dataCollections.categoryEvo.filters.category = undefined;
+      this.dataCollections.categoryEvo.filters.category = '';
       this.fillCategoryEvoData();
     }
   }
