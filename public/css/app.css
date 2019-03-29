@@ -726,9 +726,29 @@
 }
 
 #data-visualisation {
+  text-align: center;
+}
+
+#data-visualisation .chart-wrapper {
   width: 80%;
   max-width: 500px;
-  margin: auto;
+  min-height: 100px;
+  padding-bottom: 42px;
+  margin: 28px auto;
+}
+
+#data-visualisation .chart-wrapper .title {
+  font-size: 28px;
+  margin: 21px;
+  display: block;
+}
+
+#data-visualisation .chart-wrapper .chart {
+  margin: 28px auto;
+}
+
+#data-visualisation .chart-wrapper .chart .chartjs-size-monitor {
+  max-width: 100% !important;
 }
 
 body {

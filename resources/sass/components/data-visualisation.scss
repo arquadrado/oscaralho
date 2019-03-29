@@ -1,7 +1,24 @@
 @import '../_variables';
 
 #data-visualisation {
-  width: 80%;
-  max-width: 500px;
-  margin: auto;
+
+  text-align: center;
+  .chart-wrapper {
+    width: 80%;
+    max-width: 500px;
+    min-height: 100px;
+    padding-bottom: 42px;
+    margin: 28px auto;
+    .title {
+      font-size: 28px;
+      margin: 21px;
+      display: block;
+    }
+    .chart {
+      margin: 28px auto;
+      .chartjs-size-monitor {
+        max-width: 100% !important;
+      }
+    }
+  }
 }

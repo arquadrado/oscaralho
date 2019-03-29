@@ -1,40 +1,50 @@
 <template>
   <div id="data-visualisation">
-    <h2>Expenses by category</h2>
-    <polar-area-chart :chart-data="dataCollections.category.collection" :options="dataCollections.category.options"></polar-area-chart>
-    <select v-model="dataCollections.category.filters.type">
-      <option :value="'expense'">Expense</option>
-      <option :value="'revenue'">Revenue</option>
-    </select>
 
-    <br>
-    <hr>
+    <div class="chart-wrapper">
+      <span class="title">Expenses by category</span>
+      <div class="chart">
+        <polar-area-chart :chart-data="dataCollections.category.collection" :options="dataCollections.category.options"></polar-area-chart>
+      </div>
+      <select v-model="dataCollections.category.filters.type">
+        <option :value="'expense'">Expense</option>
+        <option :value="'revenue'">Revenue</option>
+      </select>
+    </div>
 
-    <h2>Category expense evolution</h2>
-    <line-chart :chart-data="dataCollections.categoryEvo.collection" :options="dataCollections.categoryEvo.options"></line-chart>
-    <select v-model="dataCollections.categoryEvo.filters.category">
-      <option v-for="name in categoriesNames" :key="name" :value="name">{{ name }}</option>
-    </select>
-    <select v-model="dataCollections.categoryEvo.filters.type">
-      <option :value="'expense'">Expense</option>
-      <option :value="'revenue'">Revenue</option>
-    </select>
+    <div class="chart-wrapper">
+      <span class="title">Expense/limit evolution</span>
+      <div class="chart">
+        <line-chart :chart-data="dataCollections.categoryEvo.collection" :options="dataCollections.categoryEvo.options"></line-chart>
+      </div>
+      <select v-model="dataCollections.categoryEvo.filters.category">
+        <option v-for="name in categoriesNames" :key="name" :value="name">{{ name }}</option>
+        <option :value="''">All</option>
+      </select>
+      <select v-model="dataCollections.categoryEvo.filters.type">
+        <option :value="'expense'">Expense</option>
+        <option :value="'revenue'">Revenue</option>
+      </select>
+    </div>
 
-    <br>
-    <hr>
+    <div class="chart-wrapper">
+      <span class="title">Absolute profit</span>
+      <div class="chart">
+        <polar-area-chart :chart-data="dataCollections.profit.collection"></polar-area-chart>
+      </div>
+      <select v-model="dataCollections.profit.filters.by">
+        <option :value="'all-time'">All time</option>
+        <option :value="'year'">Year</option>
+        <option :value="'month'">Month</option>
+      </select>
+    </div>
 
-    <h2>Absolute profit</h2>
-    <polar-area-chart :chart-data="dataCollections.profit.collection"></polar-area-chart>
-    <select v-model="dataCollections.profit.filters.by">
-      <option :value="'all-time'">All time</option>
-      <option :value="'year'">Year</option>
-      <option :value="'month'">Month</option>
-    </select>
-
-    <br>
-    <hr>
-    <h2>Average profit per year</h2>
-    <polar-area-chart :chart-data="dataCollections.avgProfit.collection"></polar-area-chart>
+    <div class="chart-wrapper">
+      <span class="title">Average profit per year</span>
+      <div class="chart">
+        <polar-area-chart :chart-data="dataCollections.avgProfit.collection"></polar-area-chart>
+      </div>
+    </div>
 
   </div>
 </template>
@@ -69,12 +79,12 @@ export default {
         categoryEvo: {
           collection: {},
           filters: {
-            category: undefined,
+            category: '',
             type: 'expense'
           },
           options: {
             legend: {
-              display: false
+              display: true
             }
           }
         },
@@ -126,18 +136,63 @@ export default {
         this.categoriesNames = Object.keys(boundsByCategory);
 
         const category = this.dataCollections.categoryEvo.filters.category;
-        if (category) {
-          const dataset = { backgroundColor: [], data: [] };
+
+        // if (!category && this.categoriesNames.length) {
+        //   this.dataCollections.categoryEvo.filters.category = this.categoriesNames[0];
+        // }
+
+        const dataset = { label: 'Expense', backgroundColor: 'rgba(255,0,0,0.5)', data: [] };
+        const boundsDataset = { label: 'Limit',backgroundColor: 'rgba(0,0,255,0.5)', data: [] };
+
+        if (!category) {
+          const flatBounds = this.bounds
+          .filter(bound => {
+            if (this.dataCollections.categoryEvo.filters.type === 'expense') {
+              return bound.category.expense;
+            }
+            return !bound.category.expense;
+          })
+          .reduce((reduced, bound) => {
+            let period = `${bound.year} - ${bound.month}`;
+            if (!reduced[period]) {
+              reduced[period] = [];
+            }
+            reduced[period].push(bound);
+            return reduced;
+          }, {});
+
+          Object.keys(flatBounds).forEach(period => {
+            this.dataCollections.categoryEvo.collection.labels.push(period);
+            dataset.data.push(
+              flatBounds[period].reduce((sum, bound) => {
+                sum += this.getBoundExpensesSum(bound);
+                return sum;
+              }, 0)
+            );
+
+            boundsDataset.data.push(
+              flatBounds[period].reduce((sum, bound) => {
+                sum += Number(bound.bound_in_cents / 100);
+                return sum;
+              }, 0)
+            );
+          });
+        }
+
+        if (category && boundsByCategory[category] && boundsByCategory[category].length) {
+
 
           boundsByCategory[category]
-          .reverse() 
+          .reverse()
           .forEach((bound) => {
             this.dataCollections.categoryEvo.collection.labels.push(`${bound.year} - ${bound.month}`);
-            dataset.backgroundColor.push(this.getRandomColor());
             dataset.data.push(this.getBoundExpensesSum(bound));
+            boundsDataset.data.push(Number(bound.bound_in_cents / 100));
           });
-          this.dataCollections.categoryEvo.collection.datasets.push(dataset);
         }
+
+        this.dataCollections.categoryEvo.collection.datasets.push(boundsDataset);
+        this.dataCollections.categoryEvo.collection.datasets.push(dataset);
     },
     fillCategoryData() {
       this.dataCollections.category.collection = {
@@ -290,7 +345,7 @@ export default {
       this.fillCategoryEvoData();
     },
     'dataCollections.categoryEvo.filters.type': function() {
-      console.log('waht');
+      this.dataCollections.categoryEvo.filters.category = undefined;
       this.fillCategoryEvoData();
     }
   }
