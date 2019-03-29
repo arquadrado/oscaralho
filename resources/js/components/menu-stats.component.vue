@@ -169,6 +169,8 @@
     <span>{{ lowestRevenue }}</span>
     <br>
     <br>
+    
+    <router-link to="/visualisation">See graphics</router-link>
 
   </div>
 </template>
