@@ -74357,7 +74357,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
           },
           options: {
             legend: {
-              display: true
+              display: false
             }
           }
         },
@@ -74377,12 +74377,22 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
           collection: {},
           filters: {
             by: 'year'
+          },
+          options: {
+            legend: {
+              display: false
+            }
           }
         },
         avgProfit: {
           collection: {},
           filters: {
             by: 'year'
+          },
+          options: {
+            legend: {
+              display: false
+            }
           }
         }
       }
@@ -74443,7 +74453,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
           return reduced;
         }, {});
 
-        Object.keys(flatBounds).forEach(function (period) {
+        Object.keys(flatBounds).sort().forEach(function (period) {
           _this.dataCollections.categoryEvo.collection.labels.push(period);
           dataset.data.push(flatBounds[period].reduce(function (sum, bound) {
             sum += _this.getBoundExpensesSum(bound);
@@ -74459,7 +74469,9 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
       if (category && boundsByCategory[category] && boundsByCategory[category].length) {
 
-        boundsByCategory[category].reverse().forEach(function (bound) {
+        boundsByCategory[category].sort(function (a, b) {
+          return a.year + ' - ' + a.month > b.year + ' - ' + b.month ? 1 : -1;
+        }).forEach(function (bound) {
           _this.dataCollections.categoryEvo.collection.labels.push(bound.year + ' - ' + bound.month);
           dataset.data.push(_this.getBoundExpensesSum(bound));
           boundsDataset.data.push(Number(bound.bound_in_cents / 100));
@@ -90007,7 +90019,10 @@ var render = function() {
         { staticClass: "chart" },
         [
           _c("polar-area-chart", {
-            attrs: { "chart-data": _vm.dataCollections.profit.collection }
+            attrs: {
+              "chart-data": _vm.dataCollections.profit.collection,
+              options: _vm.dataCollections.profit.options
+            }
           })
         ],
         1
@@ -90062,7 +90077,10 @@ var render = function() {
         { staticClass: "chart" },
         [
           _c("polar-area-chart", {
-            attrs: { "chart-data": _vm.dataCollections.avgProfit.collection }
+            attrs: {
+              "chart-data": _vm.dataCollections.avgProfit.collection,
+              options: _vm.dataCollections.avgProfit.options
+            }
           })
         ],
         1

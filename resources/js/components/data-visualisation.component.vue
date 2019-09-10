@@ -30,7 +30,7 @@
     <div class="chart-wrapper">
       <span class="title">Absolute profit</span>
       <div class="chart">
-        <polar-area-chart :chart-data="dataCollections.profit.collection"></polar-area-chart>
+        <polar-area-chart :chart-data="dataCollections.profit.collection" :options="dataCollections.profit.options"></polar-area-chart>
       </div>
       <select v-model="dataCollections.profit.filters.by">
         <option :value="'all-time'">All time</option>
@@ -42,7 +42,7 @@
     <div class="chart-wrapper">
       <span class="title">Average profit per year</span>
       <div class="chart">
-        <polar-area-chart :chart-data="dataCollections.avgProfit.collection"></polar-area-chart>
+        <polar-area-chart :chart-data="dataCollections.avgProfit.collection" :options="dataCollections.avgProfit.options"></polar-area-chart>
       </div>
     </div>
 
@@ -72,7 +72,7 @@ export default {
           },
           options: {
             legend: {
-              display: true
+              display: false
             }
           }
         },
@@ -92,12 +92,22 @@ export default {
           collection: {},
           filters: {
             by: 'year'
+          },
+          options: {
+            legend: {
+              display: false
+            }
           }
         },
         avgProfit: {
           collection: {},
           filters: {
             by: 'year'
+          },
+          options: {
+            legend: {
+              display: false
+            }
           }
         }
       },
@@ -161,8 +171,8 @@ export default {
             reduced[period].push(bound);
             return reduced;
           }, {});
-
-          Object.keys(flatBounds).forEach(period => {
+          
+          Object.keys(flatBounds).sort().forEach(period => {
             this.dataCollections.categoryEvo.collection.labels.push(period);
             dataset.data.push(
               flatBounds[period].reduce((sum, bound) => {
@@ -182,9 +192,10 @@ export default {
 
         if (category && boundsByCategory[category] && boundsByCategory[category].length) {
 
-
           boundsByCategory[category]
-          .reverse()
+          .sort((a, b) => {
+            return `${a.year} - ${a.month}` > `${b.year} - ${b.month}` ? 1 : -1;
+          })
           .forEach((bound) => {
             this.dataCollections.categoryEvo.collection.labels.push(`${bound.year} - ${bound.month}`);
             dataset.data.push(this.getBoundExpensesSum(bound));
