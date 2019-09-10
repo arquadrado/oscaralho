@@ -16,11 +16,11 @@
         {{ __('Login') }}
       </a>
     </button>
-    <button type="submit" class="button">
+    <!-- <button type="submit" class="button">
       <a href="{{ route('register') }}">
         {{ __('Register') }}
       </a>
-    </button>
+    </button> -->
     </div>
   </div>
 </div>

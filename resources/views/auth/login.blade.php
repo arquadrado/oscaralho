@@ -49,11 +49,11 @@
             </a>
         @endif
         <br>
-        @if (Route::has('register'))
+        <!-- @if (Route::has('register'))
             <a class="" href="{{ route('register') }}">
                 {{ __('Register') }}
             </a>
-        @endif
+        @endif -->
       </form>
   </div>
 </div>
