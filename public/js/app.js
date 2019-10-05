@@ -67298,11 +67298,13 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vuex__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__modules_menu_module__ = __webpack_require__(177);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__modules_utils_module__ = __webpack_require__(178);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__helpers_general__ = __webpack_require__(229);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 
 
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_1_vuex__["a" /* default */]);
+
 
 
 
@@ -67319,7 +67321,7 @@ var state = {
   selectedBound: undefined,
   showDisplayPanel: false,
   selectedYear: '' + new Date(Date.now()).getFullYear(),
-  selectedMonth: '0' + (new Date(Date.now()).getMonth() + 1),
+  selectedMonth: Object(__WEBPACK_IMPORTED_MODULE_4__helpers_general__["a" /* getCurrentMonthNumber */])(),
   justUpdated: undefined
 };
 var getters = {
@@ -67656,7 +67658,7 @@ var getters = {
   },
   getBudgetsToEdit: function getBudgetsToEdit(state) {
     return state.budgets.sort(function (a, b) {
-      return a.year + '-' + a.month < b.year + '-' + b.month;
+      return a.year + '-' + a.month < b.year + '-' + b.month ? 1 : -1;
     });
   },
   getCategories: function getCategories(state) {
@@ -90103,6 +90105,24 @@ if (false) {
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 225 */,
+/* 226 */,
+/* 227 */,
+/* 228 */,
+/* 229 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return getCurrentMonthNumber; });
+var getCurrentMonthNumber = function getCurrentMonthNumber() {
+  var monthNumber = "0" + (new Date(Date.now()).getMonth() + 1);
+  if (monthNumber > 2) {
+    monthNumber = monthNumber.slice(1);
+  }
+  return monthNumber;
+};
 
 /***/ })
 /******/ ]);

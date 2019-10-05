@@ -10,7 +10,7 @@ const state = {
 const getters = {
   getBudgets: state => state.budgets,
   getBudgetsToEdit: state => state.budgets.sort((a, b) => {
-    return `${a.year}-${a.month}` < `${b.year}-${b.month}`
+    return `${a.year}-${a.month}` < `${b.year}-${b.month}` ? 1 : -1;
   }),
   getCategories: state => state.categories,
   getSelectedCategoryToEdit: state => state.selectedCategoryToEdit,

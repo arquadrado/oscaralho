@@ -4,6 +4,7 @@ Vue.use(Vuex);
 
 import MenuModule from './modules/menu.module';
 import UtilsModule from './modules/utils.module';
+import { getCurrentMonthNumber } from './../helpers/general';
 
 const user = handover && handover.user ? handover.user : [];
 const bounds = handover && handover.bounds ? handover.bounds : [];
@@ -17,7 +18,7 @@ const state = {
   selectedBound: undefined,
   showDisplayPanel: false,
   selectedYear: `${new Date(Date.now()).getFullYear()}`,
-  selectedMonth: `0${(new Date(Date.now()).getMonth() + 1)}`,
+  selectedMonth: getCurrentMonthNumber(),
   justUpdated: undefined,
 };
 const getters = {
