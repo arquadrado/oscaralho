@@ -257,7 +257,6 @@ export default {
     back() {
       if (this.canGoBack) {
         const monthIndex = this.currentYearMonths.indexOf(this.selectedMonth);
-
         if (monthIndex > 0 && this.currentView === 'grid-month') {
           this.setMonth(this.currentYearMonths[monthIndex - 1]);
         } else {

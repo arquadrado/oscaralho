@@ -26,14 +26,14 @@ const getters = {
   getCategoryViewMode: state => state.categoryViewMode,
   getBounds: state => state.bounds,
   getBoundsByMonth: state => state.bounds.filter((bound) => {
-    if (state.currentCategoryType === 'expense') {
-      return bound.year === state.selectedYear &&
-        bound.month === state.selectedMonth &&
-        bound.category.expense;
+    const isYearOrMonthDifferent = 
+      Number(bound.year) !== Number(state.selectedYear) ||
+      Number(bound.month) !== Number(state.selectedMonth);
+
+    if (isYearOrMonthDifferent) {
+      return false;
     }
-    return bound.year === state.selectedYear &&
-      bound.month === state.selectedMonth &&
-      !bound.category.expense;
+    return state.currentCategoryType === 'expense' && !!bound.category.expense;
   }),
   getBoundsByYear: state => state.bounds.filter((bound) => {
     return bound.year === state.selectedYear;
@@ -53,7 +53,7 @@ const getters = {
       }
       return reduced;
 
-    }, []).sort();
+    }, []).sort().map((m) => Number(m).toString());
   },
   getAllTimeYears: (state) => {
     return state.bounds.reduce((reduced, bound) => {
