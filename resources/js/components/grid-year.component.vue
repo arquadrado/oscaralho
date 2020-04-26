@@ -57,14 +57,12 @@ export default {
         .filter(bound => {
           if (this.currentCategoryType === 'expense') {
             return (
-              bound.year === this.selectedYear &&
-              bound.month === month &&
+              this.isCorrespondingBound(bound, month) &&
               bound.category.expense
             );
           }
           return (
-            bound.year === this.selectedYear &&
-            bound.month === month &&
+            this.isCorrespondingBound(bound, month) &&
             !bound.category.expense
           );
         })
@@ -81,14 +79,12 @@ export default {
         .filter(bound => {
           if (this.currentCategoryType === 'expense') {
             return (
-              bound.year === this.selectedYear &&
-              bound.month === month &&
+              this.isCorrespondingBound(bound, month) &&
               bound.category.expense
             );
           }
           return (
-            bound.year === this.selectedYear &&
-            bound.month === month &&
+            this.isCorrespondingBound(bound, month) &&
             !bound.category.expense
           );
         })
@@ -96,6 +92,10 @@ export default {
           sum += bound.bound_in_cents / 100;
           return sum;
         }, 0);
+    },
+    isCorrespondingBound(bound, month) {
+      return Number(bound.year) === Number(this.selectedYear) &&
+        Number(bound.month) === Number(month);
     }
   }
 };

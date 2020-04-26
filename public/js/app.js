@@ -67704,7 +67704,8 @@ var getters = {
       if (isYearOrMonthDifferent) {
         return false;
       }
-      return state.currentCategoryType === 'expense' && !!bound.category.expense;
+
+      return state.currentCategoryType === 'expense' && !!bound.category.expense || state.currentCategoryType === 'revenue' && !bound.category.expense;
     });
   },
   getBoundsByYear: function getBoundsByYear(state) {
@@ -72095,9 +72096,9 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
       return this.bounds.filter(function (bound) {
         if (_this.currentCategoryType === 'expense') {
-          return bound.year === _this.selectedYear && bound.month === month && bound.category.expense;
+          return _this.isCorrespondingBound(bound, month) && bound.category.expense;
         }
-        return bound.year === _this.selectedYear && bound.month === month && !bound.category.expense;
+        return _this.isCorrespondingBound(bound, month) && !bound.category.expense;
       }).reduce(function (sum, bound) {
         sum += bound.expenses.reduce(function (expenseSum, expense) {
           expenseSum += Number(expense.value);
@@ -72111,13 +72112,16 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
       return this.bounds.filter(function (bound) {
         if (_this2.currentCategoryType === 'expense') {
-          return bound.year === _this2.selectedYear && bound.month === month && bound.category.expense;
+          return _this2.isCorrespondingBound(bound, month) && bound.category.expense;
         }
-        return bound.year === _this2.selectedYear && bound.month === month && !bound.category.expense;
+        return _this2.isCorrespondingBound(bound, month) && !bound.category.expense;
       }).reduce(function (sum, bound) {
         sum += bound.bound_in_cents / 100;
         return sum;
       }, 0);
+    },
+    isCorrespondingBound: function isCorrespondingBound(bound, month) {
+      return Number(bound.year) === Number(this.selectedYear) && Number(bound.month) === Number(month);
     }
   })
 });

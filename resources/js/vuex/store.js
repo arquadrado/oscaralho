@@ -30,10 +30,13 @@ const getters = {
       Number(bound.year) !== Number(state.selectedYear) ||
       Number(bound.month) !== Number(state.selectedMonth);
 
+
     if (isYearOrMonthDifferent) {
       return false;
     }
-    return state.currentCategoryType === 'expense' && !!bound.category.expense;
+
+    return (state.currentCategoryType === 'expense' && !!bound.category.expense) ||
+      (state.currentCategoryType === 'revenue' && !bound.category.expense);
   }),
   getBoundsByYear: state => state.bounds.filter((bound) => {
     return bound.year === state.selectedYear;
